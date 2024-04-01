@@ -13,7 +13,7 @@ add_library(Breakout::Core ALIAS BREAKOUT_CORE)
 
 target_link_libraries(BREAKOUT_CORE PUBLIC 
 	BREAKOUT_INCLUDES
-	EnTT::EnTT
 	fmt::fmt
-	SDL3::SDL3
+	EnTT::EnTT
+	SDL2::SDL2
 )

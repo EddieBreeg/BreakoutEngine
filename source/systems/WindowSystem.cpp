@@ -3,7 +3,7 @@
 #include <core/App.hpp>
 #include <core/Assert.hpp>
 
-#include <SDL3/SDL.h>
+#include <SDL2/SDL.h>
 
 namespace {
 	template <breakout::inputs::EEventType Evt, class... Args>
@@ -38,27 +38,27 @@ void breakout::WindowSystem::ProcessEvents(entt::registry& world)
 	{
 		switch (evt.type)
 		{
-		case SDL_EVENT_WINDOW_CLOSE_REQUESTED: App::GetInstance().Terminate(); break;
-		case SDL_EVENT_MOUSE_MOTION:
+		case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
+		case SDL_MOUSEMOTION:
 		{
-			const float2 pos{ evt.motion.x, evt.motion.y };
-			const float2 oldPos = pos - float2{ evt.motion.xrel, evt.motion.yrel };
+			const int2 pos{ evt.motion.x, evt.motion.y };
+			const int2 oldPos = pos - int2{ evt.motion.xrel, evt.motion.yrel };
 			CreateInputEventEntity<inputs::EEventType::MouseMove>(world,
 																  oldPos,
 																  pos);
 			break;
 		}
-		case SDL_EVENT_MOUSE_BUTTON_UP:
-		case SDL_EVENT_MOUSE_BUTTON_DOWN:
+		case SDL_MOUSEBUTTONUP:
+		case SDL_MOUSEBUTTONDOWN:
 			CreateInputEventEntity<inputs::EEventType::MouseButton>(
 				world,
 				evt.button.button,
 				evt.button.state == SDL_PRESSED,
 				evt.button.clicks,
-				float2{ evt.button.x, evt.button.y });
+				int2{ evt.button.x, evt.button.y });
 			break;
-		case SDL_EVENT_KEY_UP:
-		case SDL_EVENT_KEY_DOWN:
+		case SDL_KEYUP:
+		case SDL_KEYDOWN:
 			CreateInputEventEntity<inputs::EEventType::Key>(world,
 															evt.key.keysym.sym,
 															evt.key.keysym.mod,
@@ -76,6 +76,8 @@ breakout::WindowSystem::WindowSystem(const breakout::WindowSystemSettings& setti
 	BREAKOUT_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
 
 	m_WinPtr = SDL_CreateWindow(settings.m_Title,
+								SDL_WINDOWPOS_CENTERED,
+								SDL_WINDOWPOS_CENTERED,
 								settings.m_Width,
 								settings.m_Height,
 								settings.m_Flags);

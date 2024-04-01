@@ -24,7 +24,7 @@ namespace breakout {
 	template <>
 	struct EventData<inputs::EEventType::MouseMove>
 	{
-		float2 m_OldPos, m_NewPos;
+		int2 m_OldPos, m_NewPos;
 	};
 
 	template <>
@@ -33,7 +33,7 @@ namespace breakout {
 		uint8 m_Button;
 		bool m_Pressed;
 		uint8 m_Clicks;
-		float2 m_Pos;
+		int2 m_Pos;
 	};
 
 	template <>
