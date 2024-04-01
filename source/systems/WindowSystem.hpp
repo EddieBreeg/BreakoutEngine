@@ -19,9 +19,9 @@ namespace breakout {
 	struct WindowSystemSettings
 	{
 		const char* m_Title = "Breakout";
-		int m_Width = 1280;
-		int m_Height = 720;
-		uint32_t m_Flags = 0;
+		int32 m_Width = 1280;
+		int32 m_Height = 720;
+		uint32 m_Flags = 0;
 	};
 
 	namespace inputs {

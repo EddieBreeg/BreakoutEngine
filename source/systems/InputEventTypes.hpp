@@ -11,7 +11,7 @@ namespace breakout {
 } // namespace breakout
 
 namespace breakout::inputs {
-	enum class EEventType : uint8_t
+	enum EEventType : uint8
 	{
 		MouseMove,
 		MouseButton,
@@ -30,22 +30,20 @@ namespace breakout {
 	template <>
 	struct EventData<inputs::EEventType::MouseButton>
 	{
-		uint8_t m_Button;
+		uint8 m_Button;
 		bool m_Pressed;
-		uint8_t m_Clicks;
+		uint8 m_Clicks;
 		float2 m_Pos;
 	};
 
 	template <>
 	struct EventData<inputs::EEventType::Key>
 	{
-		int32_t m_Key;
-		uint16_t m_Modifiers;
-		uint8_t m_Pressed;
-		uint8_t m_Repeat;
+		int32 m_Key;
+		uint16 m_Modifiers;
+		uint8 m_Pressed;
+		uint8 m_Repeat;
 	};
 
-	using TInputEvent = Event<inputs::EEventType::MouseMove,
-							  inputs::EEventType::MouseButton,
-							  inputs::EEventType::Key>;
+	using TInputEvent = Event<inputs::MouseMove, inputs::MouseButton, inputs::Key>;
 } // namespace breakout

@@ -1,7 +1,9 @@
 #pragma once
 
 #include <PCH.hpp>
+
 #include <core/Assert.hpp>
+#include <core/MetaLists.hpp>
 #include <core/Storage.hpp>
 
 namespace breakout {
@@ -11,7 +13,7 @@ namespace breakout {
 	template <auto... EventTypes>
 	class Event : private StorageFor<EventData<EventTypes>...>
 	{
-		using EEvent = decltype(meta::ValueList<EventTypes...>::template Get<0>());
+		using EEvent = std::remove_const_t<decltype(meta::ValueList<EventTypes...>::template Get<0>)>;
 
 		static_assert((std::is_same_v<EEvent, decltype(EventTypes)> && ...),
 					  "Inconsistent event types");

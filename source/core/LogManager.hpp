@@ -11,7 +11,7 @@ namespace breakout {
 	class LogManager
 	{
 	public:
-		enum LogLevel : uint8_t
+		enum LogLevel : uint8
 		{
 			Trace,
 			Warning,

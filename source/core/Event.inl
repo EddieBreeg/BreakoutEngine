@@ -1,5 +1,3 @@
-#include "Event.hpp"
-
 namespace breakout {
 	template <auto... EventTypes>
 	Event<EventTypes...>::Event(Event&& other)
@@ -32,7 +30,7 @@ namespace breakout {
 	{
 		if constexpr (I < sizeof...(EventTypes))
 		{
-			constexpr EEvent e = meta::ValueList<EventTypes...>::template Get<I>();
+			constexpr EEvent e = meta::ValueList<EventTypes...>::template Get<I>;
 			if (e == m_Type)
 				DestroyAs<EventData<e>>();
 			else
