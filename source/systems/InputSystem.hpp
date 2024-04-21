@@ -16,7 +16,7 @@ namespace bre::inputs {
 	class System : public Singleton<System>
 	{
 	public:
-		using World = ecs::Include<const inputs::EventOneFrameComponent>::ViewType;
+		using World = ecs::WorldView<const inputs::EventOneFrameComponent>;
 		BREAKOUT_ECS_UPDATE_DECL;
 
 		~System() = default;

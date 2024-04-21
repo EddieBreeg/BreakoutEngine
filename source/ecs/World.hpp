@@ -1,56 +1,36 @@
 #pragma once
 
-#include <entt/entity/fwd.hpp>
 #include <core/MetaLists.hpp>
+#include "Query.hpp"
 
 namespace bre::ecs {
-	template <class Includes, class Excludes>
-	class WorldView;
-
-	template <class... I, class... E>
-	class WorldView<meta::TypeList<I...>, meta::TypeList<E...>>
+	template <class... Components>
+	class WorldView
 	{
-		using TNativeView = decltype(std::declval<entt::registry>().view<I...>(
-			entt::exclude_t<E...>{}));
-
 	public:
 		WorldView(entt::registry& world);
+		WorldView(const WorldView&) = delete;
+		WorldView(WorldView&&) = default;
 
-		[[nodiscard]] entt::registry& GetEntityWorld() { return m_EntityWorld; }
+		template <class C, class... Args>
+		C& AddComponent(const entt::entity e, Args&&... args);
 
-		auto begin() { return m_NativeView.begin(); }
-		auto end() { return m_NativeView.end(); }
+		[[nodiscard]] entt::entity CreateEntity() { return m_EntityWorld.create(); }
+		void DestroyEntity(const entt::entity e);
 
-		template <class Component>
-		[[nodiscard]] Component& Get(entt::entity entity);
-
-		template <class Component>
-		[[nodiscard]] Component& Get(entt::entity entity) const;
+		template <class TQuery>
+		QueryWorld<TQuery> Query();
 
 	private:
 		entt::registry& m_EntityWorld;
-		TNativeView m_NativeView;
-	};
-
-	template <class... I>
-	struct Include
-	{
-		using ViewType = WorldView<meta::TypeList<I...>, meta::TypeList<>>;
-
-		template <class... E>
-		struct Exclude
-		{
-			using ViewType = WorldView<meta::TypeList<I...>, meta::TypeList<E...>>;
-		};
 	};
 
 	namespace _internal {
 		template <class T>
 		struct IsWorldView : std::false_type
 		{};
-		template <class... I, class... E>
-		struct IsWorldView<WorldView<meta::TypeList<I...>, meta::TypeList<E...>>>
-			: std::true_type
+		template <class... C>
+		struct IsWorldView<WorldView<C...>> : std::true_type
 		{};
 	} // namespace _internal
 

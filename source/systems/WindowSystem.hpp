@@ -35,7 +35,7 @@ namespace bre {
 	class WindowSystem : public Singleton<WindowSystem>
 	{
 	public:
-		using World = ecs::Include<inputs::EventOneFrameComponent>::ViewType;
+		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
 		BREAKOUT_ECS_UPDATE_DECL;
 
 		void Terminate();
@@ -44,7 +44,7 @@ namespace bre {
 	private:
 		friend class Singleton<WindowSystem>;
 
-		void ProcessEvents(entt::registry& world);
+		void ProcessEvents(World& world);
 		WindowSystem(const WindowSystemSettings& settings = {});
 
 		SDL_Window* m_WinPtr = nullptr;

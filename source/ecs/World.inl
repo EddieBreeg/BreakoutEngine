@@ -1,31 +1,27 @@
 #include "World.hpp"
-
 namespace bre::ecs {
-	template <class... I, class... E>
-	inline WorldView<meta::TypeList<I...>, meta::TypeList<E...>>::WorldView(
-		entt::registry& world)
+	template <class... Components>
+	inline WorldView<Components...>::WorldView(entt::registry& world)
 		: m_EntityWorld{ world }
-		, m_NativeView{ world.view<I...>(entt::exclude_t<E...>{}) }
 	{}
 
-	template <class... I, class... E>
-	template <class Component>
-	inline Component& WorldView<meta::TypeList<I...>, meta::TypeList<E...>>::Get(
-		entt::entity entity)
+	template <class... Components>
+	inline void WorldView<Components...>::DestroyEntity(const entt::entity e)
 	{
-		static_assert((std::is_same_v<Component, I> || ...),
-					  "Component is not in the include list");
-		return m_NativeView.get<Component>(entity);
+		m_EntityWorld.destroy(e);
 	}
 
-	template <class... I, class... E>
-	template <class Component>
-	inline Component& WorldView<meta::TypeList<I...>, meta::TypeList<E...>>::Get(
-		entt::entity entity) const
+	template <class... Components>
+	template <class C, class... Args>
+	C& WorldView<Components...>::AddComponent(const entt::entity e, Args&&... args)
 	{
-		static_assert((std::is_same_v<Component, I> || ...),
-					  "Component is not in the include list");
-		return m_NativeView.get<Component>(entity);
+		return m_EntityWorld.emplace<C>(e, std::forward<Args>(args)...);
 	}
 
+	template <class... Components>
+	template <class TQuery>
+	QueryWorld<TQuery> WorldView<Components...>::Query()
+	{
+		return { m_EntityWorld };
+	}
 } // namespace bre::ecs

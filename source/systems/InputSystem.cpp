@@ -14,10 +14,12 @@ namespace bre::inputs {
 
 	void bre::inputs::System::ProcessEvents(World& world)
 	{
-		for (entt::entity event : world)
+		using TQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
+		ecs::QueryWorld<TQuery> queryResults = world.Query<TQuery>();
+		for (entt::entity event : queryResults)
 		{
 			const auto& eventComponent =
-				world.Get<const inputs::EventOneFrameComponent>(event);
+				queryResults.Get<const inputs::EventOneFrameComponent>(event);
 			switch (eventComponent.m_Event.GetType())
 			{
 			case EEventType::MouseMove:

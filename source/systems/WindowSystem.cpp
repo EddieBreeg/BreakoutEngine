@@ -7,10 +7,11 @@
 
 namespace {
 	template <bre::inputs::EEventType Evt, class... Args>
-	inline entt::entity CreateInputEventEntity(entt::registry& world, Args&&... args)
+	inline entt::entity CreateInputEventEntity(bre::WindowSystem::World& world,
+											   Args&&... args)
 	{
-		entt::entity e = world.create();
-		world.emplace<bre::inputs::EventOneFrameComponent>(
+		entt::entity e = world.CreateEntity();
+		world.AddComponent<bre::inputs::EventOneFrameComponent>(
 			e,
 			bre::TInputEvent::Create<Evt>(std::forward<Args>(args)...));
 		return e;
@@ -30,7 +31,7 @@ bre::WindowSystem::~WindowSystem()
 	Terminate();
 }
 
-void bre::WindowSystem::ProcessEvents(entt::registry& world)
+void bre::WindowSystem::ProcessEvents(World& world)
 {
 	SDL_Event evt;
 
@@ -38,6 +39,7 @@ void bre::WindowSystem::ProcessEvents(entt::registry& world)
 	{
 		switch (evt.type)
 		{
+		case SDL_QUIT:
 		case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
 		case SDL_MOUSEMOTION:
 		{
@@ -83,9 +85,10 @@ bre::WindowSystem::WindowSystem(const bre::WindowSystemSettings& settings)
 
 void bre::WindowSystem::Update(World& world, const bre::TimeInfo& timeInfo)
 {
+	using TEventQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
 	// remove events from previous frame
-	for (entt::entity event : world)
-		world.GetEntityWorld().destroy(event);
+	for (entt::entity event : world.Query<TEventQuery>())
+		world.DestroyEntity(event);
 
-	ProcessEvents(world.GetEntityWorld());
+	ProcessEvents(world);
 }
