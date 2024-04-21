@@ -6,13 +6,13 @@
 
 #include <systems/WindowSystem.hpp>
 
-namespace breakout::inputs {
+namespace bre::inputs {
 	void System::Update(World& world, const TimeInfo& timeInfo)
 	{
 		ProcessEvents(world);
 	}
 
-	void breakout::inputs::System::ProcessEvents(World& world)
+	void bre::inputs::System::ProcessEvents(World& world)
 	{
 		for (entt::entity event : world)
 		{
@@ -46,4 +46,4 @@ namespace breakout::inputs {
 		}
 	}
 
-} // namespace breakout::inputs
+} // namespace bre::inputs

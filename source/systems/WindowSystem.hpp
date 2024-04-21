@@ -14,7 +14,7 @@
 
 struct SDL_Window;
 
-namespace breakout {
+namespace bre {
 
 	struct WindowSystemSettings
 	{
@@ -50,4 +50,4 @@ namespace breakout {
 		SDL_Window* m_WinPtr = nullptr;
 	};
 
-} // namespace breakout
+} // namespace bre

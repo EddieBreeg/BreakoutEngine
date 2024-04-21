@@ -2,11 +2,11 @@
 
 #include "TimeInfo.hpp"
 
-breakout::TimeInfo::TimeInfo()
+bre::TimeInfo::TimeInfo()
 	: m_LastUpdate{ m_StartPoint }
 {}
 
-breakout::TimeInfo::Duration breakout::TimeInfo::Update()
+bre::TimeInfo::Duration bre::TimeInfo::Update()
 {
 	const TimePoint t = Clock::now();
 	m_Delta = t - m_LastUpdate;
@@ -14,4 +14,4 @@ breakout::TimeInfo::Duration breakout::TimeInfo::Update()
 	return m_Delta;
 }
 
-breakout::TimeInfo::~TimeInfo() = default;
+bre::TimeInfo::~TimeInfo() = default;

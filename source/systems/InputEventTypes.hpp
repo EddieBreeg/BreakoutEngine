@@ -2,15 +2,15 @@
 
 #include <PCH.hpp>
 
-namespace breakout {
+namespace bre {
 	template <auto>
 	struct EventData;
 
 	template <auto...>
 	class Event;
-} // namespace breakout
+} // namespace bre
 
-namespace breakout::inputs {
+namespace bre::inputs {
 	enum EEventType : uint8
 	{
 		MouseMove,
@@ -18,9 +18,9 @@ namespace breakout::inputs {
 		Key,
 	};
 
-} // namespace breakout::inputs
+} // namespace bre::inputs
 
-namespace breakout {
+namespace bre {
 	template <>
 	struct EventData<inputs::EEventType::MouseMove>
 	{
@@ -46,4 +46,4 @@ namespace breakout {
 	};
 
 	using TInputEvent = Event<inputs::MouseMove, inputs::MouseButton, inputs::Key>;
-} // namespace breakout
+} // namespace bre

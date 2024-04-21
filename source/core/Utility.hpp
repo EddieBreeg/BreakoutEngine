@@ -2,7 +2,7 @@
 
 #include <type_traits>
 
-namespace breakout {
+namespace bre {
 	template <class T, class... U>
 	constexpr auto Max(T&& left, U&&... right) noexcept
 	{
@@ -22,4 +22,4 @@ namespace breakout {
 
 		return ((res = res < right ? res : std::forward<U>(right)), ...);
 	}
-} // namespace breakout
+} // namespace bre

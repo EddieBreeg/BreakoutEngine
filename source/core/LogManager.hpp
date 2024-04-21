@@ -7,7 +7,7 @@
 #include <string>
 #include <string_view>
 
-namespace breakout {
+namespace bre {
 	class LogManager
 	{
 	public:
@@ -40,4 +40,4 @@ namespace breakout {
 
 		static LogManager s_Instance;
 	};
-} // namespace breakout
+} // namespace bre

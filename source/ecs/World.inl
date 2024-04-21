@@ -1,6 +1,6 @@
 #include "World.hpp"
 
-namespace breakout::ecs {
+namespace bre::ecs {
 	template <class... I, class... E>
 	inline WorldView<meta::TypeList<I...>, meta::TypeList<E...>>::WorldView(
 		entt::registry& world)
@@ -28,4 +28,4 @@ namespace breakout::ecs {
 		return m_NativeView.get<Component>(entity);
 	}
 
-} // namespace breakout::ecs
+} // namespace bre::ecs

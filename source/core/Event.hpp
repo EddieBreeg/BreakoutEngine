@@ -6,7 +6,7 @@
 #include <core/MetaLists.hpp>
 #include <core/Storage.hpp>
 
-namespace breakout {
+namespace bre {
 	template <auto EventType>
 	struct EventData;
 
@@ -62,6 +62,6 @@ namespace breakout {
 		EEvent m_Type;
 	};
 
-} // namespace breakout
+} // namespace bre
 
 #include "Event.inl"

@@ -9,8 +9,7 @@
 
 #include <vector>
 
-namespace breakout {
-
+namespace bre {
 	class App : public Singleton<App>
 	{
 	public:
@@ -39,4 +38,4 @@ namespace breakout {
 		std::vector<ecs::SystemInstance> m_Systems;
 		bool m_KeepRunning = true;
 	};
-} // namespace breakout
+} // namespace bre

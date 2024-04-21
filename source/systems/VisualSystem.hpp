@@ -3,11 +3,11 @@
 #include <core/Singleton.hpp>
 #include <ecs/System.hpp>
 
-namespace breakout {
+namespace bre {
 	class TimeInfo;
 }
 
-namespace breakout {
+namespace bre {
 	class VisualSystem : public Singleton<VisualSystem>
 	{
 	public:
@@ -20,4 +20,4 @@ namespace breakout {
 		VisualSystem();
 	};
 
-} // namespace breakout
+} // namespace bre

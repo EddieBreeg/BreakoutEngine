@@ -1,6 +1,6 @@
 #include "Storage.hpp"
 
-namespace breakout {
+namespace bre {
 	template <size_t Size, size_t Alignment>
 	template <class T, class... Args>
 	inline Storage<Size, Alignment>& Storage<Size, Alignment>::Construct(
@@ -26,7 +26,7 @@ namespace breakout {
 
 	template <size_t Size, size_t Alignment>
 	template <class T>
-	inline T& breakout::Storage<Size, Alignment>::GetAs()
+	inline T& bre::Storage<Size, Alignment>::GetAs()
 	{
 		static_assert(sizeof(T) <= Size && alignof(T) <= Alignment,
 					  "Storage doesn't meet the size/alignment requirements for T");
@@ -35,11 +35,11 @@ namespace breakout {
 
 	template <size_t Size, size_t Alignment>
 	template <class T>
-	inline const T& breakout::Storage<Size, Alignment>::GetAs() const
+	inline const T& bre::Storage<Size, Alignment>::GetAs() const
 	{
 		static_assert(sizeof(T) <= Size && alignof(T) <= Alignment,
 					  "Storage doesn't meet the size/alignment requirements for T");
 		return *reinterpret_cast<const T*>(m_Buf);
 	}
 
-} // namespace breakout
+} // namespace bre

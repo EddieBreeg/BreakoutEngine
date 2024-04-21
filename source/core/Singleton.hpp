@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include <memory>
 
-namespace breakout {
+namespace bre {
 	template <class T>
 	class Singleton
 	{
@@ -20,6 +20,6 @@ namespace breakout {
 		static std::unique_ptr<T> s_Instance;
 	};
 
-} // namespace breakout
+} // namespace bre
 
 #include "Singleton.inl"

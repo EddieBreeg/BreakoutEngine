@@ -2,14 +2,14 @@
 
 #include <ecs/World.hpp>
 
-namespace breakout {
+namespace bre {
 	template <class T>
 	class Singleton;
 
 	class TimeInfo;
-} // namespace breakout
+} // namespace bre
 
-namespace breakout::ecs {
+namespace bre::ecs {
 	class SystemInstance
 	{
 	public:
@@ -42,9 +42,9 @@ namespace breakout::ecs {
 		void (*m_Terminate)() = nullptr;
 	};
 
-} // namespace breakout::ecs
+} // namespace bre::ecs
 
 #define BREAKOUT_ECS_UPDATE_DECL                                                    \
-	void Update(World& world, const breakout::TimeInfo& timeInfo);
+	void Update(World& world, const bre::TimeInfo& timeInfo);
 
 #include "System.inl"

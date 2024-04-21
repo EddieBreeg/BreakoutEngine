@@ -3,7 +3,7 @@
 #include <entt/entity/fwd.hpp>
 #include <core/MetaLists.hpp>
 
-namespace breakout::ecs {
+namespace bre::ecs {
 	template <class Includes, class Excludes>
 	class WorldView;
 
@@ -56,6 +56,6 @@ namespace breakout::ecs {
 
 	template <class T>
 	static constexpr bool IsWorldView = _internal::IsWorldView<T>::value;
-} // namespace breakout::ecs
+} // namespace bre::ecs
 
 #include "World.inl"

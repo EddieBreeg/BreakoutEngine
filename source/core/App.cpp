@@ -7,7 +7,7 @@
 #include <csignal>
 #include <iostream>
 
-namespace breakout {
+namespace bre {
 
 	App::~App() {}
 
@@ -45,4 +45,4 @@ namespace breakout {
 		m_Systems.clear();
 		return 0;
 	}
-} // namespace breakout
+} // namespace bre

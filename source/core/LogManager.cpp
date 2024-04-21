@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace breakout {
+namespace bre {
 	LogManager LogManager::s_Instance;
 
 	void LogManager::Log(LogLevel level, std::string_view message)
@@ -18,4 +18,4 @@ namespace breakout {
 			std::cerr << message << '\n';
 	}
 
-} // namespace breakout
+} // namespace bre

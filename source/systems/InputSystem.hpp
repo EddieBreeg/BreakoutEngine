@@ -7,11 +7,11 @@
 #include <ecs/System.hpp>
 #include <ecs/World.hpp>
 
-namespace breakout::inputs {
+namespace bre::inputs {
 	struct EventOneFrameComponent;
-} // namespace breakout::inputs
+} // namespace bre::inputs
 
-namespace breakout::inputs {
+namespace bre::inputs {
 
 	class System : public Singleton<System>
 	{
@@ -27,4 +27,4 @@ namespace breakout::inputs {
 		System() = default;
 	};
 
-} // namespace breakout::inputs
+} // namespace bre::inputs

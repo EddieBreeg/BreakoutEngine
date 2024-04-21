@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-namespace breakout {
+namespace bre {
 
 	template <size_t Size, size_t Alignment = alignof(std::max_align_t)>
 	struct Storage
@@ -29,6 +29,6 @@ namespace breakout {
 	using StorageFor = Storage<Max(sizeof(T)...),
 							   Max(alignof(T)...)>;
 
-} // namespace breakout
+} // namespace bre
 
 #include "Storage.inl"

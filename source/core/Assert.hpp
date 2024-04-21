@@ -2,7 +2,7 @@
 
 #include <fmt/core.h>
 
-namespace breakout {
+namespace bre {
 	namespace _internal {
 		void AssertImpl(std::string&& message, const char* file, int line);
 
@@ -15,12 +15,12 @@ namespace breakout {
 		{
 			if (cond)
 				return;
-			std::string message = fmt::format(format, std::forward<Args>(args)...);
 
+			std::string message = fmt::format(format, std::forward<Args>(args)...);
 			AssertImpl(std::move(message), file, line);
 		}
 	} // namespace _internal
-} // namespace breakout
+} // namespace bre
 
 #define BREAKOUT_ASSERT(expr, fmt, ...)                                             \
-	breakout::_internal::Assert(!!(expr), __FILE__, __LINE__, fmt, __VA_ARGS__)
+	bre::_internal::Assert(!!(expr), __FILE__, __LINE__, fmt, __VA_ARGS__)

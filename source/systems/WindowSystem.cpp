@@ -6,18 +6,18 @@
 #include <SDL2/SDL.h>
 
 namespace {
-	template <breakout::inputs::EEventType Evt, class... Args>
+	template <bre::inputs::EEventType Evt, class... Args>
 	inline entt::entity CreateInputEventEntity(entt::registry& world, Args&&... args)
 	{
 		entt::entity e = world.create();
-		world.emplace<breakout::inputs::EventOneFrameComponent>(
+		world.emplace<bre::inputs::EventOneFrameComponent>(
 			e,
-			breakout::TInputEvent::Create<Evt>(std::forward<Args>(args)...));
+			bre::TInputEvent::Create<Evt>(std::forward<Args>(args)...));
 		return e;
 	}
 } // namespace
 
-void breakout::WindowSystem::Terminate()
+void bre::WindowSystem::Terminate()
 {
 	if (!m_WinPtr)
 		return;
@@ -25,12 +25,12 @@ void breakout::WindowSystem::Terminate()
 	SDL_Quit();
 }
 
-breakout::WindowSystem::~WindowSystem()
+bre::WindowSystem::~WindowSystem()
 {
 	Terminate();
 }
 
-void breakout::WindowSystem::ProcessEvents(entt::registry& world)
+void bre::WindowSystem::ProcessEvents(entt::registry& world)
 {
 	SDL_Event evt;
 
@@ -43,14 +43,12 @@ void breakout::WindowSystem::ProcessEvents(entt::registry& world)
 		{
 			const int2 pos{ evt.motion.x, evt.motion.y };
 			const int2 oldPos = pos - int2{ evt.motion.xrel, evt.motion.yrel };
-			CreateInputEventEntity<inputs::EEventType::MouseMove>(world,
-																  oldPos,
-																  pos);
+			CreateInputEventEntity<inputs::MouseMove>(world, oldPos, pos);
 			break;
 		}
 		case SDL_MOUSEBUTTONUP:
 		case SDL_MOUSEBUTTONDOWN:
-			CreateInputEventEntity<inputs::EEventType::MouseButton>(
+			CreateInputEventEntity<inputs::MouseButton>(
 				world,
 				evt.button.button,
 				evt.button.state == SDL_PRESSED,
@@ -59,18 +57,17 @@ void breakout::WindowSystem::ProcessEvents(entt::registry& world)
 			break;
 		case SDL_KEYUP:
 		case SDL_KEYDOWN:
-			CreateInputEventEntity<inputs::EEventType::Key>(world,
-															evt.key.keysym.sym,
-															evt.key.keysym.mod,
-															evt.key.state ==
-																SDL_PRESSED,
-															evt.key.repeat);
+			CreateInputEventEntity<inputs::Key>(world,
+												evt.key.keysym.sym,
+												evt.key.keysym.mod,
+												evt.key.state == SDL_PRESSED,
+												evt.key.repeat);
 		default: break;
 		}
 	}
 }
 
-breakout::WindowSystem::WindowSystem(const breakout::WindowSystemSettings& settings)
+bre::WindowSystem::WindowSystem(const bre::WindowSystemSettings& settings)
 {
 	const int initCode = SDL_Init(SDL_INIT_VIDEO);
 	BREAKOUT_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
@@ -84,10 +81,11 @@ breakout::WindowSystem::WindowSystem(const breakout::WindowSystemSettings& setti
 	BREAKOUT_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
 }
 
-void breakout::WindowSystem::Update(World& world, const breakout::TimeInfo& timeInfo)
+void bre::WindowSystem::Update(World& world, const bre::TimeInfo& timeInfo)
 {
 	// remove events from previous frame
 	for (entt::entity event : world)
 		world.GetEntityWorld().destroy(event);
+
 	ProcessEvents(world.GetEntityWorld());
 }

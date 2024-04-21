@@ -10,7 +10,7 @@
 #define DEBUGBREAK() raise(SIGTRAP)
 #endif
 
-namespace breakout::_internal {
+namespace bre::_internal {
 	void AssertImpl(std::string&& message, const char* file, int line)
 	{
 		LogManager::GetInstance().Log(LogManager::LogLevel::Critical,
@@ -21,4 +21,4 @@ namespace breakout::_internal {
 		DEBUGBREAK();
 	}
 
-} // namespace breakout::_internal
+} // namespace bre::_internal
