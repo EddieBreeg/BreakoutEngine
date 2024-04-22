@@ -8,9 +8,9 @@ target_include_directories(BREAKOUT_INCLUDES INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_library(${PROJECT_NAME} INTERFACE)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::Core
 	Breakout::ECS
 	Breakout::Systems
