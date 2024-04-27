@@ -3,6 +3,10 @@
 #include <core/App.hpp>
 #include <core/Assert.hpp>
 
+#include <debug/DebugOverlay.hpp>
+
+#include "private/ImGuiIncludes.hpp"
+
 #include <SDL2/SDL.h>
 
 namespace {
@@ -33,6 +37,11 @@ brk::WindowSystem::~WindowSystem()
 
 void brk::WindowSystem::ProcessEvents(World& world)
 {
+	using TEventQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
+	// remove events from previous frame
+	for (entt::entity event : world.Query<TEventQuery>())
+		world.DestroyEntity(event);
+
 	SDL_Event evt;
 
 	while (SDL_PollEvent(&evt))
@@ -66,6 +75,10 @@ void brk::WindowSystem::ProcessEvents(World& world)
 												evt.key.repeat);
 		default: break;
 		}
+
+#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
+		ImGui_ImplSDL2_ProcessEvent(&evt);
+#endif
 	}
 }
 
@@ -81,14 +94,58 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 								settings.m_Height,
 								settings.m_Flags);
 	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
+
+#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
+	ImGui::CreateContext();
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
+								  ImGuiConfigFlags_DockingEnable |
+								  ImGuiConfigFlags_ViewportsEnable;
+#if defined(BRK_SDL2_RENDERER)
+	SDL_Renderer* renderer = SDL_CreateRenderer(m_WinPtr, -1, 0);
+	ImGui_ImplSDL2_InitForSDLRenderer(m_WinPtr, renderer);
+	ImGui_ImplSDLRenderer2_Init(renderer);
+#else
+#error "Unsupported"
+#endif
+#endif
 }
 
 void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
-	using TEventQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
-	// remove events from previous frame
-	for (entt::entity event : world.Query<TEventQuery>())
-		world.DestroyEntity(event);
+#if defined(BRK_DEBUG)
+#if defined(BRK_SDL2_RENDERER)
+	ImGui_ImplSDLRenderer2_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+#endif
+#endif
 
 	ProcessEvents(world);
+
+#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
+	dbg::Overlay::s_Instance.Draw();
+
+	ImGui::Render();
+	auto& imguiIo = ImGui::GetIO();
+
+#if defined(BRK_SDL2_RENDERER)
+	SDL_Renderer* renderer = SDL_GetRenderer(m_WinPtr);
+	SDL_RenderSetScale(renderer,
+					   imguiIo.DisplayFramebufferScale.x,
+					   imguiIo.DisplayFramebufferScale.y);
+	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
+	SDL_RenderClear(renderer);
+
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	SDL_RenderPresent(renderer);
+#endif
+	ImGui::EndFrame();
+
+	// Update and Render additional Platform Windows
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
+#endif
 }

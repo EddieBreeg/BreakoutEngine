@@ -10,6 +10,7 @@
 
 #ifndef NDEBUG
 #define BRK_DEBUG
+#define BRK_EDITOR
 #endif
 
 using int8 = int8_t;

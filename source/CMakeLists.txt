@@ -1,10 +1,11 @@
 add_subdirectory(math)
 add_subdirectory(core)
 add_subdirectory(ecs)
+add_subdirectory(debug)
 add_subdirectory(systems)
 
-add_library(BREAKOUT_INCLUDES INTERFACE)
-target_include_directories(BREAKOUT_INCLUDES INTERFACE
+add_library(BRK_INCLUDES INTERFACE)
+target_include_directories(BRK_INCLUDES INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 

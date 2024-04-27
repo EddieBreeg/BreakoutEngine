@@ -2,8 +2,6 @@
 
 #include <entt/entity/registry.hpp>
 
-#include <fmt/core.h>
-
 #include <systems/WindowSystem.hpp>
 
 namespace brk::inputs {
@@ -26,21 +24,12 @@ namespace brk::inputs {
 			{
 				const auto& data =
 					eventComponent.m_Event.GetData<EEventType::MouseMove>();
-				fmt::println("Mouse moved: ({}, {}) -> ({}, {})",
-							 data.m_OldPos.x,
-							 data.m_OldPos.y,
-							 data.m_NewPos.x,
-							 data.m_NewPos.y);
 				break;
 			}
 			case EEventType::MouseButton:
 			{
 				const auto& data =
 					eventComponent.m_Event.GetData<EEventType::MouseButton>();
-				fmt::println("Mouse button {} at ({}, {})",
-							 data.m_Pressed ? "pressed" : "released",
-							 data.m_Pos.x,
-							 data.m_Pos.y);
 				break;
 			}
 			default: break;

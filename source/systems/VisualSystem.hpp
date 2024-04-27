@@ -13,6 +13,10 @@ namespace brk {
 	public:
 		void Terminate();
 
+		using World = ecs::WorldView<>;
+
+		BRK_ECS_UPDATE_DECL;
+
 		~VisualSystem();
 
 	private:

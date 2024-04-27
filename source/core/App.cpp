@@ -1,5 +1,7 @@
 #include "App.hpp"
 
+#include <debug/DebugOverlay.hpp>
+
 #include <systems/InputSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
@@ -23,7 +25,6 @@ namespace brk {
 	{
 		RegisterSystem<WindowSystem>();
 		RegisterSystem<inputs::System>();
-		// RegisterSystem<VisualSystem>();
 	}
 
 	App::App(const int argc, const char** argv)
@@ -38,6 +39,9 @@ namespace brk {
 			   {
 				   GetInstance().Terminate();
 			   });
+#if defined(BRK_DEBUG)
+		dbg::Overlay::s_Instance.m_Enabled = true;
+#endif
 		InitEngineSystems();
 		while (m_KeepRunning)
 			Update();
