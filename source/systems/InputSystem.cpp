@@ -6,13 +6,13 @@
 
 #include <systems/WindowSystem.hpp>
 
-namespace bre::inputs {
+namespace brk::inputs {
 	void System::Update(World& world, const TimeInfo& timeInfo)
 	{
 		ProcessEvents(world);
 	}
 
-	void bre::inputs::System::ProcessEvents(World& world)
+	void brk::inputs::System::ProcessEvents(World& world)
 	{
 		using TQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
 		ecs::QueryWorld<TQuery> queryResults = world.Query<TQuery>();
@@ -48,4 +48,4 @@ namespace bre::inputs {
 		}
 	}
 
-} // namespace bre::inputs
+} // namespace brk::inputs

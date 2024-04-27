@@ -4,12 +4,13 @@
 #include <core/TimeInfo.hpp>
 
 #include <ecs/System.hpp>
+#include <ecs/ECSManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <vector>
 
-namespace bre {
+namespace brk {
 	class App : public Singleton<App>
 	{
 	public:
@@ -29,7 +30,7 @@ namespace bre {
 				ecs::SystemInstance::Create<T>(std::forward<Args>(args)...));
 		}
 
-		void InitSystems();
+		void InitEngineSystems();
 
 		const int m_Argc;
 		const char** const m_Argv;
@@ -38,4 +39,4 @@ namespace bre {
 		std::vector<ecs::SystemInstance> m_Systems;
 		bool m_KeepRunning = true;
 	};
-} // namespace bre
+} // namespace brk

@@ -3,6 +3,7 @@ file(GLOB ECS_HEADERS *.hpp)
 
 add_library(BREAKOUT_ECS 
 	System.cpp
+	ECSManager.cpp
 	${ECS_HEADERS}
 )
 

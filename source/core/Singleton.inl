@@ -1,6 +1,6 @@
 #include "Assert.hpp"
 
-namespace bre {
+namespace brk {
 	template <class T>
 	std::unique_ptr<T> Singleton<T>::s_Instance = nullptr;
 
@@ -15,9 +15,9 @@ namespace bre {
 	}
 
 	template <class T>
-	inline T& bre::Singleton<T>::GetInstance()
+	inline T& brk::Singleton<T>::GetInstance()
 	{
-		BREAKOUT_ASSERT(s_Instance,
+		BRK_ASSERT(s_Instance,
 						"Called GetInstance on a uninitialized singleton");
 		return *s_Instance;
 	}
@@ -29,4 +29,4 @@ namespace bre {
 			return;
 		s_Instance.reset();
 	}
-} // namespace bre
+} // namespace brk

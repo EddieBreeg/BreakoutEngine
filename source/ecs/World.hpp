@@ -3,7 +3,7 @@
 #include <core/MetaLists.hpp>
 #include "Query.hpp"
 
-namespace bre::ecs {
+namespace brk::ecs {
 	template <class... Components>
 	class WorldView
 	{
@@ -13,7 +13,7 @@ namespace bre::ecs {
 		WorldView(WorldView&&) = default;
 
 		template <class C, class... Args>
-		C& AddComponent(const entt::entity e, Args&&... args);
+		decltype(auto) AddComponent(const entt::entity e, Args&&... args);
 
 		[[nodiscard]] entt::entity CreateEntity() { return m_EntityWorld.create(); }
 		void DestroyEntity(const entt::entity e);
@@ -36,6 +36,6 @@ namespace bre::ecs {
 
 	template <class T>
 	static constexpr bool IsWorldView = _internal::IsWorldView<T>::value;
-} // namespace bre::ecs
+} // namespace brk::ecs
 
 #include "World.inl"

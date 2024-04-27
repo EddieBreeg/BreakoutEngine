@@ -7,17 +7,17 @@
 #include <ecs/System.hpp>
 #include <ecs/World.hpp>
 
-namespace bre::inputs {
+namespace brk::inputs {
 	struct EventOneFrameComponent;
-} // namespace bre::inputs
+} // namespace brk::inputs
 
-namespace bre::inputs {
+namespace brk::inputs {
 
 	class System : public Singleton<System>
 	{
 	public:
 		using World = ecs::WorldView<const inputs::EventOneFrameComponent>;
-		BREAKOUT_ECS_UPDATE_DECL;
+		BRK_ECS_UPDATE_DECL;
 
 		~System() = default;
 
@@ -27,4 +27,4 @@ namespace bre::inputs {
 		System() = default;
 	};
 
-} // namespace bre::inputs
+} // namespace brk::inputs

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-namespace bre {
+namespace brk {
 	LogManager LogManager::s_Instance;
 
 	void LogManager::Log(LogLevel level, std::string_view message)
@@ -18,4 +18,4 @@ namespace bre {
 			std::cerr << message << '\n';
 	}
 
-} // namespace bre
+} // namespace brk

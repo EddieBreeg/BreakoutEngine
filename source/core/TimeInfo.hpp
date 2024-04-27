@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include <chrono>
 
-namespace bre {
+namespace brk {
 	class TimeInfo
 	{
 	public:
@@ -21,4 +21,4 @@ namespace bre {
 		Duration m_Delta{ 0.0f };
 		float m_Scale = 1.0f;
 	};
-} // namespace bre
+} // namespace brk

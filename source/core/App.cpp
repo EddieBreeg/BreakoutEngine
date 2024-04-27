@@ -7,7 +7,7 @@
 #include <csignal>
 #include <iostream>
 
-namespace bre {
+namespace brk {
 
 	App::~App() {}
 
@@ -19,7 +19,7 @@ namespace bre {
 		return m_KeepRunning;
 	}
 
-	void App::InitSystems()
+	void App::InitEngineSystems()
 	{
 		RegisterSystem<WindowSystem>();
 		RegisterSystem<inputs::System>();
@@ -38,11 +38,11 @@ namespace bre {
 			   {
 				   GetInstance().Terminate();
 			   });
-		InitSystems();
+		InitEngineSystems();
 		while (m_KeepRunning)
 			Update();
 
 		m_Systems.clear();
 		return 0;
 	}
-} // namespace bre
+} // namespace brk

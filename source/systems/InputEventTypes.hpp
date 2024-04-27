@@ -2,15 +2,15 @@
 
 #include <PCH.hpp>
 
-namespace bre {
+namespace brk {
 	template <auto>
 	struct EventData;
 
 	template <auto...>
 	class Event;
-} // namespace bre
+} // namespace brk
 
-namespace bre::inputs {
+namespace brk::inputs {
 	enum EEventType : uint8
 	{
 		MouseMove,
@@ -18,9 +18,9 @@ namespace bre::inputs {
 		Key,
 	};
 
-} // namespace bre::inputs
+} // namespace brk::inputs
 
-namespace bre {
+namespace brk {
 	template <>
 	struct EventData<inputs::EEventType::MouseMove>
 	{
@@ -46,4 +46,4 @@ namespace bre {
 	};
 
 	using TInputEvent = Event<inputs::MouseMove, inputs::MouseButton, inputs::Key>;
-} // namespace bre
+} // namespace brk

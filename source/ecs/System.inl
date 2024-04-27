@@ -1,6 +1,6 @@
 #include "System.hpp"
 
-namespace bre::ecs {
+namespace brk::ecs {
 	template <class System, class... Args>
 	inline SystemInstance ecs::SystemInstance::Create(Args&&... args)
 	{
@@ -18,4 +18,4 @@ namespace bre::ecs {
 
 		return r;
 	}
-} // namespace bre::ecs
+} // namespace brk::ecs

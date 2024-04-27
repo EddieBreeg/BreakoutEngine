@@ -1,4 +1,4 @@
-namespace bre {
+namespace brk {
 	template <auto... EventTypes>
 	Event<EventTypes...>::Event(Event&& other)
 		: m_Type{ other.m_Type }
@@ -37,4 +37,4 @@ namespace bre {
 				Destroy<I + 1>();
 		}
 	}
-} // namespace bre
+} // namespace brk

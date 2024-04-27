@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-namespace bre {
+namespace brk {
 
 	template <size_t Size, size_t Alignment = alignof(std::max_align_t)>
 	struct Storage
@@ -29,6 +29,6 @@ namespace bre {
 	using StorageFor = Storage<Max(sizeof(T)...),
 							   Max(alignof(T)...)>;
 
-} // namespace bre
+} // namespace brk
 
 #include "Storage.inl"

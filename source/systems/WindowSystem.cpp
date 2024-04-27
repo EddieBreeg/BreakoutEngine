@@ -6,19 +6,19 @@
 #include <SDL2/SDL.h>
 
 namespace {
-	template <bre::inputs::EEventType Evt, class... Args>
-	inline entt::entity CreateInputEventEntity(bre::WindowSystem::World& world,
+	template <brk::inputs::EEventType Evt, class... Args>
+	inline entt::entity CreateInputEventEntity(brk::WindowSystem::World& world,
 											   Args&&... args)
 	{
 		entt::entity e = world.CreateEntity();
-		world.AddComponent<bre::inputs::EventOneFrameComponent>(
+		world.AddComponent<brk::inputs::EventOneFrameComponent>(
 			e,
-			bre::TInputEvent::Create<Evt>(std::forward<Args>(args)...));
+			brk::TInputEvent::Create<Evt>(std::forward<Args>(args)...));
 		return e;
 	}
 } // namespace
 
-void bre::WindowSystem::Terminate()
+void brk::WindowSystem::Terminate()
 {
 	if (!m_WinPtr)
 		return;
@@ -26,12 +26,12 @@ void bre::WindowSystem::Terminate()
 	SDL_Quit();
 }
 
-bre::WindowSystem::~WindowSystem()
+brk::WindowSystem::~WindowSystem()
 {
 	Terminate();
 }
 
-void bre::WindowSystem::ProcessEvents(World& world)
+void brk::WindowSystem::ProcessEvents(World& world)
 {
 	SDL_Event evt;
 
@@ -69,10 +69,10 @@ void bre::WindowSystem::ProcessEvents(World& world)
 	}
 }
 
-bre::WindowSystem::WindowSystem(const bre::WindowSystemSettings& settings)
+brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 {
 	const int initCode = SDL_Init(SDL_INIT_VIDEO);
-	BREAKOUT_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
+	BRK_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
 
 	m_WinPtr = SDL_CreateWindow(settings.m_Title,
 								SDL_WINDOWPOS_CENTERED,
@@ -80,10 +80,10 @@ bre::WindowSystem::WindowSystem(const bre::WindowSystemSettings& settings)
 								settings.m_Width,
 								settings.m_Height,
 								settings.m_Flags);
-	BREAKOUT_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
+	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
 }
 
-void bre::WindowSystem::Update(World& world, const bre::TimeInfo& timeInfo)
+void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
 	using TEventQuery = ecs::query::Include<const inputs::EventOneFrameComponent>;
 	// remove events from previous frame

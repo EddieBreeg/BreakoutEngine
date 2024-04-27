@@ -6,7 +6,7 @@
 #include <core/MetaLists.hpp>
 #include <core/Storage.hpp>
 
-namespace bre {
+namespace brk {
 	template <auto EventType>
 	struct EventData;
 
@@ -40,7 +40,7 @@ namespace bre {
 		[[nodiscard]] EventData<Type>& GetData()
 		{
 			static_assert(((Type == EventTypes) || ...), "Invalid event type");
-			BREAKOUT_ASSERT(Type == m_Type, "Invalid event data access");
+			BRK_ASSERT(Type == m_Type, "Invalid event data access");
 			return GetAs<EventData<Type>>();
 		}
 
@@ -48,7 +48,7 @@ namespace bre {
 		[[nodiscard]] const EventData<Type>& GetData() const
 		{
 			static_assert(((Type == EventTypes) || ...), "Invalid event type");
-			BREAKOUT_ASSERT(Type == m_Type, "Invalid event data access");
+			BRK_ASSERT(Type == m_Type, "Invalid event data access");
 			return GetAs<EventData<Type>>();
 		}
 
@@ -62,6 +62,6 @@ namespace bre {
 		EEvent m_Type;
 	};
 
-} // namespace bre
+} // namespace brk
 
 #include "Event.inl"

@@ -2,7 +2,7 @@
 #include <core/MetaLists.hpp>
 #include <entt/entity/registry.hpp>
 
-namespace bre::ecs {
+namespace brk::ecs {
 	template <class...>
 	class WorldView;
 
@@ -61,6 +61,6 @@ namespace bre::ecs {
 		TNativeView m_View;
 	};
 
-} // namespace bre::ecs
+} // namespace brk::ecs
 
 #include "Query.inl"

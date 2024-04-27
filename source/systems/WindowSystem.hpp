@@ -14,7 +14,7 @@
 
 struct SDL_Window;
 
-namespace bre {
+namespace brk {
 
 	struct WindowSystemSettings
 	{
@@ -36,7 +36,7 @@ namespace bre {
 	{
 	public:
 		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
-		BREAKOUT_ECS_UPDATE_DECL;
+		BRK_ECS_UPDATE_DECL;
 
 		void Terminate();
 		~WindowSystem();
@@ -50,4 +50,4 @@ namespace bre {
 		SDL_Window* m_WinPtr = nullptr;
 	};
 
-} // namespace bre
+} // namespace brk

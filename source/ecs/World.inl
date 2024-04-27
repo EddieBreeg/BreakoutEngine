@@ -1,5 +1,5 @@
 #include "World.hpp"
-namespace bre::ecs {
+namespace brk::ecs {
 	template <class... Components>
 	inline WorldView<Components...>::WorldView(entt::registry& world)
 		: m_EntityWorld{ world }
@@ -13,7 +13,7 @@ namespace bre::ecs {
 
 	template <class... Components>
 	template <class C, class... Args>
-	C& WorldView<Components...>::AddComponent(const entt::entity e, Args&&... args)
+	decltype(auto) WorldView<Components...>::AddComponent(const entt::entity e, Args&&... args)
 	{
 		return m_EntityWorld.emplace<C>(e, std::forward<Args>(args)...);
 	}
@@ -24,4 +24,4 @@ namespace bre::ecs {
 	{
 		return { m_EntityWorld };
 	}
-} // namespace bre::ecs
+} // namespace brk::ecs

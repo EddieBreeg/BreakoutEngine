@@ -3,9 +3,7 @@
 
 int main(int argc, const char** argv)
 {
-	auto& app = bre::App::Init(argc, argv);
+	auto& app = brk::App::Init(argc, argv);
 
-	const int retCode = app.Run();
-
-	exit(retCode);
+	return app.Run();
 }

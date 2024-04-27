@@ -1,7 +1,7 @@
 #include "VisualSystem.hpp"
 #include <iostream>
 
-namespace bre {
+namespace brk {
 	VisualSystem::VisualSystem() {}
 
 	// void VisualSystem::Update(entt::registry& world, const TimeInfo& timeInfo) {}
@@ -10,4 +10,4 @@ namespace bre {
 
 	VisualSystem::~VisualSystem() {}
 
-} // namespace bre
+} // namespace brk

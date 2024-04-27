@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include <memory>
 
-namespace bre {
+namespace brk {
 	template <class T>
 	class Singleton
 	{
@@ -20,6 +20,6 @@ namespace bre {
 		static std::unique_ptr<T> s_Instance;
 	};
 
-} // namespace bre
+} // namespace brk
 
 #include "Singleton.inl"

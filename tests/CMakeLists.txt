@@ -7,3 +7,5 @@ target_link_libraries(CoreTests PRIVATE
 target_link_libraries(MathTests PRIVATE
 	Breakout::Math
 )
+
+add_subdirectory(ecs)
