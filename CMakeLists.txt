@@ -3,8 +3,13 @@ project(BreakoutEngine VERSION 0.1.0 LANGUAGES C CXX)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
+set(CMAKE_FOLDER "3rd_party")
 add_subdirectory(3rd_party)
+set(CMAKE_FOLDER "Engine")
 add_subdirectory(source)
+set(CMAKE_FOLDER "Examples")
 add_subdirectory(example)
+set(CMAKE_FOLDER "Tests")
 add_subdirectory(tests)
