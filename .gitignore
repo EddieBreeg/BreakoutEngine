@@ -4,3 +4,4 @@ lib/
 .vscode/
 .vs/
 imgui.ini
+*.afdesign
