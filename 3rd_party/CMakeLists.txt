@@ -1,5 +1,6 @@
 add_subdirectory(entt)
 add_subdirectory(fmt)
+add_subdirectory(json)
 
 set(CMAKE_FOLDER "3rd_party/SDL2")
 set(SDL_AUDIO OFF)

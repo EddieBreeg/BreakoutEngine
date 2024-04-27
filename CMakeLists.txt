@@ -19,9 +19,12 @@ include(CTest)
 
 set(CMAKE_FOLDER "3rd_party")
 add_subdirectory(3rd_party)
+
 set(CMAKE_FOLDER "Engine")
 add_subdirectory(source)
+
 set(CMAKE_FOLDER "Examples")
 add_subdirectory(example)
+
 set(CMAKE_FOLDER "Tests")
 add_subdirectory(tests)
