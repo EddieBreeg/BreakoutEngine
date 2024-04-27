@@ -6,6 +6,16 @@ and wanted to take a shot at creating my own 🙂.
 
 ## How To Build
 
+First order of business is to correctly clone the repo **recursively**:
+```bash
+git clone git@github.com:EddieBreeg/BreakoutEngine.git --recursive
+```
+
+If you cloned the repo without its submodules, no worries, they can be initialized as follows:
+```bash
+git submodule update --init
+```
+
 Breakout uses [CMake](https://cmake.org) as its build system, so in theory building it should be as simple as:
 - configuring the project, either via command line using the `cmake` command or via CMake Gui
 - building it either with `cmake --build -B build`, or with the generated project files and the IDE of your choice
