@@ -16,3 +16,5 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::Systems
 	Breakout::Math
 )
+
+target_precompile_headers(${PROJECT_NAME} INTERFACE PCH.hpp)

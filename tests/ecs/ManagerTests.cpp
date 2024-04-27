@@ -49,4 +49,21 @@ namespace brk::ecs::ut::manager {
 		}
 		assert(found);
 	}
+
+	void DoNothingTest()
+	{
+		RAIIHelper helper;
+		using TQuery = brk::ecs::query::Include<const TestComponent>;
+		using TWorld = brk::ecs::WorldView<const TestComponent>;
+
+		helper.m_Manager.Update(helper.m_Time);
+
+		bool found = false;
+		for (const entt::entity e : TWorld{ helper.m_EntityWorld }.Query<TQuery>())
+		{
+			found = true;
+			break;
+		}
+		assert(!found);
+	}
 } // namespace brk::ecs::ut::manager
