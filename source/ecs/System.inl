@@ -6,11 +6,14 @@ namespace brk::ecs {
 	{
 		SystemInstance r;
 		System::Init(std::forward<Args>(args)...);
+		static_assert(std::is_trivially_destructible_v<System>,
+					  "A system MUST NOT have a destructor, cleanup should be done in "
+					  "the Terminate function");
 
 		r.m_Update = [](entt::registry& world, const TimeInfo& timeInfo)
 		{
 			static_assert(IsWorldView<typename System::World>,
-						  "The System::World isn't a valid world view type");
+						  "System::World isn't a valid world view type");
 			typename System::World worldView{ world };
 			System::GetInstance().Update(worldView, timeInfo);
 		};

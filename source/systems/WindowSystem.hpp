@@ -39,7 +39,7 @@ namespace brk {
 		BRK_ECS_UPDATE_DECL;
 
 		void Terminate();
-		~WindowSystem();
+		~WindowSystem() = default;
 
 	private:
 		friend class Singleton<WindowSystem>;

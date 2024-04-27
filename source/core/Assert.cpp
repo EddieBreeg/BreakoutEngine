@@ -3,13 +3,7 @@
 
 #include <core/LogManager.hpp>
 
-#ifdef _WIN32
-#include <intrin.h>
-#define DEBUGBREAK __debugbreak
-#else
-#include <csignal>
-#define DEBUGBREAK() raise(SIGTRAP)
-#endif
+#include "DebugBreak.hpp"
 
 namespace brk::_internal {
 	void AssertImpl(std::string&& message, const char* file, int line)
@@ -19,7 +13,7 @@ namespace brk::_internal {
 									  file,
 									  line,
 									  std::move(message));
-		DEBUGBREAK();
+		dbg::Break();
 	}
 } // namespace brk::_internal
 

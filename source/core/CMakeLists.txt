@@ -3,6 +3,7 @@ file(GLOB CORE_HEADERS *.hpp)
 add_library(BRK_CORE STATIC
 	App.cpp
 	Assert.cpp
+	DebugBreak.cpp
 	LogManager.cpp
 	TimeInfo.cpp
 	${CORE_HEADERS}
@@ -10,6 +11,7 @@ add_library(BRK_CORE STATIC
 
 if(${RENDERING_BACKEND} STREQUAL "DX11")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_DX11)
+	target_link_libraries(BRK_CORE PRIVATE d3d11)
 elseif(${RENDERING_BACKEND} STREQUAL "Vulkan")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_VULKAN)
 elseif(${RENDERING_BACKEND} STREQUAL "OpenGL")

@@ -22,17 +22,48 @@ namespace {
 	}
 } // namespace
 
+brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
+{
+	const int initCode = SDL_Init(SDL_INIT_VIDEO);
+	BRK_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
+
+	m_WinPtr = SDL_CreateWindow(settings.m_Title,
+								SDL_WINDOWPOS_CENTERED,
+								SDL_WINDOWPOS_CENTERED,
+								settings.m_Width,
+								settings.m_Height,
+								settings.m_Flags);
+	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
+
+#if defined(BRK_DEV)
+	ImGui::CreateContext();
+	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
+								  ImGuiConfigFlags_DockingEnable |
+								  ImGuiConfigFlags_ViewportsEnable;
+#if defined(BRK_SDL2_RENDERER)
+	SDL_Renderer* renderer = SDL_CreateRenderer(m_WinPtr, -1, 0);
+	ImGui_ImplSDL2_InitForSDLRenderer(m_WinPtr, renderer);
+	ImGui_ImplSDLRenderer2_Init(renderer);
+#else
+#error "Unsupported"
+#endif
+#endif
+}
+
 void brk::WindowSystem::Terminate()
 {
 	if (!m_WinPtr)
 		return;
+
+#if defined(BRK_SDL2_RENDERER)
+    ImGui_ImplSDLRenderer2_Shutdown();
+#endif
+
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+
 	SDL_DestroyWindow(m_WinPtr);
 	SDL_Quit();
-}
-
-brk::WindowSystem::~WindowSystem()
-{
-	Terminate();
 }
 
 void brk::WindowSystem::ProcessEvents(World& world)
@@ -76,53 +107,25 @@ void brk::WindowSystem::ProcessEvents(World& world)
 		default: break;
 		}
 
-#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
+#if defined(BRK_DEV)
 		ImGui_ImplSDL2_ProcessEvent(&evt);
 #endif
 	}
 }
 
-brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
-{
-	const int initCode = SDL_Init(SDL_INIT_VIDEO);
-	BRK_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
-
-	m_WinPtr = SDL_CreateWindow(settings.m_Title,
-								SDL_WINDOWPOS_CENTERED,
-								SDL_WINDOWPOS_CENTERED,
-								settings.m_Width,
-								settings.m_Height,
-								settings.m_Flags);
-	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
-
-#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
-	ImGui::CreateContext();
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
-								  ImGuiConfigFlags_DockingEnable |
-								  ImGuiConfigFlags_ViewportsEnable;
-#if defined(BRK_SDL2_RENDERER)
-	SDL_Renderer* renderer = SDL_CreateRenderer(m_WinPtr, -1, 0);
-	ImGui_ImplSDL2_InitForSDLRenderer(m_WinPtr, renderer);
-	ImGui_ImplSDLRenderer2_Init(renderer);
-#else
-#error "Unsupported"
-#endif
-#endif
-}
-
 void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
-#if defined(BRK_DEBUG)
+#if defined(BRK_DEV)
 #if defined(BRK_SDL2_RENDERER)
 	ImGui_ImplSDLRenderer2_NewFrame();
 	ImGui_ImplSDL2_NewFrame();
-	ImGui::NewFrame();
 #endif
+	ImGui::NewFrame();
 #endif
 
 	ProcessEvents(world);
 
-#if defined(BRK_DEBUG) || defined(BRK_EDITOR)
+#if defined(BRK_DEV)
 	dbg::Overlay::s_Instance.Draw();
 
 	ImGui::Render();
