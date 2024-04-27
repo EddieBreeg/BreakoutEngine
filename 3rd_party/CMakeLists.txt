@@ -1,6 +1,7 @@
 add_subdirectory(entt)
 add_subdirectory(fmt)
 
+set(CMAKE_FOLDER "3rd_party/SDL2")
 set(SDL_AUDIO OFF)
 set(SDL_CAMERA OFF)
 set(SDL_DISKAUDIO OFF)
@@ -10,5 +11,7 @@ set(SDL_DUMMYVIDEO OFF)
 set(SDL_STATIC ON)
 set(SDL_SHARED OFF)
 set(SDL_TEST_LIBRARY_OFF ON)
-
 add_subdirectory(SDL)
+
+set(CMAKE_FOLDER "3rd_party/ImGUI")
+add_subdirectory(imgui-1.90.5)

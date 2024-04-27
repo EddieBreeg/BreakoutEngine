@@ -4,6 +4,12 @@ project(BreakoutEngine VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+option(BRK_BUILD_TESTING "Build test apps" ON)
+set(RENDERING_BACKEND "DX11" CACHE STRING "The rendering backend to use")
+set_property(CACHE RENDERING_BACKEND PROPERTY STRINGS DX11 Vulkan OpenGL)
+
+set(${BUILD_TESTING} ${BRK_BUILD_TESTING})
+include(CTest)
 
 set(CMAKE_FOLDER "3rd_party")
 add_subdirectory(3rd_party)
