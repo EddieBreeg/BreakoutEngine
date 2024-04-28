@@ -1,9 +1,15 @@
 #pragma once
 
 #include <PCH.hpp>
-#include <core/Loaders.hpp>
+#include <core/FieldList.hpp>
 
 #include <string>
+
+namespace brk
+{
+	template<class T, class>
+	struct JsonLoader;
+}
 
 namespace brk::editor {
 	class Project
@@ -20,7 +26,7 @@ namespace brk::editor {
 
 	private:
 		std::string m_Name;
-		friend struct JsonLoader<Project>;
+		friend struct JsonLoader<Project, void>;
 
 	public:
 		static constexpr meta::FieldList<&Project::m_Name> Fields{

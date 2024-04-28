@@ -3,7 +3,10 @@
 #ifdef BRK_DEV
 #include "ui/Menubar.hpp"
 #include "ui/StartupWindow.hpp"
+
+#include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+
 #include <fstream>
 #include <system_error>
 

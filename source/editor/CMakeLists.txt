@@ -12,9 +12,6 @@ target_link_libraries(BRK_EDITOR PRIVATE
 	ImGui::ImGui
 	TinyFileDialogs
 	BRK_INCLUDES
-)
-
-target_link_libraries(BRK_EDITOR PUBLIC
 	nlohmann_json::nlohmann_json
 )
 
