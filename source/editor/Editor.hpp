@@ -13,6 +13,7 @@ namespace brk::editor {
 	public:
 		~Editor() = default;
 
+		void LoadProjectDeferred(const std::string_view filePath) noexcept;
 		void Update();
 		void ShowUI();
 

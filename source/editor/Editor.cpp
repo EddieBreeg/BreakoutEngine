@@ -1,6 +1,6 @@
 #include "Editor.hpp"
 
-#ifdef BRK_DEV
+#ifdef BRK_EDITOR
 #include "ui/Menubar.hpp"
 #include "ui/StartupWindow.hpp"
 
@@ -28,6 +28,11 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 	}
 }
 
+void brk::editor::Editor::LoadProjectDeferred(const std::string_view filePath) noexcept
+{
+	m_ProjectFilePath = filePath;
+}
+
 void brk::editor::Editor::Update()
 {
 	if (m_ProjectFilePath.data())
@@ -38,6 +43,7 @@ void brk::editor::Editor::Update()
 
 void brk::editor::Editor::OnProjectFilePathChanged()
 {
+	// std::ifstream projectFile{ "foobar" };
 	std::ifstream projectFile{ m_ProjectFilePath.data() };
 	if (!projectFile.is_open())
 	{

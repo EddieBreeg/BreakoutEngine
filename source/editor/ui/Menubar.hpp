@@ -2,7 +2,7 @@
 
 #ifdef BRK_EDITOR
 
-namespace brk
+namespace brk::editor
 {
 	void MenuBar();
 }
