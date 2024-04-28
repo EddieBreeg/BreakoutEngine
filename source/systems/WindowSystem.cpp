@@ -11,8 +11,9 @@
 
 namespace {
 	template <brk::inputs::EEventType Evt, class... Args>
-	inline entt::entity CreateInputEventEntity(brk::WindowSystem::World& world,
-											   Args&&... args)
+	inline entt::entity CreateInputEventEntity(
+		brk::WindowSystem::World& world,
+		Args&&... args)
 	{
 		entt::entity e = world.CreateEntity();
 		world.AddComponent<brk::inputs::EventOneFrameComponent>(
@@ -23,16 +24,18 @@ namespace {
 } // namespace
 
 brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
+	: m_Settings{ settings }
 {
 	const int initCode = SDL_Init(SDL_INIT_VIDEO);
 	BRK_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
 
-	m_WinPtr = SDL_CreateWindow(settings.m_Title,
-								SDL_WINDOWPOS_CENTERED,
-								SDL_WINDOWPOS_CENTERED,
-								settings.m_Width,
-								settings.m_Height,
-								settings.m_Flags);
+	m_WinPtr = SDL_CreateWindow(
+		m_Settings.m_Title,
+		SDL_WINDOWPOS_CENTERED,
+		SDL_WINDOWPOS_CENTERED,
+		m_Settings.m_Size.x,
+		m_Settings.m_Size.y,
+		m_Settings.m_Flags);
 	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
 
 #if defined(BRK_DEV)
@@ -40,6 +43,7 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 								  ImGuiConfigFlags_DockingEnable |
 								  ImGuiConfigFlags_ViewportsEnable;
+	ImGuiStyle& theme = ImGui::GetStyle();
 #if defined(BRK_SDL2_RENDERER)
 	SDL_Renderer* renderer = SDL_CreateRenderer(m_WinPtr, -1, 0);
 	ImGui_ImplSDL2_InitForSDLRenderer(m_WinPtr, renderer);
@@ -56,7 +60,7 @@ void brk::WindowSystem::Terminate()
 		return;
 
 #if defined(BRK_SDL2_RENDERER)
-    ImGui_ImplSDLRenderer2_Shutdown();
+	ImGui_ImplSDLRenderer2_Shutdown();
 #endif
 
 	ImGui_ImplSDL2_Shutdown();
@@ -64,6 +68,53 @@ void brk::WindowSystem::Terminate()
 
 	SDL_DestroyWindow(m_WinPtr);
 	SDL_Quit();
+}
+
+void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
+{
+#if defined(BRK_DEV)
+#if defined(BRK_SDL2_RENDERER)
+	ImGui_ImplSDLRenderer2_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+#endif
+	ImGui::NewFrame();
+	ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+#endif
+
+	ProcessEvents(world);
+
+#if defined(BRK_DEV)
+	dbg::Overlay::s_Instance.Draw();
+
+	ImGui::Render();
+	auto& imguiIo = ImGui::GetIO();
+
+#if defined(BRK_SDL2_RENDERER)
+	SDL_Renderer* renderer = SDL_GetRenderer(m_WinPtr);
+	SDL_RenderSetScale(
+		renderer,
+		imguiIo.DisplayFramebufferScale.x,
+		imguiIo.DisplayFramebufferScale.y);
+	SDL_SetRenderDrawColor(
+		renderer,
+		static_cast<uint8>(m_Settings.m_ClearColor.x * 255),
+		static_cast<uint8>(m_Settings.m_ClearColor.y * 255),
+		static_cast<uint8>(m_Settings.m_ClearColor.z * 255),
+		static_cast<uint8>(m_Settings.m_ClearColor.w * 255));
+	SDL_RenderClear(renderer);
+
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	SDL_RenderPresent(renderer);
+#endif
+	ImGui::EndFrame();
+
+	// Update and Render additional Platform Windows
+	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
+#endif
 }
 
 void brk::WindowSystem::ProcessEvents(World& world)
@@ -99,11 +150,12 @@ void brk::WindowSystem::ProcessEvents(World& world)
 			break;
 		case SDL_KEYUP:
 		case SDL_KEYDOWN:
-			CreateInputEventEntity<inputs::Key>(world,
-												evt.key.keysym.sym,
-												evt.key.keysym.mod,
-												evt.key.state == SDL_PRESSED,
-												evt.key.repeat);
+			CreateInputEventEntity<inputs::Key>(
+				world,
+				evt.key.keysym.sym,
+				evt.key.keysym.mod,
+				evt.key.state == SDL_PRESSED,
+				evt.key.repeat);
 		default: break;
 		}
 
@@ -111,44 +163,4 @@ void brk::WindowSystem::ProcessEvents(World& world)
 		ImGui_ImplSDL2_ProcessEvent(&evt);
 #endif
 	}
-}
-
-void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
-{
-#if defined(BRK_DEV)
-#if defined(BRK_SDL2_RENDERER)
-	ImGui_ImplSDLRenderer2_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-#endif
-	ImGui::NewFrame();
-#endif
-
-	ProcessEvents(world);
-
-#if defined(BRK_DEV)
-	dbg::Overlay::s_Instance.Draw();
-
-	ImGui::Render();
-	auto& imguiIo = ImGui::GetIO();
-
-#if defined(BRK_SDL2_RENDERER)
-	SDL_Renderer* renderer = SDL_GetRenderer(m_WinPtr);
-	SDL_RenderSetScale(renderer,
-					   imguiIo.DisplayFramebufferScale.x,
-					   imguiIo.DisplayFramebufferScale.y);
-	SDL_SetRenderDrawColor(renderer, 0, 0, 0, 1);
-	SDL_RenderClear(renderer);
-
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-	SDL_RenderPresent(renderer);
-#endif
-	ImGui::EndFrame();
-
-	// Update and Render additional Platform Windows
-	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-	}
-#endif
 }

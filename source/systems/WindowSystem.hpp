@@ -19,8 +19,8 @@ namespace brk {
 	struct WindowSystemSettings
 	{
 		const char* m_Title = "Breakout";
-		int32 m_Width = 1280;
-		int32 m_Height = 720;
+		int2 m_Size = { 1280, 720 };
+		float4 m_ClearColor = { 0, 0, 0, 1 };
 		uint32 m_Flags = 0;
 	};
 
@@ -47,6 +47,7 @@ namespace brk {
 		void ProcessEvents(World& world);
 		WindowSystem(const WindowSystemSettings& settings = {});
 
+		WindowSystemSettings m_Settings;
 		SDL_Window* m_WinPtr = nullptr;
 	};
 

@@ -6,6 +6,8 @@
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 
+#include <SDL2/SDL.h>
+
 #include <csignal>
 #include <iostream>
 
@@ -23,7 +25,13 @@ namespace brk {
 
 	void App::InitEngineSystems()
 	{
-		RegisterSystem<WindowSystem>();
+		{
+			WindowSystemSettings settings;
+#ifdef BRK_DEV
+			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
+#endif
+			RegisterSystem<WindowSystem>(settings);
+		}
 		RegisterSystem<inputs::System>();
 	}
 
@@ -34,11 +42,12 @@ namespace brk {
 
 	int App::Run()
 	{
-		signal(SIGINT,
-			   [](int)
-			   {
-				   GetInstance().Terminate();
-			   });
+		signal(
+			SIGINT,
+			[](int)
+			{
+				GetInstance().Terminate();
+			});
 #if defined(BRK_DEBUG)
 		dbg::Overlay::s_Instance.m_Enabled = true;
 #endif
