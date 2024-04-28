@@ -4,6 +4,7 @@ AlignConsecutiveMacros:
   Enabled: true
 AllowAllArgumentsOnNextLine: false
 AllowAllParametersOfDeclarationOnNextLine: false
+AlignAfterOpenBracket: AlwaysBreak
 # AllowBreakBeforeNoexceptSpecifier: Never
 AllowShortBlocksOnASingleLine: Never
 AllowShortCaseLabelsOnASingleLine: true
