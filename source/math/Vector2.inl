@@ -105,6 +105,12 @@ namespace math {
 	}
 
 	template <class T>
+	inline constexpr Vector2<T>::operator Vector4<T>() const noexcept
+	{
+		return { x, y };
+	}
+
+	template <class T>
 	inline constexpr Vector2<T>::operator Vector3<T>() const noexcept
 	{
 		return { x, y };

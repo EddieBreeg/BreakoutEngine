@@ -99,8 +99,7 @@ namespace math {
 	}
 
 	template <class T>
-	inline constexpr Vector3<T> Vector3<T>::Cross(
-		const Vector3& other) const noexcept
+	inline constexpr Vector3<T> Vector3<T>::Cross(const Vector3& other) const noexcept
 	{
 		return {
 			y * other.z - z * other.y,
@@ -119,6 +118,12 @@ namespace math {
 	inline constexpr Vector3<T> Vector3<T>::Normalized() const
 	{
 		return Vector3{ x, y, z } / Len();
+	}
+
+	template <class T>
+	inline constexpr Vector3<T>::operator Vector4<T>() const noexcept
+	{
+		return { x, y, z };
 	}
 
 	template <class T>
