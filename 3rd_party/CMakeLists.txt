@@ -18,3 +18,4 @@ add_subdirectory(SDL)
 
 set(CMAKE_FOLDER "3rd_party/ImGUI")
 add_subdirectory(imgui)
+add_subdirectory(tinyfiledialogs)

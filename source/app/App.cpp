@@ -33,6 +33,9 @@ namespace brk {
 	bool App::Update()
 	{
 		m_ECSManager.Update(m_GameTime);
+#ifdef BRK_EDITOR
+		editor::Editor::GetInstance().Update();
+#endif
 		m_GameTime.Update();
 		return m_KeepRunning;
 	}
@@ -45,10 +48,10 @@ namespace brk {
 #ifdef BRK_DEBUG
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
+		InitCoreSystems();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
-		InitCoreSystems();
 	}
 
 	int App::Run()
@@ -59,9 +62,6 @@ namespace brk {
 			{
 				GetInstance().Terminate();
 			});
-#if defined(BRK_DEBUG)
-		dbg::Overlay::s_Instance.m_Enabled = true;
-#endif
 
 		while (m_KeepRunning)
 			Update();

@@ -13,12 +13,16 @@ namespace brk::editor {
 	public:
 		~Editor() = default;
 
+		void Update();
 		void ShowUI();
 
 	private:
 		friend class Singleton<Editor>;
 		Editor(int argc, const char** argv);
 
+		void OnProjectFilePathChanged();
+
+		std::string_view m_ProjectFilePath;
 		std::optional<Project> m_Project;
 	};
 } // namespace brk
