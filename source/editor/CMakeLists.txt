@@ -12,4 +12,8 @@ target_link_libraries(BRK_EDITOR PRIVATE
 	BRK_INCLUDES
 )
 
+target_link_libraries(BRK_EDITOR PUBLIC
+	nlohmann_json::nlohmann_json
+)
+
 add_library(Breakout::Editor ALIAS BRK_EDITOR)

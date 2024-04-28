@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-namespace meta {
+namespace brk::meta {
 	namespace _internal {
 		template <class T, template <class> class Trait, class = void>
 		struct HasTrait : std::false_type

@@ -2,9 +2,11 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <type_traits>
 #include <utility>
 #include <new>
 
+#include <core/MetaLists.hpp>
 #include <core/Utility.hpp>
 #include <math/Vector.hpp>
 

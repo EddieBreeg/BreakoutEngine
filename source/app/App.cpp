@@ -1,5 +1,7 @@
 #include "App.hpp"
 
+#include <core/LogManager.hpp>
+
 #include <debug/DebugOverlay.hpp>
 
 #include <editor/Editor.hpp>
@@ -40,6 +42,12 @@ namespace brk {
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
 	{
+#ifdef BRK_DEBUG
+		LogManager::GetInstance().m_Level = LogManager::Trace;
+#endif
+#ifdef BRK_EDITOR
+		editor::Editor::Init(m_Argc, m_Argv);
+#endif
 		InitCoreSystems();
 	}
 
@@ -53,9 +61,6 @@ namespace brk {
 			});
 #if defined(BRK_DEBUG)
 		dbg::Overlay::s_Instance.m_Enabled = true;
-#endif
-#ifdef BRK_EDITOR
-		Editor::Init(m_Argc, m_Argv);
 #endif
 
 		while (m_KeepRunning)

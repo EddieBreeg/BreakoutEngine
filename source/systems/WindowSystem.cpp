@@ -91,7 +91,7 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 #if defined(BRK_DEV)
 	dbg::Overlay::s_Instance.Draw();
 #if defined(BRK_EDITOR)
-	Editor::GetInstance().ShowUI();
+	editor::Editor::GetInstance().ShowUI();
 #endif
 
 	ImGui::Render();
