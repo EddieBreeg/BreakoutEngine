@@ -9,6 +9,5 @@ void brk::dbg::Overlay::Draw()
 {
 	if (!m_Enabled)
 		return;
-
-	ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow(&m_Enabled);
 }

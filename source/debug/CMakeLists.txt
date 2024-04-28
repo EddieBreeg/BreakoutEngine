@@ -2,6 +2,7 @@ file(GLOB DEBUG_HEADERS *.h *.hpp)
 
 add_library(BRK_DEBUG STATIC
 	DebugOverlay.cpp
+	${DEBUG_HEADERS}
 )
 
 target_link_libraries(BRK_DEBUG PRIVATE
