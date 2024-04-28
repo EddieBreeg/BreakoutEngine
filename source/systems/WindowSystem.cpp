@@ -64,13 +64,14 @@ void brk::WindowSystem::Terminate()
 	if (!m_WinPtr)
 		return;
 
+#ifdef BRK_DEV
 #if defined(BRK_SDL2_RENDERER)
 	ImGui_ImplSDLRenderer2_Shutdown();
 #endif
 
 	ImGui_ImplSDL2_Shutdown();
 	ImGui::DestroyContext();
-
+#endif
 	SDL_DestroyWindow(m_WinPtr);
 	SDL_Quit();
 }
@@ -164,6 +165,7 @@ void brk::WindowSystem::ProcessEvents(World& world)
 				evt.key.keysym.mod,
 				evt.key.state == SDL_PRESSED,
 				evt.key.repeat);
+			break;
 		default: break;
 		}
 

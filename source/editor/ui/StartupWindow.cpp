@@ -1,4 +1,7 @@
 #include "StartupWindow.hpp"
+
+#ifdef BRK_EDITOR
+
 #include <tinyfiledialogs.h>
 #include <array>
 #include <imgui.h>
@@ -28,3 +31,5 @@ std::string_view brk::editor::StartupWindow()
 	ImGui::End();
 	return filePath;
 }
+
+#endif

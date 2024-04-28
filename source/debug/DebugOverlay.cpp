@@ -1,4 +1,5 @@
 #include "DebugOverlay.hpp"
+#ifdef BRK_DEV
 #include <imgui.h>
 
 brk::dbg::Overlay brk::dbg::Overlay::s_Instance;
@@ -11,3 +12,5 @@ void brk::dbg::Overlay::Draw()
 		return;
 	ImGui::ShowDemoWindow(&m_Enabled);
 }
+
+#endif
