@@ -13,7 +13,7 @@ std::string_view brk::editor::StartupWindow()
 				"project or load an existing one.");
 	if (ImGui::Button("Load Project"))
 	{
-		static constexpr std::array patterns = { "*.brkproj" };
+		static constexpr std::array patterns = { "*.brkproj", "*.brk" };
 
 		const std::string defaultPath = std::filesystem::current_path().u8string();
 
