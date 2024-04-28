@@ -20,6 +20,7 @@ namespace brk {
 		void Terminate() noexcept { m_KeepRunning = false; }
 
 	private:
+		void InitCoreSystems();
 		bool Update();
 
 		const int m_Argc;

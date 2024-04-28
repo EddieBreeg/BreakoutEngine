@@ -1,23 +1,7 @@
 #include "ECSManager.hpp"
 #include <systems/WindowSystem.hpp>
 
-#include <SDL2/SDL.h>
-
-brk::ecs::Manager::Manager()
-{
-	InitEngineSystems();
-}
-
-void brk::ecs::Manager::InitEngineSystems()
-{
-	{
-		WindowSystemSettings settings;
-#ifdef BRK_DEV
-		settings.m_Flags |= SDL_WINDOW_RESIZABLE;
-#endif
-		AddSystem<WindowSystem>(settings);
-	}
-}
+brk::ecs::Manager::Manager() = default;
 
 void brk::ecs::Manager::Update(const TimeInfo& timeInfo)
 {

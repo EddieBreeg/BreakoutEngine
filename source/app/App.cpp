@@ -8,12 +8,25 @@
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 
+#include <SDL2/SDL_video.h>
+
 #include <csignal>
 #include <iostream>
 
 namespace brk {
 
 	App::~App() {}
+
+	void App::InitCoreSystems()
+	{
+		{
+			WindowSystemSettings settings;
+#ifdef BRK_DEV
+			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
+#endif
+			m_ECSManager.AddSystem<WindowSystem>(settings);
+		}
+	}
 
 	bool App::Update()
 	{
@@ -26,7 +39,9 @@ namespace brk {
 		: m_Argc{ argc }
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
-	{}
+	{
+		InitCoreSystems();
+	}
 
 	int App::Run()
 	{

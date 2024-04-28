@@ -23,8 +23,6 @@ namespace brk::ecs {
 		friend class Singleton<Manager>;
 		Manager();
 
-		void InitEngineSystems();
-
 		struct SystemTypeFamily;
 		using SystemId = BasicTypeId<SystemTypeFamily>;
 

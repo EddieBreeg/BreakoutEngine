@@ -8,8 +8,11 @@ add_library(BRK_ECS
 
 add_library(Breakout::ECS ALIAS BRK_ECS)
 
+target_link_libraries(BRK_ECS PUBLIC
+	EnTT::EnTT
+)
+
 target_link_libraries(BRK_ECS PRIVATE
 	BRK_INCLUDES
 	Breakout::Core
-	EnTT::EnTT
 )

@@ -25,6 +25,10 @@ add_library(Breakout::Core ALIAS BRK_CORE)
 target_link_libraries(BRK_CORE PUBLIC 
 	BRK_INCLUDES
 	fmt::fmt
+)
+	
+target_link_libraries(BRK_CORE PRIVATE
 	EnTT::EnTT
+	nlohmann_json::nlohmann_json
 	SDL2::SDL2
 )
