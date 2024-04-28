@@ -1,6 +1,7 @@
 #include <systems/WindowSystem.hpp>
 
-#include <core/App.hpp>
+#include <app/App.hpp>
+
 #include <core/Assert.hpp>
 
 #include <debug/DebugOverlay.hpp>

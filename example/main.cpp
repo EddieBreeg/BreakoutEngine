@@ -1,4 +1,4 @@
-#include <core/App.hpp>
+#include <app/App.hpp>
 #include <iostream>
 
 int main(int argc, const char** argv)

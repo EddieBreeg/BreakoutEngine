@@ -17,8 +17,7 @@ namespace brk {
 
 	bool App::Update()
 	{
-		for (ecs::SystemInstance& system : m_Systems)
-			system.Update(m_World, m_GameTime);
+		m_ECSManager.Update(m_GameTime);
 		m_GameTime.Update();
 		return m_KeepRunning;
 	}
@@ -30,14 +29,15 @@ namespace brk {
 #ifdef BRK_DEV
 			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
 #endif
-			RegisterSystem<WindowSystem>(settings);
+			m_ECSManager.AddSystem<WindowSystem>(settings);
 		}
-		RegisterSystem<inputs::System>();
+		m_ECSManager.AddSystem<inputs::System>();
 	}
 
 	App::App(const int argc, const char** argv)
 		: m_Argc{ argc }
 		, m_Argv{ argv }
+		, m_ECSManager{ ecs::Manager::Init() }
 	{}
 
 	int App::Run()
@@ -55,7 +55,7 @@ namespace brk {
 		while (m_KeepRunning)
 			Update();
 
-		m_Systems.clear();
+		ecs::Manager::Reset();
 		return 0;
 	}
 } // namespace brk

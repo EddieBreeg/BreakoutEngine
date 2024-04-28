@@ -3,6 +3,8 @@ add_subdirectory(core)
 add_subdirectory(ecs)
 add_subdirectory(debug)
 add_subdirectory(systems)
+add_subdirectory(editor)
+add_subdirectory(app)
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE
@@ -16,6 +18,8 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::ECS
 	Breakout::Systems
 	Breakout::Math
+	Breakout::Editor
+	Breakout::App
 )
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE PCH.hpp)

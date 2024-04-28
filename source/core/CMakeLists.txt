@@ -1,7 +1,6 @@
 file(GLOB CORE_HEADERS *.hpp)
 
 add_library(BRK_CORE STATIC
-	App.cpp
 	Assert.cpp
 	DebugBreak.cpp
 	LogManager.cpp

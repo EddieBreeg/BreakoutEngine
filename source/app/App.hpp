@@ -23,20 +23,13 @@ namespace brk {
 	private:
 		bool Update();
 
-		template <class T, class... Args>
-		void RegisterSystem(Args&&... args)
-		{
-			m_Systems.emplace_back(
-				ecs::SystemInstance::Create<T>(std::forward<Args>(args)...));
-		}
-
 		void InitEngineSystems();
 
 		const int m_Argc;
 		const char** const m_Argv;
-		entt::registry m_World;
 		TimeInfo m_GameTime;
-		std::vector<ecs::SystemInstance> m_Systems;
+
+		ecs::Manager& m_ECSManager;
 		bool m_KeepRunning = true;
 	};
 } // namespace brk
