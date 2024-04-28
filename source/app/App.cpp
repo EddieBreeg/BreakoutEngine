@@ -2,11 +2,11 @@
 
 #include <debug/DebugOverlay.hpp>
 
+#include <editor/Editor.hpp>
+
 #include <systems/InputSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
-
-#include <SDL2/SDL.h>
 
 #include <csignal>
 #include <iostream>
@@ -20,18 +20,6 @@ namespace brk {
 		m_ECSManager.Update(m_GameTime);
 		m_GameTime.Update();
 		return m_KeepRunning;
-	}
-
-	void App::InitEngineSystems()
-	{
-		{
-			WindowSystemSettings settings;
-#ifdef BRK_DEV
-			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
-#endif
-			m_ECSManager.AddSystem<WindowSystem>(settings);
-		}
-		m_ECSManager.AddSystem<inputs::System>();
 	}
 
 	App::App(const int argc, const char** argv)
@@ -51,7 +39,10 @@ namespace brk {
 #if defined(BRK_DEBUG)
 		dbg::Overlay::s_Instance.m_Enabled = true;
 #endif
-		InitEngineSystems();
+#ifdef BRK_EDITOR
+		Editor::Init(m_Argc, m_Argv);
+#endif
+
 		while (m_KeepRunning)
 			Update();
 

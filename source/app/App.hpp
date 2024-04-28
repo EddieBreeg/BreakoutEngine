@@ -3,8 +3,7 @@
 #include <core/Singleton.hpp>
 #include <core/TimeInfo.hpp>
 
-#include <ecs/System.hpp>
-#include <ecs/ECSManager.hpp>
+#include <systems/ECSManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -22,8 +21,6 @@ namespace brk {
 
 	private:
 		bool Update();
-
-		void InitEngineSystems();
 
 		const int m_Argc;
 		const char** const m_Argv;

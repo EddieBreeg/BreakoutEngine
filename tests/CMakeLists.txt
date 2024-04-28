@@ -6,10 +6,10 @@ if(${BUILD_TESTING})
 		Breakout::Core
 	)
 	target_link_libraries(MathTests PRIVATE
-	Breakout::Math
+		Breakout::Math
 	)
 	
 	add_test(NAME CoreTests COMMAND CoreTests)
 	add_test(NAME MathTests COMMAND MathTests)
-	add_subdirectory(ecs)
+	add_subdirectory(systems)
 endif(${BUILD_TESTING})

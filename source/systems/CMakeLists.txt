@@ -2,19 +2,19 @@
 file(GLOB SYSTEMS_H *.h *.hpp)
 
 add_library(BRK_SYSTEMS
+	ECSManager.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp
 	InputSystem.cpp
 	${SYSTEMS_H}
 )
 
-target_link_libraries(BRK_SYSTEMS PUBLIC
+target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Core
 	Breakout::ECS
+	Breakout::App
 	Breakout::Debug
-)
-
-target_link_libraries(BRK_SYSTEMS PRIVATE
+	Breakout::Editor
 	ImGui::ImGui
 )
 

@@ -23,3 +23,4 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
 )
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE PCH.hpp)
+add_library(Breakout::Breakout ALIAS ${PROJECT_NAME})

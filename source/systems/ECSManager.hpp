@@ -2,9 +2,11 @@
 
 #include <PCH.hpp>
 
-#include "System.hpp"
 #include <core/Singleton.hpp>
 #include <core/TypeId.hpp>
+
+#include <ecs/System.hpp>
+
 #include <vector>
 
 namespace brk::ecs {
@@ -19,7 +21,9 @@ namespace brk::ecs {
 
 	private:
 		friend class Singleton<Manager>;
-		Manager() = default;
+		Manager();
+
+		void InitEngineSystems();
 
 		struct SystemTypeFamily;
 		using SystemId = BasicTypeId<SystemTypeFamily>;

@@ -3,11 +3,14 @@
 
 void brk::MenuBar()
 {
-	ImGui::BeginMenuBar();
-	ImGui::BeginMenu("File");
+	if (!ImGui::BeginMainMenuBar())
+		return;
 
-	ImGui::MenuItem("Open Project", "Ctrl+Shift+O");
+	if (ImGui::BeginMenu("File"))
+	{
+		ImGui::MenuItem("Open Project", "Ctrl+Shift+O");
+		ImGui::EndMenu();
+	}
 
-	ImGui::EndMenu();
-	ImGui::EndMenuBar();
+	ImGui::EndMainMenuBar();
 }

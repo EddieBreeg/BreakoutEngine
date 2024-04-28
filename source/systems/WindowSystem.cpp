@@ -6,6 +6,10 @@
 
 #include <debug/DebugOverlay.hpp>
 
+#ifdef BRK_EDITOR
+#include <editor/Editor.hpp>
+#endif
+
 #include "private/ImGuiIncludes.hpp"
 
 #include <SDL2/SDL.h>
@@ -86,6 +90,9 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 
 #if defined(BRK_DEV)
 	dbg::Overlay::s_Instance.Draw();
+#if defined(BRK_EDITOR)
+	Editor::GetInstance().ShowUI();
+#endif
 
 	ImGui::Render();
 	auto& imguiIo = ImGui::GetIO();

@@ -1,6 +1,6 @@
-#include <ecs/ECSManager.hpp>
-#include <ecs/World.hpp>
 #include <core/TimeInfo.hpp>
+#include <ecs/World.hpp>
+#include <systems/ECSManager.hpp>
 #include <cassert>
 
 namespace brk::ecs::ut::manager {
