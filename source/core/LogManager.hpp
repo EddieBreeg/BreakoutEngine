@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-#include <fmt/base.h>
+#include <fmt/core.h>
 
 #include <string>
 #include <string_view>
