@@ -5,7 +5,8 @@ add_library(BRK_CORE STATIC
 	DebugBreak.cpp
 	LogManager.cpp
 	TimeInfo.cpp
-	UUID.cpp
+	RNG.cpp
+	ULID.cpp
 	${CORE_HEADERS}
 )
 
