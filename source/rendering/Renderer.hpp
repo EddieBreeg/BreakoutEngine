@@ -21,6 +21,9 @@ namespace brk::rdr
 		void EndImGuiFrame();
 #endif
 
+		void StartRender(const float4 clearColor);
+		void DoRender();
+
 		static Renderer s_Instance;
 
 	private:

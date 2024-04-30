@@ -55,6 +55,32 @@ void brk::rdr::Renderer::NewImGuiFrame()
 }
 #endif
 
+void brk::rdr::Renderer::StartRender(const float4 color)
+{
+#ifdef BRK_DEV
+	ImGuiIO& imguiIo = ImGui::GetIO();
+	ImGui::Render();
+
+	SDL_RenderSetScale(
+		m_Data->m_NativeRenderer,
+		imguiIo.DisplayFramebufferScale.x,
+		imguiIo.DisplayFramebufferScale.y);
+#endif
+	SDL_SetRenderDrawColor(
+		m_Data->m_NativeRenderer,
+		static_cast<uint8>(color.x * 255),
+		static_cast<uint8>(color.y * 255),
+		static_cast<uint8>(color.z * 255),
+		static_cast<uint8>(color.w * 255));
+	SDL_RenderClear(m_Data->m_NativeRenderer);
+}
+
+void brk::rdr::Renderer::DoRender()
+{
+	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
+	SDL_RenderPresent(m_Data->m_NativeRenderer);
+}
+
 brk::rdr::Renderer::~Renderer()
 {
 	Shutdown();

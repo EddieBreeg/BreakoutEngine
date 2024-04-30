@@ -76,32 +76,15 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 
 #if defined(BRK_DEV)
 	dbg::Overlay::s_Instance.Draw();
+#endif
 #if defined(BRK_EDITOR)
 	editor::Editor::GetInstance().ShowUI();
 #endif
 
-	ImGui::Render();
-	auto& imguiIo = ImGui::GetIO();
+	rdr::Renderer::s_Instance.StartRender(m_Settings.m_ClearColor);
+	rdr::Renderer::s_Instance.DoRender();
 
-#if defined(BRK_SDL2_RENDERER)
-	SDL_Renderer* renderer = SDL_GetRenderer(m_WinPtr);
-	SDL_RenderSetScale(
-		renderer,
-		imguiIo.DisplayFramebufferScale.x,
-		imguiIo.DisplayFramebufferScale.y);
-	SDL_SetRenderDrawColor(
-		renderer,
-		static_cast<uint8>(m_Settings.m_ClearColor.x * 255),
-		static_cast<uint8>(m_Settings.m_ClearColor.y * 255),
-		static_cast<uint8>(m_Settings.m_ClearColor.z * 255),
-		static_cast<uint8>(m_Settings.m_ClearColor.w * 255));
-	SDL_RenderClear(renderer);
-
-	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-	SDL_RenderPresent(renderer);
-#endif
-	rdr::Renderer::s_Instance.EndImGuiFrame();
-
+#ifdef BRK_DEV
 	// Update and Render additional Platform Windows
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
