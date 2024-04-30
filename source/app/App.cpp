@@ -6,7 +6,6 @@
 
 #include <editor/Editor.hpp>
 
-#include <systems/InputSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 

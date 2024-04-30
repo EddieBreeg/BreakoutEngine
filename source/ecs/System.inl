@@ -1,5 +1,3 @@
-#include "System.hpp"
-
 namespace brk::ecs
 {
 	template <class System, class... Args>
