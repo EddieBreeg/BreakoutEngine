@@ -46,6 +46,15 @@ void brk::rdr::Renderer::Shutdown()
 	m_Data = nullptr;
 }
 
+#ifdef BRK_DEV
+void brk::rdr::Renderer::NewImGuiFrame()
+{
+	ImGui_ImplSDLRenderer2_NewFrame();
+	ImGui_ImplSDL2_NewFrame();
+	ImGui::NewFrame();
+}
+#endif
+
 brk::rdr::Renderer::~Renderer()
 {
 	Shutdown();

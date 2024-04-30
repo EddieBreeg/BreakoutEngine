@@ -16,6 +16,11 @@ namespace brk::rdr
 		void Init(SDL_Window* window);
 		void Shutdown();
 
+#ifdef BRK_DEV
+		void NewImGuiFrame();
+		void EndImGuiFrame();
+#endif
+
 		static Renderer s_Instance;
 
 	private:

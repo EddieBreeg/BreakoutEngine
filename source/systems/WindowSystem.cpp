@@ -68,11 +68,7 @@ void brk::WindowSystem::Terminate()
 void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
 #if defined(BRK_DEV)
-#if defined(BRK_SDL2_RENDERER)
-	ImGui_ImplSDLRenderer2_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
-#endif
-	ImGui::NewFrame();
+	rdr::Renderer::s_Instance.NewImGuiFrame();
 	ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
 #endif
 
@@ -104,7 +100,7 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 	SDL_RenderPresent(renderer);
 #endif
-	ImGui::EndFrame();
+	rdr::Renderer::s_Instance.EndImGuiFrame();
 
 	// Update and Render additional Platform Windows
 	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
