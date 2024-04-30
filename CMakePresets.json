@@ -19,8 +19,10 @@
 	],
 	"testPresets": [
 		{
-			"name": "Default",
-			"displayName": "Default"
+			"name": "All",
+			"displayName": "All",
+			"configurePreset": "Default",
+			"configuration": "Debug"
 		}
 	]
 }
