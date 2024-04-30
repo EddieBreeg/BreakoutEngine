@@ -5,7 +5,6 @@ add_library(BRK_SYSTEMS
 	ECSManager.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp
-	InputSystem.cpp
 	${SYSTEMS_H}
 )
 

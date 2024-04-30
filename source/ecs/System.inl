@@ -1,23 +1,27 @@
 #include "System.hpp"
 
-namespace brk::ecs {
+namespace brk::ecs
+{
 	template <class System, class... Args>
-	inline SystemInstance ecs::SystemInstance::Create(Args&&... args)
+	SystemInstance ecs::SystemInstance::Create(Args&&... args)
 	{
 		SystemInstance r;
-		System::Init(std::forward<Args>(args)...);
-		static_assert(std::is_trivially_destructible_v<System>,
-					  "A system MUST NOT have a destructor, cleanup should be done in "
-					  "the Terminate function");
 
-		r.m_Update = [](entt::registry& world, const TimeInfo& timeInfo)
+		System* ptr = new System{ std::forward<Args>(args)... };
+		r.m_SystemPtr = ptr;
+		r.m_Update = [](void* ptr, entt::registry& world, const TimeInfo& timeInfo)
 		{
-			static_assert(IsWorldView<typename System::World>,
-						  "System::World isn't a valid world view type");
+			static_assert(
+				IsWorldView<typename System::World>,
+				"System::World isn't a valid world view type");
 			typename System::World worldView{ world };
-			System::GetInstance().Update(worldView, timeInfo);
+			reinterpret_cast<System*>(ptr)->Update(worldView, timeInfo);
 		};
-		r.m_Terminate = &Terminate<System>::Impl;
+
+		r.m_Terminate = [](void* ptr)
+		{
+			delete reinterpret_cast<System*>(ptr);
+		};
 
 		return r;
 	}

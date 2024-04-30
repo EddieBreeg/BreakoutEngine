@@ -23,23 +23,11 @@ namespace brk::ecs {
 		~SystemInstance();
 
 	private:
-		template <class System, class = void>
-		struct Terminate
-		{
-			static void Impl() noexcept {};
-		};
-		template <class System>
-		struct Terminate<System,
-						 std::enable_if_t<std::is_member_function_pointer_v<
-							 decltype(&System::Terminate)>>>
-		{
-			static void Impl() { System::GetInstance().Terminate(); };
-		};
-
 		SystemInstance() = default;
 
-		void (*m_Update)(entt::registry&, const TimeInfo&) = nullptr;
-		void (*m_Terminate)() = nullptr;
+		void *m_SystemPtr = nullptr;
+		void (*m_Update)(void* ptr, entt::registry&, const TimeInfo&) = nullptr;
+		void (*m_Terminate)(void* ptr) = nullptr;
 	};
 
 } // namespace brk::ecs

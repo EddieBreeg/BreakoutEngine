@@ -1,25 +1,26 @@
 #pragma once
 
-#include <core/Singleton.hpp>
 #include <ecs/System.hpp>
 
-namespace brk {
+namespace brk
+{
 	class TimeInfo;
 }
 
-namespace brk {
-	class VisualSystem : public Singleton<VisualSystem>
+namespace brk
+{
+	class VisualSystem
 	{
 	public:
+		VisualSystem();
+		~VisualSystem() { Terminate(); }
+
 		void Terminate();
 
 		using World = ecs::WorldView<>;
 
 		BRK_ECS_UPDATE_DECL;
-
 	private:
-		friend class Singleton<VisualSystem>;
-		VisualSystem();
 	};
 
 } // namespace brk

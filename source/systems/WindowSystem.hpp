@@ -3,7 +3,6 @@
 #include <PCH.hpp>
 
 #include <core/Event.hpp>
-#include <core/Singleton.hpp>
 
 #include <ecs/System.hpp>
 #include <ecs/World.hpp>
@@ -14,7 +13,8 @@
 
 struct SDL_Window;
 
-namespace brk {
+namespace brk
+{
 
 	struct WindowSystemSettings
 	{
@@ -24,7 +24,8 @@ namespace brk {
 		uint32 m_Flags = 0;
 	};
 
-	namespace inputs {
+	namespace inputs
+	{
 		struct EventOneFrameComponent
 		{
 			TInputEvent m_Event;
@@ -32,20 +33,20 @@ namespace brk {
 
 	} // namespace inputs
 
-	class WindowSystem : public Singleton<WindowSystem>
+	class WindowSystem
 	{
 	public:
 		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
 		BRK_ECS_UPDATE_DECL;
 
+		WindowSystem(const WindowSystemSettings& settings = {});
+		~WindowSystem() { Terminate(); }
+
 		void Terminate();
-		~WindowSystem() = default;
 
 	private:
-		friend class Singleton<WindowSystem>;
 
 		void ProcessEvents(World& world);
-		WindowSystem(const WindowSystemSettings& settings = {});
 
 		WindowSystemSettings m_Settings;
 		SDL_Window* m_WinPtr = nullptr;
