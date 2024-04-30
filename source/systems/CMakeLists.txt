@@ -15,6 +15,7 @@ target_link_libraries(BRK_SYSTEMS PUBLIC
 
 target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Core
+	Breakout::Rendering
 	Breakout::App
 	Breakout::Debug
 	Breakout::Editor

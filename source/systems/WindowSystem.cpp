@@ -10,6 +10,8 @@
 #include <editor/Editor.hpp>
 #endif
 
+#include <rendering/Renderer.hpp>
+
 #include "private/ImGuiIncludes.hpp"
 
 #include <SDL2/SDL.h>
@@ -48,15 +50,9 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 								  ImGuiConfigFlags_DockingEnable |
 								  ImGuiConfigFlags_ViewportsEnable;
-	ImGuiStyle& theme = ImGui::GetStyle();
-#if defined(BRK_SDL2_RENDERER)
-	SDL_Renderer* renderer = SDL_CreateRenderer(m_WinPtr, -1, 0);
-	ImGui_ImplSDL2_InitForSDLRenderer(m_WinPtr, renderer);
-	ImGui_ImplSDLRenderer2_Init(renderer);
-#else
-#error "Unsupported"
 #endif
-#endif
+
+	rdr::Renderer::s_Instance.Init(m_WinPtr);
 }
 
 void brk::WindowSystem::Terminate()

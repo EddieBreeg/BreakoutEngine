@@ -18,5 +18,9 @@ target_sources(BRK_RENDERING PUBLIC
 target_compile_features(BRK_RENDERING PUBLIC cxx_std_17)
 target_link_libraries(BRK_RENDERING PRIVATE
 	BRK_INCLUDES
+	Breakout::Core
 	ImGui::ImGui
+	SDL2::SDL2
 )
+
+add_library(Breakout::Rendering ALIAS BRK_RENDERING)
