@@ -1,4 +1,5 @@
 add_subdirectory(math)
+add_subdirectory(rendering)
 add_subdirectory(core)
 add_subdirectory(ecs)
 add_subdirectory(debug)
