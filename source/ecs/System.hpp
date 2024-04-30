@@ -32,7 +32,4 @@ namespace brk::ecs {
 
 } // namespace brk::ecs
 
-#define BRK_ECS_UPDATE_DECL                                                    \
-	void Update(World& world, const brk::TimeInfo& timeInfo);
-
 #include "System.inl"

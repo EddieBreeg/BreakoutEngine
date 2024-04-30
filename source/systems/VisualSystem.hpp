@@ -19,7 +19,7 @@ namespace brk
 
 		using World = ecs::WorldView<>;
 
-		BRK_ECS_UPDATE_DECL;
+		void Update(World& world, const TimeInfo& timeInfo);
 	private:
 	};
 

@@ -37,7 +37,7 @@ namespace brk
 	{
 	public:
 		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
-		BRK_ECS_UPDATE_DECL;
+		void Update(World& world, const TimeInfo& timeInfo);
 
 		WindowSystem(const WindowSystemSettings& settings = {});
 		~WindowSystem() { Terminate(); }
