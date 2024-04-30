@@ -29,11 +29,24 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 #endif
 }
 
-brk::rdr::Renderer::~Renderer()
+void brk::rdr::Renderer::Shutdown()
 {
 	if (!m_Data)
 		return;
 
+#ifdef BRK_DEV
+	ImGui_ImplSDLRenderer2_Shutdown();
+	ImGui_ImplSDL2_Shutdown();
+	ImGui::DestroyContext();
+#endif
+
+	SDL_DestroyRenderer(m_Data->m_NativeRenderer);
+
 	delete m_Data;
 	m_Data = nullptr;
+}
+
+brk::rdr::Renderer::~Renderer()
+{
+	Shutdown();
 }

@@ -60,14 +60,7 @@ void brk::WindowSystem::Terminate()
 	if (!m_WinPtr)
 		return;
 
-#ifdef BRK_DEV
-#if defined(BRK_SDL2_RENDERER)
-	ImGui_ImplSDLRenderer2_Shutdown();
-#endif
-
-	ImGui_ImplSDL2_Shutdown();
-	ImGui::DestroyContext();
-#endif
+	rdr::Renderer::s_Instance.Shutdown();
 	SDL_DestroyWindow(m_WinPtr);
 	SDL_Quit();
 }

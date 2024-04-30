@@ -14,6 +14,8 @@ namespace brk::rdr
 		~Renderer();
 
 		void Init(SDL_Window* window);
+		void Shutdown();
+
 		static Renderer s_Instance;
 
 	private:
