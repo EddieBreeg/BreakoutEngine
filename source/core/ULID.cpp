@@ -1,5 +1,6 @@
 #include "ULID.hpp"
 #include "RNG.hpp"
+#include <nlohmann/json.hpp>
 #include <ctime>
 
 brk::ULID brk::ULID::Generate()
@@ -12,4 +13,16 @@ brk::ULID brk::ULID::Generate()
 	res.m_Right = RNG::s_Instance();
 
 	return res;
+}
+
+void brk::from_json(const nlohmann::json& out_json, ULID& id)
+{
+	id = ULID::FromString(out_json.get<std::string_view>());
+}
+
+void brk::to_json(nlohmann::json& out_json, const ULID& id)
+{
+	char str[26];
+	id.ToChars(str);
+	out_json = std::string_view{ str, 26 };
 }

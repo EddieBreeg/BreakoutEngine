@@ -10,7 +10,7 @@ constexpr brk::ULID::ULID(
 {}
 
 template <uint32 N>
-inline constexpr char* brk::ULID::ToString(char (&out_buf)[N]) const noexcept
+inline constexpr char* brk::ULID::ToChars(char (&out_buf)[N]) const noexcept
 {
 	static_assert(N >= 26, "Buffer is too small");
 	constexpr char alphabet[] = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";

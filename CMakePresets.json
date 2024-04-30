@@ -16,5 +16,11 @@
 			},
 			"binaryDir": "build"
 		}
+	],
+	"testPresets": [
+		{
+			"name": "Default",
+			"displayName": "Default"
+		}
 	]
 }
