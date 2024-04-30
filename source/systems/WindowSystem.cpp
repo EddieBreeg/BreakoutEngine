@@ -16,7 +16,8 @@
 
 #include <SDL2/SDL.h>
 
-namespace {
+namespace
+{
 	template <brk::inputs::EEventType Evt, class... Args>
 	inline entt::entity CreateInputEventEntity(
 		brk::WindowSystem::World& world,
@@ -53,6 +54,7 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 #endif
 
 	rdr::Renderer::s_Instance.Init(m_WinPtr);
+	rdr::Renderer::s_Instance.m_ClearColor = m_Settings.m_ClearColor;
 }
 
 void brk::WindowSystem::Terminate()
@@ -80,18 +82,6 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 #if defined(BRK_EDITOR)
 	editor::Editor::GetInstance().ShowUI();
 #endif
-
-	rdr::Renderer::s_Instance.StartRender(m_Settings.m_ClearColor);
-	rdr::Renderer::s_Instance.DoRender();
-
-#ifdef BRK_DEV
-	// Update and Render additional Platform Windows
-	if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-	{
-		ImGui::UpdatePlatformWindows();
-		ImGui::RenderPlatformWindowsDefault();
-	}
-#endif
 }
 
 void brk::WindowSystem::ProcessEvents(World& world)
@@ -109,8 +99,7 @@ void brk::WindowSystem::ProcessEvents(World& world)
 		{
 		case SDL_QUIT:
 		case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
-		case SDL_MOUSEMOTION:
-		{
+		case SDL_MOUSEMOTION: {
 			const int2 pos{ evt.motion.x, evt.motion.y };
 			const int2 oldPos = pos - int2{ evt.motion.xrel, evt.motion.yrel };
 			CreateInputEventEntity<inputs::MouseMove>(world, oldPos, pos);

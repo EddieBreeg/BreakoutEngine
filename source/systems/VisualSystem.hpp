@@ -17,8 +17,6 @@ namespace brk {
 
 		BRK_ECS_UPDATE_DECL;
 
-		~VisualSystem();
-
 	private:
 		friend class Singleton<VisualSystem>;
 		VisualSystem();

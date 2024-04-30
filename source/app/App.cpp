@@ -15,7 +15,8 @@
 #include <csignal>
 #include <iostream>
 
-namespace brk {
+namespace brk
+{
 
 	App::~App() {}
 
@@ -52,6 +53,7 @@ namespace brk {
 #ifdef BRK_EDITOR
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
+		m_ECSManager.AddSystem<VisualSystem>();
 	}
 
 	int App::Run()

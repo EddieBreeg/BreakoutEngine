@@ -18,13 +18,13 @@ namespace brk::rdr
 
 #ifdef BRK_DEV
 		void NewImGuiFrame();
-		void EndImGuiFrame();
 #endif
 
-		void StartRender(const float4 clearColor);
+		void StartRender();
 		void DoRender();
 
 		static Renderer s_Instance;
+		float4 m_ClearColor;
 
 	private:
 		Renderer() = default;
