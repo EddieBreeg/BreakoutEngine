@@ -3,6 +3,7 @@
 #include <PCH.hpp>
 
 #include "FieldList.hpp"
+#include "Hash.hpp"
 
 #include <nlohmann/json_fwd.hpp>
 #include <string_view>
@@ -43,11 +44,17 @@ namespace brk {
 		static constexpr meta::FieldList<&ULID::m_Left, &ULID::m_Right> Fields{};
 
 		friend struct BinaryLoader<ULID, void>;
+		friend struct Hash<ULID>;
 	};
 
 	void from_json(const nlohmann::json& out_json, ULID& id);
 	void to_json(nlohmann::json& out_json, const ULID& id);
 
+	template<>
+	struct Hash<ULID>
+	{
+		[[nodiscard]] constexpr uint64 operator()(const ULID id) const noexcept;
+	};
 } // namespace brk
 
 #include "ULID.inl"

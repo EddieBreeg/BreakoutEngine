@@ -88,3 +88,8 @@ constexpr bool brk::ULID::operator==(const ULID other) const noexcept
 {
 	return m_Left == other.m_Left && m_Right == other.m_Right;
 }
+
+constexpr uint64 brk::Hash<brk::ULID>::operator()(const ULID id) const noexcept
+{
+	return CombineHash(id.m_Left, id.m_Right);
+}
