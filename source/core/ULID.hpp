@@ -27,7 +27,9 @@ namespace brk {
 	{
 	public:
 		constexpr ULID() noexcept = default;
+		constexpr ULID(const ULID&) = default;
 		~ULID() = default;
+		ULID& operator=(const ULID&) = default;
 
 		constexpr ULID(
 			const uint64 timestamp,

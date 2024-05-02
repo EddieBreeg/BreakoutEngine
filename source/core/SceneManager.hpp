@@ -20,6 +20,11 @@ namespace brk {
 		void LoadSceneDescriptions(const nlohmann::json& descriptions);
 #endif
 
+		[[nodiscard]] const TULIDMap<SceneDescription>& GetObjects() const noexcept
+		{
+			return m_Descriptions;
+		}
+
 	private:
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;

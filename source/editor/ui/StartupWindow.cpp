@@ -14,7 +14,7 @@ namespace {
 
 void brk::editor::StartupWindow()
 {
-	ImGui::Begin("Welcome", nullptr, ImGuiWindowFlags_Modal);
+	ImGui::Begin("Welcome", nullptr, ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoDocking);
 	ImGui::Text("Welcome to the Breakout engine editor! To continue, either create a new "
 				"project or load an existing one.");
 	if (ImGui::Button("Load Project"))

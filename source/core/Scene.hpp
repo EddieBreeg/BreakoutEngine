@@ -14,7 +14,10 @@ namespace brk {
 	{
 	public:
 		SceneDescription() = default;
+		SceneDescription(const SceneDescription&) = default;
 		SceneDescription(SceneDescription&&) = default;
+
+		SceneDescription& operator=(const SceneDescription&) = default;
 
 		[[nodiscard]] ULID GetId() const noexcept { return m_Id; }
 		[[nodiscard]] std::string GetPath() const noexcept { return m_File; }
