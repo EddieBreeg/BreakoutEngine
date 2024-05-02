@@ -2,8 +2,7 @@
 
 #include <PCH.hpp>
 
-#ifdef BRK_DEBUG
-
+#ifdef BRK_DEV
 
 namespace brk::dbg
 {

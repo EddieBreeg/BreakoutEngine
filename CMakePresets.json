@@ -24,5 +24,17 @@
 			"configurePreset": "Default",
 			"configuration": "Debug"
 		}
+	],
+	"buildPresets": [
+		{
+			"name": "Dev",
+			"configuration": "Debug",
+			"configurePreset": "Default"
+		},
+		{
+			"name": "DevOptimized",
+			"configuration": "RelWithDebInfo",
+			"configurePreset": "Default"
+		}
 	]
 }

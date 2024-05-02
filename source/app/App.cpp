@@ -44,7 +44,7 @@ namespace brk {
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
 	{
-#ifdef BRK_DEBUG
+#ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 		InitCoreSystems();
