@@ -20,7 +20,9 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 			return;
 
 		const nlohmann::json desc = nlohmann::json::parse(projectFile);
-		m_Project = JsonLoader<Project>::Load(desc);
+		Project proj;
+		JsonLoader<Project>::Load(proj, desc);
+		m_Project = std::move(proj);
 		LogManager::GetInstance().Log(
 			LogManager::Trace,
 			"Loading project '{}'",
@@ -58,7 +60,9 @@ void brk::editor::Editor::OnProjectFilePathChanged()
 	m_ProjectFilePath = {};
 
 	const nlohmann::json desc = nlohmann::json::parse(projectFile);
-	m_Project = JsonLoader<Project>::Load(desc);
+	Project proj;
+	JsonLoader<Project>::Load(proj, desc);
+	m_Project = std::move(proj);
 	LogManager::GetInstance().Log(
 		LogManager::Trace,
 		"Loading project '{}'",

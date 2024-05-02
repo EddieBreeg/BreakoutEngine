@@ -63,25 +63,27 @@ namespace brk {
 	template <class T>
 	struct JsonLoader<T, _internal::IfHasFieldList<T>>
 	{
-		static T Load(const nlohmann::json& data);
+		static bool Load(T& out_object, const nlohmann::json& data);
 
-		static nlohmann::json Save(const T& object);
+		static void Save(const T& object, nlohmann::json& out_json);
 
 	private:
 		template <auto... Fields, size_t... I>
-		static T LoadImpl(
+		static bool LoadImpl(
 			const meta::FieldList<Fields...>& list,
 			std::index_sequence<I...>,
+			T& out_object,
 			const nlohmann::json& json);
 
 		template <auto... Fields, size_t... I>
-		static nlohmann::json SaveImpl(
+		static void SaveImpl(
 			const meta::FieldList<Fields...>& list,
 			std::index_sequence<I...>,
-			const T& object);
+			const T& object,
+			nlohmann::json& out_json);
 
 		template <class F>
-		static void LoadField(F& field, const nlohmann::json& json, const char* name);
+		static bool LoadField(F& field, const nlohmann::json& json, const char* name);
 
 		template <class F>
 		static void SaveField(const F& field, nlohmann::json& out_json, const char* name);
