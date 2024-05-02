@@ -1,18 +1,19 @@
 #include "App.hpp"
 
 #include <core/LogManager.hpp>
+#include <core/SceneManager.hpp>
+
+#include <csignal>
+#include <iostream>
 
 #include <debug/DebugOverlay.hpp>
 
 #include <editor/Editor.hpp>
 
-#include <systems/VisualSystem.hpp>
-#include <systems/WindowSystem.hpp>
-
 #include <SDL2/SDL_video.h>
 
-#include <csignal>
-#include <iostream>
+#include <systems/VisualSystem.hpp>
+#include <systems/WindowSystem.hpp>
 
 namespace brk {
 
@@ -52,6 +53,8 @@ namespace brk {
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
 		m_ECSManager.AddSystem<VisualSystem>();
+
+		SceneManager::Init();
 	}
 
 	int App::Run()

@@ -6,6 +6,7 @@
 
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/SceneManager.hpp>
 
 #include <fstream>
 #include <system_error>
@@ -43,16 +44,24 @@ void brk::editor::Editor::LoadProject()
 		m_ProjectFilePath = {};
 		return;
 	}
+	LogManager::GetInstance().Log(
+		LogManager::Trace,
+		"Loading project '{}'",
+		m_ProjectFilePath);
 	m_ProjectFilePath = {};
 
 	const nlohmann::json desc = nlohmann::json::parse(projectFile);
 	Project proj;
 	JsonLoader<Project>::Load(proj, desc);
 	m_Project = std::move(proj);
-	LogManager::GetInstance().Log(
-		LogManager::Trace,
-		"Loading project '{}'",
-		m_Project->GetName());
+
+	const auto it = desc.find("scenes");
+	if (it != desc.end())
+	{
+		SceneManager::GetInstance().LoadSceneDescriptions(*it);
+	}
+
+	LogManager::GetInstance().Log(LogManager::Trace, "Finished loading project");
 }
 
 void brk::editor::Editor::ShowUI()

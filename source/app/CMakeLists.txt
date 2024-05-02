@@ -6,5 +6,6 @@ target_link_libraries(BRK_APP PUBLIC
 )
 target_link_libraries(BRK_APP PRIVATE
 	SDL2::SDL2
+	nlohmann_json::nlohmann_json
 )
 add_library(Breakout::App ALIAS BRK_APP)

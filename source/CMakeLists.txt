@@ -6,6 +6,7 @@ add_subdirectory(debug)
 add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
+add_subdirectory(tools)
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE
