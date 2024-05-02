@@ -21,7 +21,7 @@ namespace brk::editor {
 		friend class Singleton<Editor>;
 		Editor(int argc, const char** argv);
 
-		void OnProjectFilePathChanged();
+		void LoadProject();
 
 		std::string_view m_ProjectFilePath;
 		std::optional<Project> m_Project;

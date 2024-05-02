@@ -14,8 +14,7 @@
 #include <csignal>
 #include <iostream>
 
-namespace brk
-{
+namespace brk {
 
 	App::~App() {}
 
@@ -68,6 +67,9 @@ namespace brk
 			Update();
 
 		ecs::Manager::Reset();
+#ifdef BRK_EDITOR
+		editor::Editor::Reset();
+#endif
 		return 0;
 	}
 } // namespace brk

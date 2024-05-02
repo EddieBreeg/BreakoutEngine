@@ -5,5 +5,5 @@
 
 namespace brk::editor
 {
-	std::string_view StartupWindow();
+	void StartupWindow();
 } // namespace brk::editor

@@ -14,20 +14,7 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 {
 	if (argc < 2)
 		return;
-	{
-		std::ifstream projectFile{ argv[1] };
-		if (!projectFile.is_open())
-			return;
-
-		const nlohmann::json desc = nlohmann::json::parse(projectFile);
-		Project proj;
-		JsonLoader<Project>::Load(proj, desc);
-		m_Project = std::move(proj);
-		LogManager::GetInstance().Log(
-			LogManager::Trace,
-			"Loading project '{}'",
-			m_Project->GetName());
-	}
+	LoadProjectDeferred(argv[1]);
 }
 
 void brk::editor::Editor::LoadProjectDeferred(const std::string_view filePath) noexcept
@@ -39,13 +26,12 @@ void brk::editor::Editor::Update()
 {
 	if (m_ProjectFilePath.data())
 	{
-		OnProjectFilePathChanged();
+		LoadProject();
 	}
 }
 
-void brk::editor::Editor::OnProjectFilePathChanged()
+void brk::editor::Editor::LoadProject()
 {
-	// std::ifstream projectFile{ "foobar" };
 	std::ifstream projectFile{ m_ProjectFilePath.data() };
 	if (!projectFile.is_open())
 	{
@@ -75,7 +61,7 @@ void brk::editor::Editor::ShowUI()
 
 	if (!m_Project.has_value())
 	{
-		m_ProjectFilePath = StartupWindow();
+		StartupWindow();
 	}
 }
 
