@@ -5,6 +5,7 @@ add_library(BRK_EDITOR STATIC
 	Editor.cpp
 	ui/MenuBar.cpp
 	ui/StartupWindow.cpp
+	ui/SceneSelection.cpp
 )
 
 target_link_libraries(BRK_EDITOR PRIVATE

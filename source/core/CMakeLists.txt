@@ -4,8 +4,9 @@ add_library(BRK_CORE STATIC
 	Assert.cpp
 	DebugBreak.cpp
 	LogManager.cpp
-	TimeInfo.cpp
 	RNG.cpp
+	SceneManager.cpp
+	TimeInfo.cpp
 	ULID.cpp
 	${CORE_HEADERS}
 )
@@ -26,11 +27,11 @@ add_library(Breakout::Core ALIAS BRK_CORE)
 
 target_link_libraries(BRK_CORE PUBLIC 
 	BRK_INCLUDES
+	nlohmann_json::nlohmann_json
 	fmt::fmt
 )
 	
 target_link_libraries(BRK_CORE PRIVATE
 	EnTT::EnTT
-	nlohmann_json::nlohmann_json
 	SDL2::SDL2
 )

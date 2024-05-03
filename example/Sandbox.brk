@@ -1,3 +1,9 @@
 {
-	"name": "Sandbox"
+	"name": "Sandbox",
+	"scenes": [
+		{
+			"file": "a_scene",
+			"id": "01HWXKAWMR164YDYDEP9802M19"
+		}
+	]
 }

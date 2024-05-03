@@ -2,6 +2,7 @@
 
 #include <PCH.hpp>
 #include <core/Singleton.hpp>
+#include <core/ULID.hpp>
 #include "Project.hpp"
 #include <optional>
 
@@ -14,6 +15,7 @@ namespace brk::editor {
 		~Editor() = default;
 
 		void LoadProjectDeferred(const std::string_view filePath) noexcept;
+		void LoadSceneDeferred(const ULID sceneId) noexcept;
 		void Update();
 		void ShowUI();
 
@@ -21,11 +23,20 @@ namespace brk::editor {
 		friend class Singleton<Editor>;
 		Editor(int argc, const char** argv);
 
-		void OnProjectFilePathChanged();
+		enum class LoadState
+		{
+			None = 0,
+			Project,
+			Scene,
+		} m_LoadState = LoadState::None;
+
+		void LoadProject();
+		void LoadScene();
 
 		std::string_view m_ProjectFilePath;
 		std::optional<Project> m_Project;
+		ULID m_CurrentScene;
 	};
-} // namespace brk
+} // namespace brk::editor
 
 #endif

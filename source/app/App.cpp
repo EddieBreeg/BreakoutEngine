@@ -1,21 +1,21 @@
 #include "App.hpp"
 
 #include <core/LogManager.hpp>
+#include <core/SceneManager.hpp>
+
+#include <csignal>
+#include <iostream>
 
 #include <debug/DebugOverlay.hpp>
 
 #include <editor/Editor.hpp>
 
+#include <SDL2/SDL_video.h>
+
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 
-#include <SDL2/SDL_video.h>
-
-#include <csignal>
-#include <iostream>
-
-namespace brk
-{
+namespace brk {
 
 	App::~App() {}
 
@@ -45,7 +45,7 @@ namespace brk
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
 	{
-#ifdef BRK_DEBUG
+#ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 		InitCoreSystems();
@@ -53,6 +53,8 @@ namespace brk
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
 		m_ECSManager.AddSystem<VisualSystem>();
+
+		SceneManager::Init();
 	}
 
 	int App::Run()
@@ -68,6 +70,9 @@ namespace brk
 			Update();
 
 		ecs::Manager::Reset();
+#ifdef BRK_EDITOR
+		editor::Editor::Reset();
+#endif
 		return 0;
 	}
 } // namespace brk

@@ -10,10 +10,15 @@
 #include <core/Utility.hpp>
 #include <math/Vector.hpp>
 
-#ifndef NDEBUG
+#if _BRK_DEBUG_ENABLED
 #define BRK_DEBUG
-#define BRK_EDITOR
 #endif
+#undef _BRK_DEBUG_ENABLED
+
+#if _BRK_EDITOR_ENABLED
+#define BRK_EDITOR 1
+#endif
+#undef _BRK_EDITOR_ENABLED
 
 #if defined(BRK_DEBUG) || defined(BRK_EDITOR)
 #define BRK_DEV

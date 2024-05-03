@@ -77,8 +77,10 @@ void brk::rdr::Renderer::StartRender()
 
 void brk::rdr::Renderer::DoRender()
 {
+#ifdef BRK_DEV
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
 	SDL_RenderPresent(m_Data->m_NativeRenderer);
+#endif
 }
 
 brk::rdr::Renderer::~Renderer()

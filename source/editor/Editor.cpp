@@ -2,10 +2,12 @@
 
 #ifdef BRK_EDITOR
 #include "ui/Menubar.hpp"
+#include "ui/SceneSelection.hpp"
 #include "ui/StartupWindow.hpp"
 
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/SceneManager.hpp>
 
 #include <fstream>
 #include <system_error>
@@ -14,36 +16,34 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 {
 	if (argc < 2)
 		return;
-	{
-		std::ifstream projectFile{ argv[1] };
-		if (!projectFile.is_open())
-			return;
-
-		const nlohmann::json desc = nlohmann::json::parse(projectFile);
-		m_Project = JsonLoader<Project>::Load(desc);
-		LogManager::GetInstance().Log(
-			LogManager::Trace,
-			"Loading project '{}'",
-			m_Project->GetName());
-	}
+	LoadProjectDeferred(argv[1]);
 }
 
 void brk::editor::Editor::LoadProjectDeferred(const std::string_view filePath) noexcept
 {
+	m_LoadState = LoadState::Project;
 	m_ProjectFilePath = filePath;
+}
+
+void brk::editor::Editor::LoadSceneDeferred(const ULID sceneId) noexcept
+{
+	m_LoadState = LoadState::Scene;
+	m_CurrentScene = sceneId;
 }
 
 void brk::editor::Editor::Update()
 {
-	if (m_ProjectFilePath.data())
+	switch (m_LoadState)
 	{
-		OnProjectFilePathChanged();
+	case LoadState::Project: LoadProject(); break;
+	case LoadState::Scene: LoadScene(); break;
+	default: break;
 	}
 }
 
-void brk::editor::Editor::OnProjectFilePathChanged()
+void brk::editor::Editor::LoadProject()
 {
-	// std::ifstream projectFile{ "foobar" };
+	m_LoadState = LoadState::None;
 	std::ifstream projectFile{ m_ProjectFilePath.data() };
 	if (!projectFile.is_open())
 	{
@@ -55,14 +55,28 @@ void brk::editor::Editor::OnProjectFilePathChanged()
 		m_ProjectFilePath = {};
 		return;
 	}
-	m_ProjectFilePath = {};
-
-	const nlohmann::json desc = nlohmann::json::parse(projectFile);
-	m_Project = JsonLoader<Project>::Load(desc);
 	LogManager::GetInstance().Log(
 		LogManager::Trace,
 		"Loading project '{}'",
-		m_Project->GetName());
+		m_ProjectFilePath);
+
+	const nlohmann::json desc = nlohmann::json::parse(projectFile);
+	Project proj;
+	JsonLoader<Project>::Load(proj, desc);
+	m_Project = std::move(proj);
+
+	const auto it = desc.find("scenes");
+	if (it != desc.end())
+	{
+		SceneManager::GetInstance().LoadSceneDescriptions(*it);
+	}
+
+	LogManager::GetInstance().Log(LogManager::Trace, "Finished loading project");
+}
+
+void brk::editor::Editor::LoadScene()
+{
+	m_LoadState = LoadState::None;
 }
 
 void brk::editor::Editor::ShowUI()
@@ -71,7 +85,11 @@ void brk::editor::Editor::ShowUI()
 
 	if (!m_Project.has_value())
 	{
-		m_ProjectFilePath = StartupWindow();
+		StartupWindow();
+	}
+	else if (!m_CurrentScene)
+	{
+		SceneSelectionWindow();
 	}
 }
 

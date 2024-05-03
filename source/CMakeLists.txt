@@ -6,10 +6,17 @@ add_subdirectory(debug)
 add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
+add_subdirectory(tools)
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
+)
+target_compile_definitions(BRK_INCLUDES INTERFACE
+	_BRK_EDITOR_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
+)
+target_compile_definitions(BRK_INCLUDES INTERFACE
+	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
 )
 
 add_library(${PROJECT_NAME} INTERFACE)

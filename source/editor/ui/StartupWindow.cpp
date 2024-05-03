@@ -4,32 +4,30 @@
 
 #include <tinyfiledialogs.h>
 #include <array>
+#include <editor/Editor.hpp>
 #include <imgui.h>
 #include <filesystem>
 
-std::string_view brk::editor::StartupWindow()
-{
-	std::string_view filePath;
+namespace {
+	const char* s_BrkExt = "*.brk";
+}
 
-	ImGui::Begin("Welcome", nullptr, ImGuiWindowFlags_Modal);
+void brk::editor::StartupWindow()
+{
+	ImGui::Begin("Welcome", nullptr, ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoDocking);
 	ImGui::Text("Welcome to the Breakout engine editor! To continue, either create a new "
 				"project or load an existing one.");
 	if (ImGui::Button("Load Project"))
 	{
-		static constexpr std::array patterns = { "*.brkproj", "*.brk" };
+		const char* filePath =
+			tinyfd_openFileDialog("Open Project", "", 1, &s_BrkExt, nullptr, 0);
 
-		const std::string defaultPath = std::filesystem::current_path().u8string();
-
-		filePath = tinyfd_openFileDialog(
-			"Open Project",
-			defaultPath.c_str(),
-			(int)patterns.size(),
-			patterns.data(),
-			nullptr,
-			0);
+		if (filePath)
+		{
+			Editor::GetInstance().LoadProjectDeferred(filePath);
+		}
 	}
 	ImGui::End();
-	return filePath;
 }
 
 #endif

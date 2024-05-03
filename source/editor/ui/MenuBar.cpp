@@ -5,6 +5,10 @@
 #include <array>
 #include <imgui.h>
 
+namespace {
+	const char* s_BrkExt = "*.brk";
+} // namespace
+
 void brk::editor::MenuBar()
 {
 	if (!ImGui::BeginMainMenuBar())
@@ -14,15 +18,12 @@ void brk::editor::MenuBar()
 	{
 		if (ImGui::MenuItem("Open Project", "Ctrl+Shift+O"))
 		{
-			static constexpr std::array patterns = { "*.brkproj", "*.brk" };
-			const std::string_view filePath = tinyfd_openFileDialog(
-				"Open Project",
-				nullptr,
-				(int)patterns.size(),
-				patterns.data(),
-				nullptr,
-				0);
-			Editor::GetInstance().LoadProjectDeferred(filePath);
+			const char* filePath =
+				tinyfd_openFileDialog("Open Project", "", 1, &s_BrkExt, nullptr, 0);
+			if (filePath)
+			{
+				Editor::GetInstance().LoadProjectDeferred(filePath);
+			}
 		}
 		ImGui::EndMenu();
 	}

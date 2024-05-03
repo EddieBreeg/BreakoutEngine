@@ -120,51 +120,64 @@ inline uint8_t* brk::BinaryLoader<T, brk::_internal::IfHasFieldList<T>>::SaveImp
 
 namespace brk {
 	template <class T>
-	T JsonLoader<T, _internal::IfHasFieldList<T>>::Load(const nlohmann::json& data)
+	bool JsonLoader<T, _internal::IfHasFieldList<T>>::Load(
+		T& out_obj,
+		const nlohmann::json& data)
 	{
-		return LoadImpl(T::Fields, std::make_index_sequence<T::Fields.Count>{}, data);
+		return LoadImpl(
+			T::Fields,
+			std::make_index_sequence<T::Fields.Count>{},
+			out_obj,
+			data);
 	}
 
 	template <class T>
-	nlohmann::json JsonLoader<T, _internal::IfHasFieldList<T>>::Save(const T& object)
+	void JsonLoader<T, _internal::IfHasFieldList<T>>::Save(
+		const T& object,
+		nlohmann::json& out_json)
 	{
-		return SaveImpl(T::Fields, std::make_index_sequence<T::Fields.Count>{}, object);
+		SaveImpl(
+			T::Fields,
+			std::make_index_sequence<T::Fields.Count>{},
+			object,
+			out_json);
 	}
 
 	template <class T>
 	template <auto... Fields, size_t... I>
-	T JsonLoader<T, _internal::IfHasFieldList<T>>::LoadImpl(
+	bool JsonLoader<T, _internal::IfHasFieldList<T>>::LoadImpl(
 		const meta::FieldList<Fields...>& list,
 		std::index_sequence<I...>,
+		T& out_object,
 		const nlohmann::json& json)
 	{
-		T result;
-		(LoadField(result.*Fields, json, list.m_Names[I]), ...);
+		bool result = true;
+		((result &= LoadField(out_object.*Fields, json, list.m_Names[I])), ...);
 		return result;
 	}
 
 	template <class T>
 	template <auto... Fields, size_t... I>
-	nlohmann::json JsonLoader<T, _internal::IfHasFieldList<T>>::SaveImpl(
+	void JsonLoader<T, _internal::IfHasFieldList<T>>::SaveImpl(
 		const meta::FieldList<Fields...>& list,
 		std::index_sequence<I...>,
-		const T& object)
+		const T& object,
+		nlohmann::json& out_json)
 	{
-		nlohmann::json result;
-		(SaveField(object.*Fields, result, list.m_Names[I]), ...);
-		return result;
+		(SaveField(object.*Fields, out_json, list.m_Names[I]), ...);
 	}
 
 	template <class T>
 	template <class F>
-	void JsonLoader<T, _internal::IfHasFieldList<T>>::LoadField(
+	bool JsonLoader<T, _internal::IfHasFieldList<T>>::LoadField(
 		F& field,
 		const nlohmann::json& json,
 		const char* name)
 	{
 		const auto iter = json.find(name);
 		if (iter == json.end())
-			return;
+			return false;
+
 		if constexpr (_internal::IsNativeJsonCompatible<F>::value)
 		{
 			iter->get_to(field);
@@ -173,6 +186,7 @@ namespace brk {
 		{
 			field = std::move(JsonLoader<F>::Load(*iter));
 		}
+		return true;
 	}
 
 	template <class T>

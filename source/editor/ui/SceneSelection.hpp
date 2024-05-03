@@ -1,9 +1,11 @@
-#pragma
+#pragma once
 
 #include <PCH.hpp>
-#include <string_view>
+#ifdef BRK_EDITOR
 
 namespace brk::editor
 {
-	void StartupWindow();
+	void SceneSelectionWindow();
 } // namespace brk::editor
+
+#endif
