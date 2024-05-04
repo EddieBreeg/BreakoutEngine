@@ -1,5 +1,6 @@
 add_executable(CoreTests main.cpp
 	EventTests.cpp
+	FunctionTests.cpp
 	StringViewTests.cpp
 	HashTests.cpp
 	ULIDTests.cpp
