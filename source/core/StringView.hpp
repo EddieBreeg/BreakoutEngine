@@ -1,11 +1,10 @@
 #pragma once
 
 #include <PCH.hpp>
-#include "HashFwd.hpp"
+#include "Hash.hpp"
 #include "Assert.hpp"
 
-namespace brk
-{
+namespace brk {
 	template <class Char>
 	struct BasicStringView
 	{
