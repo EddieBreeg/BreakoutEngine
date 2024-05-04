@@ -1,5 +1,6 @@
 if(${BUILD_TESTING})
+	add_subdirectory(core)
+	add_subdirectory(loading)
 	add_subdirectory(math)
 	add_subdirectory(systems)
-	add_subdirectory(core)
 endif(${BUILD_TESTING})
