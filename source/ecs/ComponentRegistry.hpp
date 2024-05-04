@@ -6,6 +6,7 @@
 #include <core/LoadersFwd.hpp>
 #include <core/LogManager.hpp>
 #include <core/Singleton.hpp>
+#include <core/StringViewFormatter.hpp>
 #include <entt/entity/fwd.hpp>
 
 #include <unordered_map>
@@ -32,6 +33,8 @@ namespace brk::ecs {
 
 		template <class C>
 		const ComponentInfo& GetInfo() const;
+
+		const ComponentInfo& GetInfo(const StringView name) const;
 
 	private:
 		friend class Singleton<ComponentRegistry>;

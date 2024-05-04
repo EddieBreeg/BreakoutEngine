@@ -10,7 +10,7 @@ namespace brk::loading::ut {
 		int x = 0, y = 1;
 		static constexpr meta::FieldList<&C1::x, &C1::y> Fields{ "x", "y" };
 
-		static constexpr const char* Name = "C1";
+		static constexpr StringView Name = "C1";
 	};
 
 	const nlohmann::json s_C1Json{ { "x", 1 }, { "y", 2 } };
@@ -35,8 +35,17 @@ namespace brk::loading::ut {
 		assert(comp->y == 2);
 	}
 
+	void GetByName()
+	{
+		RAIIHelper helper;
+		const ecs::ComponentInfo& info1 = helper.m_Registry.Register<C1>();
+		const ecs::ComponentInfo& info2 = helper.m_Registry.GetInfo(C1::Name);
+		assert(&info1 == &info2);
+	}
+
 	void ComponentInfoTests()
 	{
 		LoadOneComponent();
+		GetByName();
 	}
 } // namespace brk::loading::ut
