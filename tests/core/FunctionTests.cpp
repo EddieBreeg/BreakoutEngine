@@ -59,7 +59,7 @@ namespace brk::unique_function::ut {
 		{
 			UniqueFunction<void()> f1 = Foo{};
 			assert(Foo::n == 1);
-			UniqueFunction<void()> f2 = std::move(f1);
+			UniqueFunction<void()> f2{ std::move(f1) };
 			assert(Foo::n == 1);
 			assert(!f1);
 			assert(f2);
@@ -72,7 +72,7 @@ namespace brk::unique_function::ut {
 			};
 			f1();
 			assert(result == 1);
-			UniqueFunction<void()> f2 = std::move(f1);
+			UniqueFunction<void()> f2{ std::move(f1) };
 			f2();
 			assert(result == 2);
 		}

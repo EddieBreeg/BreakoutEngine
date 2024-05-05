@@ -7,17 +7,16 @@ namespace brk {
 	{
 		VTable t{ TypeId::Get<F>() };
 
-		if constexpr (std::is_trivially_destructible_v<F>)
+		t.m_Destroy = [](void* ptr)
 		{
-			t.m_Destroy = [](void*) {};
-		}
-		else
-		{
-			t.m_Destroy = [](void* ptr)
-			{
+			if constexpr (std::is_trivially_destructible_v<F>)
+				return;
+			else if constexpr (sizeof(F) <= sizeof(UniqueFunction::m_Buf))
 				static_cast<F*>(ptr)->~F();
-			};
-		}
+			else
+				delete static_cast<F*>(ptr);
+		};
+
 		if constexpr (std::is_move_assignable_v<F>)
 		{
 			t.m_MoveAssign = [](void* left, void* right)
@@ -74,15 +73,7 @@ namespace brk {
 	{
 		if (!m_Table)
 			return;
-		if (IsSmall())
-		{
-			m_Table->m_Destroy(m_Buf);
-		}
-		else
-		{
-			m_Table->m_Destroy(m_Ptr);
-			::delete(m_Ptr);
-		}
+		m_Table->m_Destroy(GetPtr());
 		m_Table = nullptr;
 	}
 
@@ -93,15 +84,9 @@ namespace brk {
 	}
 
 	template <class R, class... Args>
-	bool UniqueFunction<R(Args...)>::IsSmall() const noexcept
-	{
-		return m_Table->m_Id.m_Size <= sizeof(m_Buf);
-	}
-
-	template <class R, class... Args>
 	void* brk::UniqueFunction<R(Args...)>::GetPtr() noexcept
 	{
-		return IsSmall() ? m_Buf : m_Ptr;
+		return m_Table->m_Id.m_Size <= sizeof(m_Buf) ? m_Buf : m_Ptr;
 	}
 
 } // namespace brk

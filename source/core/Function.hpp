@@ -33,7 +33,7 @@ namespace brk {
 	public:
 		UniqueFunction() noexcept = default;
 		UniqueFunction(const UniqueFunction&) = delete;
-		UniqueFunction(UniqueFunction&&);
+		explicit UniqueFunction(UniqueFunction&&);
 		~UniqueFunction();
 
 		template <class F, IfSuitable<F> = 0>
@@ -76,7 +76,6 @@ namespace brk {
 		[[nodiscard]] const TypeId& GetId() const noexcept;
 
 	private:
-		bool IsSmall() const noexcept;
 		void* GetPtr() noexcept;
 		union {
 			void* m_Ptr = nullptr;
