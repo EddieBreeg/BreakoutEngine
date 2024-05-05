@@ -15,14 +15,16 @@ brk::ULID brk::ULID::Generate()
 	return res;
 }
 
-void brk::from_json(const nlohmann::json& out_json, ULID& id)
+void brk::from_json(const nlohmann::json& json, ULID& id)
 {
-	id = ULID::FromString(out_json.get<std::string_view>());
+	StringView str;
+	json.get_to<StringView>(str);
+	id = ULID::FromString(str);
 }
 
 void brk::to_json(nlohmann::json& out_json, const ULID& id)
 {
 	char str[26];
 	id.ToChars(str);
-	out_json = std::string_view{ str, 26 };
+	out_json = StringView{ str, 26 };
 }

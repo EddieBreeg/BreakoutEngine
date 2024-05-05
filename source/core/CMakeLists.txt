@@ -6,6 +6,7 @@ add_library(BRK_CORE STATIC
 	LogManager.cpp
 	RNG.cpp
 	SceneManager.cpp
+	StringView.cpp
 	ThreadPool.cpp
 	TimeInfo.cpp
 	ULID.cpp

@@ -6,7 +6,7 @@
 #include "Hash.hpp"
 
 #include <nlohmann/json_fwd.hpp>
-#include <string_view>
+#include "StringView.hpp"
 
 namespace std {
 	template <class T>
@@ -41,8 +41,7 @@ namespace brk {
 		template <uint32 N>
 		constexpr char* ToChars(char (&out_buf)[N]) const noexcept;
 
-		[[nodiscard]] static constexpr ULID FromString(
-			const std::string_view str) noexcept;
+		[[nodiscard]] static constexpr ULID FromString(const StringView str) noexcept;
 
 		[[nodiscard]] constexpr operator bool() const noexcept
 		{
@@ -60,7 +59,7 @@ namespace brk {
 		friend struct Hash<ULID>;
 	};
 
-	void from_json(const nlohmann::json& out_json, ULID& id);
+	void from_json(const nlohmann::json& json, ULID& out_id);
 	void to_json(nlohmann::json& out_json, const ULID& id);
 
 	template <>

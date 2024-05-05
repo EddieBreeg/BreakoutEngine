@@ -1,7 +1,7 @@
 #pragma once
 
 #include <PCH.hpp>
-#include <string_view>
+#include "StringView.hpp"
 #include <optional>
 
 namespace brk::utf8 {
@@ -9,7 +9,7 @@ namespace brk::utf8 {
 		class Int,
 		uint8 Base = 10,
 		std::enable_if_t<std::is_integral_v<Int>, int> = 0>
-	constexpr std::optional<Int> FromString(const std::string_view str) noexcept;
+	constexpr std::optional<Int> FromString(const StringView str) noexcept;
 
 	template <class Int, std::enable_if_t<std::is_integral_v<Int>, int> = 0>
 	constexpr Int FromChar(const char c) noexcept;

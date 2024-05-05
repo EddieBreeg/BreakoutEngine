@@ -26,7 +26,7 @@ namespace brk::ulid::ut {
 		}
 		{
 			static_assert(
-				brk::ULID::FromString("01HWPC5Y8GZZ3A6AQVX4PYRXHC") ==
+				brk::ULID::FromString(StringView{ "01HWPC5Y8GZZ3A6AQVX4PYRXHC" }) ==
 				brk::ULID{ 0x018f2cc2f910, 0xffc6, 0xa32afbe92dec762c });
 		}
 		{

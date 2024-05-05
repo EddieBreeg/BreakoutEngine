@@ -2,10 +2,9 @@
 
 #include <PCH.hpp>
 
-#include <fmt/core.h>
-
 #include <string>
-#include <string_view>
+#include "StringView.hpp"
+#include "StringViewFormatter.hpp"
 
 namespace brk {
 	class LogManager
@@ -22,17 +21,15 @@ namespace brk {
 
 		LogLevel m_Level = Critical;
 
-		[[nodiscard]] static LogManager& GetInstance() noexcept
-		{
-			return s_Instance;
-		}
+		[[nodiscard]] static LogManager& GetInstance() noexcept { return s_Instance; }
 
-		void Log(LogLevel level, std::string_view message);
+		void Log(LogLevel level, const StringView message);
 
 		template <class... Args>
 		void Log(LogLevel level, fmt::format_string<Args...> fmt, Args&&... args)
 		{
-			Log(level, fmt::format(fmt, std::forward<Args>(args)...));
+			const std::string str = fmt::format(fmt, std::forward<Args>(args)...);
+			Log(level, StringView{ str.c_str(), (uint32)str.length() });
 		}
 
 	private:

@@ -14,7 +14,7 @@ namespace brk::editor {
 	public:
 		~Editor() = default;
 
-		void LoadProjectDeferred(const std::string_view filePath) noexcept;
+		void LoadProjectDeferred(const StringView filePath) noexcept;
 		void LoadSceneDeferred(const ULID sceneId) noexcept;
 		void Update();
 		void ShowUI();
@@ -33,7 +33,7 @@ namespace brk::editor {
 		void LoadProject();
 		void LoadScene();
 
-		std::string_view m_ProjectFilePath;
+		StringView m_ProjectFilePath;
 		std::optional<Project> m_Project;
 		ULID m_CurrentScene;
 	};

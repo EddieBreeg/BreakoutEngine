@@ -1,5 +1,5 @@
 template <class Int, uint8 Base, std::enable_if_t<std::is_integral_v<Int>, int>>
-constexpr std::optional<Int> brk::utf8::FromString(const std::string_view str) noexcept
+constexpr std::optional<Int> brk::utf8::FromString(const StringView str) noexcept
 {
 	Int result = 0;
 	for (const char c : str)

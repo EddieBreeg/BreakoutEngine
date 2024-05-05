@@ -4,10 +4,20 @@
 
 #include <iostream>
 
+namespace
+{
+	std::ostream& operator<<(std::ostream& os, const brk::StringView str)
+	{
+		os.write(str.GetPtr(), str.GetLen());
+		return os;
+	}
+} // namespace
+
+
 namespace brk {
 	LogManager LogManager::s_Instance;
 
-	void LogManager::Log(LogLevel level, std::string_view message)
+	void LogManager::Log(LogLevel level, const StringView message)
 	{
 		if (level < m_Level)
 			return;

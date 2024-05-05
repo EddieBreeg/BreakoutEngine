@@ -19,7 +19,7 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 	LoadProjectDeferred(argv[1]);
 }
 
-void brk::editor::Editor::LoadProjectDeferred(const std::string_view filePath) noexcept
+void brk::editor::Editor::LoadProjectDeferred(const StringView filePath) noexcept
 {
 	m_LoadState = LoadState::Project;
 	m_ProjectFilePath = filePath;
@@ -44,7 +44,7 @@ void brk::editor::Editor::Update()
 void brk::editor::Editor::LoadProject()
 {
 	m_LoadState = LoadState::None;
-	std::ifstream projectFile{ m_ProjectFilePath.data() };
+	std::ifstream projectFile{ m_ProjectFilePath.GetPtr() };
 	if (!projectFile.is_open())
 	{
 		LogManager::GetInstance().Log(

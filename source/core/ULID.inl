@@ -1,4 +1,3 @@
-#include "ULID.hpp"
 #include <array>
 
 constexpr brk::ULID::ULID(
@@ -45,9 +44,9 @@ inline constexpr char* brk::ULID::ToChars(char (&out_buf)[N]) const noexcept
 	return out_buf + 26;
 }
 
-constexpr brk::ULID brk::ULID::FromString(const std::string_view str) noexcept
+constexpr brk::ULID brk::ULID::FromString(const StringView str) noexcept
 {
-	if (str.size() < 26)
+	if (str.GetLen() < 26)
 		return {};
 	constexpr uint8 map[] = {
 		255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255, 255,
@@ -62,20 +61,21 @@ constexpr brk::ULID brk::ULID::FromString(const std::string_view str) noexcept
 	brk::ULID res;
 
 	uint8 n = 0;
+	const char* ptr = str.GetPtr();
 	for (uint8 i = 0; i < 13; ++i)
 	{
-		n = map[str[i]];
+		n = map[ptr[i]];
 		if (n == 0xff)
 			return {};
 		res.m_Left = (res.m_Left << 5) | n;
 	}
-	n = map[str[13]];
+	n = map[ptr[13]];
 	res.m_Left = (res.m_Left << 1) | (n >> 4);
 	res.m_Right |= n & 0xff;
 
 	for (uint8 i = 14; i < 26; i++)
 	{
-		n = map[str[i]];
+		n = map[ptr[i]];
 		if (n == 0xff)
 			return {};
 		res.m_Right = (res.m_Right << 5) | n;
