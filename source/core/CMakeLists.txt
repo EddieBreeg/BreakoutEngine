@@ -7,9 +7,11 @@ add_library(BRK_CORE STATIC
 	RNG.cpp
 	SceneManager.cpp
 	StringView.cpp
+	StringViewFormatter.cpp
 	ThreadPool.cpp
 	TimeInfo.cpp
 	ULID.cpp
+	ULIDFormatter.cpp
 	${CORE_HEADERS}
 )
 
