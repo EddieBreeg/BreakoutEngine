@@ -3,9 +3,9 @@
 
 void brk::from_json(const nlohmann::json& json, StringView& str)
 {
-	std::string out;
+	std::string_view out;
 	json.get_to(out);
-	str = StringView{ out.c_str(), (uint32)out.length() };
+	str = StringView{ out.data(), (uint32)out.length() };
 }
 
 void brk::to_json(nlohmann::json& json, const StringView& str)
