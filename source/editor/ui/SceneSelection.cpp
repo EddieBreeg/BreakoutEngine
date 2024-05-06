@@ -14,7 +14,7 @@ void brk::editor::SceneSelectionWindow()
 
 	for (const auto& [id, descr] : SceneManager::GetInstance().GetObjects())
 	{
-		if (ImGui::Button(descr.GetPath().c_str()))
+		if (ImGui::Button(descr.GetName().c_str()))
 		{
 			Editor::GetInstance().LoadSceneDeferred(id);
 			break;
