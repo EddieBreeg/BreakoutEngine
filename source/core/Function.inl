@@ -1,4 +1,3 @@
-#include "Function.hpp"
 namespace brk {
 	template <class R, class... Args>
 	template <class F>

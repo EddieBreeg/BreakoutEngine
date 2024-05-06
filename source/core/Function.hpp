@@ -16,7 +16,7 @@ namespace brk {
 			const TypeId& m_Id;
 			void (*m_Destroy)(void*) = nullptr;
 			void (*m_MoveAssign)(void*, void*) = nullptr;
-			R (*m_Invoke)(void* ptr, Args&&... args) = nullptr;
+			R (*m_Invoke)(void* ptr, Args... args) = nullptr;
 
 			template <class F>
 			static VTable Implement();
