@@ -2,6 +2,7 @@
 file(GLOB MANAGER_HEADERS *.hpp)
 
 add_library(BRK_MANAGERS 
+	ResourceManager.cpp
 	SceneManager.cpp
 	${MANAGER_HEADERS}
 )
