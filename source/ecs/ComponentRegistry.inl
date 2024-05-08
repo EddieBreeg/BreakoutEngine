@@ -1,4 +1,4 @@
-namespace brk::_internal {
+namespace brk::ecs::_internal {
 	template <class C, class = void>
 	struct HasName : std::false_type
 	{};

@@ -5,7 +5,6 @@ add_library(BRK_CORE STATIC
 	DebugBreak.cpp
 	LogManager.cpp
 	RNG.cpp
-	SceneManager.cpp
 	StringView.cpp
 	StringViewFormatter.cpp
 	ThreadPool.cpp

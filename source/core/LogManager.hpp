@@ -38,3 +38,6 @@ namespace brk {
 		static LogManager s_Instance;
 	};
 } // namespace brk
+
+#define BRK_LOG_WARNING(fmt, ...)                                                        \
+	brk::LogManager::GetInstance().Log(brk::LogManager::Warning, fmt, __VA_ARGS__)

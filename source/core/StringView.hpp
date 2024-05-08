@@ -12,6 +12,7 @@ namespace brk {
 		constexpr BasicStringView() noexcept = default;
 		constexpr BasicStringView(const Char* str, const uint32 len);
 		constexpr BasicStringView(const Char* str);
+		constexpr BasicStringView(const std::string& str);
 
 		[[nodiscard]] constexpr const Char* GetPtr() const noexcept { return m_Ptr; }
 		[[nodiscard]] constexpr uint32 GetLen() const noexcept { return m_Len; }

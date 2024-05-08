@@ -10,6 +10,7 @@ add_library(BRK_EDITOR STATIC
 
 target_link_libraries(BRK_EDITOR PRIVATE
 	Breakout::Core
+	Breakout::ECS
 	ImGui::ImGui
 	TinyFileDialogs
 	BRK_INCLUDES

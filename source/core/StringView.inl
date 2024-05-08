@@ -1,3 +1,4 @@
+#include "StringView.hpp"
 template <class Char>
 constexpr brk::BasicStringView<Char>::BasicStringView(const Char* str, const uint32 len)
 	: m_Ptr{ str }
@@ -11,6 +12,12 @@ constexpr brk::BasicStringView<Char>::BasicStringView(const Char* str)
 	while (*str++)
 		++m_Len;
 }
+
+template <class Char>
+constexpr brk::BasicStringView<Char>::BasicStringView(const std::string& str)
+	: m_Ptr{ str.c_str() }
+	, m_Len{ (uint32)str.length() }
+{}
 
 template <class Char>
 Char brk::BasicStringView<Char>::operator[](const uint32 index) const
