@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include <core/Singleton.hpp>
 #include <core/Scene.hpp>
-#include "GameObject.hpp"
+#include <ecs/GameObject.hpp>
 
 #ifdef BRK_EDITOR
 #include <nlohmann/json_fwd.hpp>
@@ -11,7 +11,7 @@
 
 #include <unordered_map>
 
-namespace brk::ecs {
+namespace brk {
 	class SceneManager : public Singleton<SceneManager>
 	{
 	public:
@@ -22,7 +22,7 @@ namespace brk::ecs {
 #endif
 		void LoadScene(const ULID sceneId);
 
-		const GameObject* GetObject(const ULID id) const;
+		const ecs::GameObject* GetObject(const ULID id) const;
 
 		[[nodiscard]] const TULIDMap<SceneDescription>& GetObjects() const noexcept
 		{
@@ -34,6 +34,6 @@ namespace brk::ecs {
 		SceneManager() = default;
 
 		TULIDMap<SceneDescription> m_Descriptions;
-		TULIDMap<GameObject> m_Objects;
+		TULIDMap<ecs::GameObject> m_Objects;
 	};
 } // namespace brk

@@ -3,7 +3,6 @@ file(GLOB ECS_HEADERS *.hpp)
 
 add_library(BRK_ECS 
 	ComponentRegistry.cpp
-	SceneManager.cpp
 	System.cpp
 	${ECS_HEADERS}
 )

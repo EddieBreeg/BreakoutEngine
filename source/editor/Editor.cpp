@@ -8,7 +8,7 @@
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
 
-#include <ecs/SceneManager.hpp>
+#include <managers/SceneManager.hpp>
 
 #include <fstream>
 #include <system_error>
@@ -69,7 +69,7 @@ void brk::editor::Editor::LoadProject()
 	const auto it = desc.find("scenes");
 	if (it != desc.end())
 	{
-		ecs::SceneManager::GetInstance().LoadSceneDescriptions(*it);
+		SceneManager::GetInstance().LoadSceneDescriptions(*it);
 	}
 
 	LogManager::GetInstance().Log(LogManager::Trace, "Finished loading project");
@@ -77,7 +77,7 @@ void brk::editor::Editor::LoadProject()
 
 void brk::editor::Editor::LoadScene()
 {
-	ecs::SceneManager::GetInstance().LoadScene(m_CurrentScene);
+	SceneManager::GetInstance().LoadScene(m_CurrentScene);
 	m_LoadState = LoadState::None;
 }
 

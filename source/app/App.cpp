@@ -1,7 +1,7 @@
 #include "App.hpp"
 
 #include <core/LogManager.hpp>
-#include <ecs/SceneManager.hpp>
+#include <managers/SceneManager.hpp>
 
 #include <csignal>
 #include <iostream>
@@ -54,7 +54,7 @@ namespace brk {
 #endif
 		m_ECSManager.AddSystem<VisualSystem>();
 
-		ecs::SceneManager::Init();
+		SceneManager::Init();
 	}
 
 	int App::Run()

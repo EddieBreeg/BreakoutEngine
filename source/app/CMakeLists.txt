@@ -3,6 +3,7 @@ target_link_libraries(BRK_APP PUBLIC
 	Breakout::Core
 	Breakout::Editor
 	Breakout::ECS
+	Breakout::Managers
 )
 target_link_libraries(BRK_APP PRIVATE
 	SDL2::SDL2

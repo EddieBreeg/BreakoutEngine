@@ -1,6 +1,6 @@
 #include "SceneSelection.hpp"
 #ifdef BRK_EDITOR
-#include <ecs/SceneManager.hpp>
+#include <managers/SceneManager.hpp>
 #include <editor/Editor.hpp>
 
 #include <imgui.h>
@@ -12,7 +12,7 @@ void brk::editor::SceneSelectionWindow()
 		nullptr,
 		ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoDocking);
 
-	for (const auto& [id, descr] : ecs::SceneManager::GetInstance().GetObjects())
+	for (const auto& [id, descr] : SceneManager::GetInstance().GetObjects())
 	{
 		if (ImGui::Button(descr.GetName().c_str()))
 		{

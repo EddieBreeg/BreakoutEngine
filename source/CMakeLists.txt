@@ -2,6 +2,7 @@ add_subdirectory(math)
 add_subdirectory(rendering)
 add_subdirectory(core)
 add_subdirectory(ecs)
+add_subdirectory(managers)
 add_subdirectory(debug)
 add_subdirectory(systems)
 add_subdirectory(editor)
@@ -24,6 +25,7 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::Core
 	Breakout::ECS
+	Breakout::Managers
 	Breakout::Systems
 	Breakout::Math
 	Breakout::Editor

@@ -47,7 +47,7 @@ namespace {
 	}
 } // namespace
 
-void brk::ecs::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions)
+void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions)
 {
 	BRK_ASSERT(
 		descriptions.is_array(),
@@ -67,7 +67,7 @@ void brk::ecs::SceneManager::LoadSceneDescriptions(const nlohmann::json& descrip
 }
 #endif
 
-void brk::ecs::SceneManager::LoadScene(const ULID id)
+void brk::SceneManager::LoadScene(const ULID id)
 {
 	const auto it = m_Descriptions.find(id);
 	DEBUG_CHECK(it != m_Descriptions.end())
@@ -93,13 +93,13 @@ void brk::ecs::SceneManager::LoadScene(const ULID id)
 	entt::registry& world = ecs::Manager::GetInstance().GetWorld();
 	for (const nlohmann::json& objectDesc : *keyPos)
 	{
-		GameObject object = LoadGameObject(objectDesc, world);
+		ecs::GameObject object = LoadGameObject(objectDesc, world);
 		m_Objects.emplace(object.m_Id, std::move(object));
 	}
 #endif
 }
 
-const brk::ecs::GameObject* brk::ecs::SceneManager::GetObject(const ULID id) const
+const brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id) const
 {
 	const auto it = m_Objects.find(id);
 	return it == m_Objects.end() ? nullptr : &it->second;

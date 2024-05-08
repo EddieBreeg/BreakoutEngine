@@ -1,7 +1,7 @@
 #include <core/FieldList.hpp>
 #include <core/Loaders.hpp>
 #include <ecs/ComponentRegistry.hpp>
-#include <ecs/SceneManager.hpp>
+#include <managers/SceneManager.hpp>
 #include <nlohmann/json.hpp>
 #include <systems/ECSManager.hpp>
 
@@ -10,7 +10,7 @@ namespace brk::scene_loading::ut {
 	{
 	public:
 		RAIIHelper()
-			: m_SceneManager{ ecs::SceneManager::Init() }
+			: m_SceneManager{ SceneManager::Init() }
 			, m_Registry{ ecs::ComponentRegistry::Init() }
 			, m_ECSManager{ ecs::Manager::Init() }
 			, m_World{ m_ECSManager.GetWorld() }
@@ -22,7 +22,7 @@ namespace brk::scene_loading::ut {
 			m_SceneManager.Reset();
 		}
 
-		ecs::SceneManager& m_SceneManager;
+		SceneManager& m_SceneManager;
 		ecs::ComponentRegistry& m_Registry;
 		ecs::Manager& m_ECSManager;
 		entt::registry& m_World;
