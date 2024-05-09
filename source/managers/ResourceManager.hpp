@@ -1,3 +1,4 @@
+#pragma once
 #include <PCH.hpp>
 #include <core/Resource.hpp>
 #include <core/Singleton.hpp>
@@ -9,6 +10,7 @@ namespace brk
 	{
 	public:
 		static_assert(std::is_base_of_v<Resource, Res>, "Invalid resource type");
+		ResourceRef(Res* ptr);
 		ResourceRef(const ResourceRef&);
 		ResourceRef(ResourceRef&&) noexcept;
 		~ResourceRef();
@@ -17,9 +19,6 @@ namespace brk
 		[[nodiscard]] const Res& operator*();
 
 	private:
-		friend class ResourceManager;
-		ResourceRef(Resource* ptr);
-
 		Res* m_Ptr;
 	};
 
@@ -30,6 +29,7 @@ namespace brk
 
 	private:
 		friend class Singleton<ResourceManager>;
+
 		ResourceManager() noexcept = default;
 	};
 } // namespace brk

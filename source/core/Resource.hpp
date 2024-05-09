@@ -25,7 +25,7 @@ namespace brk
 			, m_Offset{ offset }
 #endif
 		{}
-		virtual ~Resource();
+		virtual ~Resource() = default;
 
 		virtual bool DoLoad() { return false; }
 
