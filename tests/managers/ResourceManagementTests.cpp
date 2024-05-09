@@ -29,12 +29,12 @@ namespace brk::resource_ref::ut
 		RAIIHelper helper;
 		int n = 0;
 		{
-			ResourceRef ref{ new Res1{ n } };
+			ResourceRef<const Res1> ref{ *(new Res1{ n }) };
 			assert(n == 1);
 		}
 		assert(n == 0);
 		{
-			ResourceRef ref1{ new Res1{ n } };
+			ResourceRef<const Res1> ref1{ *(new Res1{ n }) };
 			{
 				ResourceRef ref2{ ref1 };
 			}
@@ -42,7 +42,7 @@ namespace brk::resource_ref::ut
 		}
 		assert(n == 0);
 		{
-			ResourceRef ref1{ new Res1{ n } };
+			ResourceRef<const Res1> ref1{ *(new Res1{ n }) };
 			{
 				ResourceRef ref2{ std::move(ref1) };
 			}
@@ -51,7 +51,7 @@ namespace brk::resource_ref::ut
 		{
 			Res1* ptr = new Res1{ n };
 			ptr->value = 1;
-			ResourceRef ref1{ ptr };
+			ResourceRef<const Res1> ref1{ *ptr };
 			ResourceRef ref2{ ref1 };
 			assert(ref1->value == 1);
 			assert(ref2->value == 1);

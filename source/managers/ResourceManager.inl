@@ -1,7 +1,6 @@
-#include "ResourceManager.hpp"
 template <class Res>
-brk::ResourceRef<Res>::ResourceRef(Res* ptr)
-	: m_Ptr{ ptr }
+brk::ResourceRef<Res>::ResourceRef(std::remove_const_t<Res>& ptr)
+	: m_Ptr{ &ptr }
 {
 	++(m_Ptr->m_RefCount);
 }
@@ -33,13 +32,13 @@ brk::ResourceRef<Res>::~ResourceRef()
 }
 
 template <class Res>
-const Res* brk::ResourceRef<Res>::operator->()
+Res* brk::ResourceRef<Res>::operator->()
 {
 	return m_Ptr;
 }
 
 template <class Res>
-const Res& brk::ResourceRef<Res>::operator*()
+Res& brk::ResourceRef<Res>::operator*()
 {
 	return *m_Ptr;
 }

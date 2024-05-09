@@ -10,17 +10,19 @@ namespace brk
 	class ResourceRef
 	{
 	public:
-		static_assert(std::is_base_of_v<Resource, Res>, "Invalid resource type");
-		ResourceRef(Res* ptr);
+		using TMutableRes = std::remove_const_t<Res>;
+		static_assert(std::is_base_of_v<Resource, TMutableRes>, "Invalid resource type");
+
+		ResourceRef(TMutableRes& ptr);
 		ResourceRef(const ResourceRef&);
 		ResourceRef(ResourceRef&&) noexcept;
 		~ResourceRef();
 
-		[[nodiscard]] const Res* operator->();
-		[[nodiscard]] const Res& operator*();
+		[[nodiscard]] Res* operator->();
+		[[nodiscard]] Res& operator*();
 
 	private:
-		Res* m_Ptr;
+		TMutableRes* m_Ptr;
 	};
 
 	class ResourceManager : public Singleton<ResourceManager>
