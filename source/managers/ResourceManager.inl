@@ -28,7 +28,7 @@ brk::ResourceRef<Res>::~ResourceRef()
 
 	if (!--(m_Ptr->m_RefCount))
 	{
-		delete m_Ptr;
+		ResourceManager::GetInstance().Unload(m_Ptr);
 	}
 }
 

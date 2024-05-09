@@ -29,13 +29,13 @@ namespace brk
 
 		virtual bool DoLoad() { return false; }
 
-	protected:
 		const ULID m_Id;
 		const std::string m_Name;
 		const std::string m_FilePath;
 #ifndef BRK_DEV
 		const uint32 m_Offset;
 #endif
+
 	private:
 		template <class R>
 		friend class ResourceRef;

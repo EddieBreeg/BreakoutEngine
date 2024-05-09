@@ -15,8 +15,18 @@ namespace brk::resource_ref::ut
 		~Res1() { --count; }
 	};
 
+	class RAIIHelper
+	{
+	public:
+		RAIIHelper() { ResourceManager::Init(); }
+		~RAIIHelper() { ResourceManager::Reset(); }
+
+	private:
+	};
+
 	void ResourceRefTests()
 	{
+		RAIIHelper helper;
 		int n = 0;
 		{
 			ResourceRef ref{ new Res1{ n } };

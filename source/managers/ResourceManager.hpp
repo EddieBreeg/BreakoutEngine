@@ -2,6 +2,7 @@
 #include <PCH.hpp>
 #include <core/Resource.hpp>
 #include <core/Singleton.hpp>
+#include <unordered_map>
 
 namespace brk
 {
@@ -29,8 +30,14 @@ namespace brk
 
 	private:
 		friend class Singleton<ResourceManager>;
+		template<class T>
+		friend class ResourceRef;
+
+		void Unload(Resource* res);
 
 		ResourceManager() noexcept = default;
+
+		TULIDMap<Resource*> m_Resources;
 	};
 } // namespace brk
 
