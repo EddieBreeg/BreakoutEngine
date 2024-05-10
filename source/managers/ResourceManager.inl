@@ -9,7 +9,8 @@ template <class Res>
 brk::ResourceRef<Res>::ResourceRef(const ResourceRef& other)
 	: m_Ptr{ other.m_Ptr }
 {
-	++(m_Ptr->m_RefCount);
+	if (m_Ptr)
+		++(m_Ptr->m_RefCount);
 }
 
 template <class Res>
@@ -29,6 +30,23 @@ brk::ResourceRef<Res>::~ResourceRef()
 	{
 		ResourceManager::GetInstance().Unload(m_Ptr);
 	}
+}
+
+template <class Res>
+brk::ResourceRef<Res>& brk::ResourceRef<Res>::operator=(const ResourceRef& other)
+{
+	this->~ResourceRef();
+	m_Ptr = other.m_Ptr;
+	if (m_Ptr)
+		++(m_Ptr->m_RefCount);
+	return *this;
+}
+
+template <class Res>
+brk::ResourceRef<Res>& brk::ResourceRef<Res>::operator=(ResourceRef&& other) noexcept
+{
+	std::swap(m_Ptr, other.m_Ptr);
+	return *this;
 }
 
 template <class Res>
