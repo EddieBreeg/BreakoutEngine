@@ -1,3 +1,5 @@
+#include <core/ULIDFormatter.hpp>
+
 template <class Res>
 brk::ResourceRef<Res>::ResourceRef(std::remove_const_t<Res>& ptr)
 	: m_Ptr{ &ptr }
@@ -28,7 +30,7 @@ brk::ResourceRef<Res>::~ResourceRef()
 
 	if (!--(m_Ptr->m_RefCount))
 	{
-		ResourceManager::GetInstance().Unload(m_Ptr);
+		ResourceManager::GetInstance().UnloadDeferred(m_Ptr);
 	}
 }
 
@@ -59,4 +61,36 @@ template <class Res>
 Res& brk::ResourceRef<Res>::operator*()
 {
 	return *m_Ptr;
+}
+
+template <class R>
+void brk::ResourceManager::RegisterResourceType()
+{
+	static_assert(
+		std::is_base_of_v<Resource, R> && _internal::HasName<R>::value &&
+			std::is_default_constructible_v<R>,
+		"Invalid resource type");
+	constexpr uint32 h = Hash<StringView>{}(R::Name);
+	m_TypeMap.emplace(
+		h,
+		[]() -> Resource*
+		{
+			return new R{};
+		});
+}
+
+template <class R>
+brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id) const
+{
+	const auto it = m_Resources.find(id);
+	DEBUG_CHECK(it != m_Resources.end())
+	{
+		return {};
+	}
+	using TRef = ResourceRef<R>;
+
+	Resource* ptr = it->second;
+	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->m_Id);
+
+	return { static_cast<TRef::TMutableRes&>(*ptr) };
 }

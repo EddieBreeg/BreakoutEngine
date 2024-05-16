@@ -4,6 +4,7 @@ add_library(BRK_CORE STATIC
 	Assert.cpp
 	DebugBreak.cpp
 	LogManager.cpp
+	Resource.cpp
 	RNG.cpp
 	StringView.cpp
 	StringViewFormatter.cpp

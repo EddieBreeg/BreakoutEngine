@@ -13,7 +13,7 @@ namespace brk {
 		static_assert(std::is_base_of_v<Resource, TMutableRes>, "Invalid resource type");
 
 		ResourceRef() noexcept = default;
-		ResourceRef(TMutableRes& ptr);
+		ResourceRef(TMutableRes& ref);
 		ResourceRef(const ResourceRef&);
 		ResourceRef(ResourceRef&&) noexcept;
 		~ResourceRef();
@@ -33,18 +33,32 @@ namespace brk {
 	class ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
-		~ResourceManager() noexcept = default;
+		~ResourceManager();
+
+		template <class R>
+		void RegisterResourceType();
+
+#ifdef BRK_DEV
+		void PreloadResources(const nlohmann::json& list);
+#endif
+
+		template <class R>
+		ResourceRef<R> GetRef(const ULID id) const;
 
 	private:
 		friend class Singleton<ResourceManager>;
 		template <class T>
 		friend class ResourceRef;
 
-		void Unload(Resource* res);
+		Resource* CreateResource(const nlohmann::json& desc) const;
+		void UnloadDeferred(Resource* res);
 
 		ResourceManager() noexcept = default;
 
 		TULIDMap<Resource*> m_Resources;
+
+		using TTypeMap = std::unordered_map<uint32, Resource* (*)(), Hash<uint32>>;
+		TTypeMap m_TypeMap;
 	};
 } // namespace brk
 
