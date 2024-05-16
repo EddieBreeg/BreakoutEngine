@@ -11,6 +11,9 @@ namespace brk {
 	template <class T, class = void>
 	struct JsonLoader;
 
+	template <class Char>
+	struct BasicStringView;
+
 	namespace _internal {
 		template <class T>
 		struct IsFieldList : std::false_type
@@ -37,6 +40,17 @@ namespace brk {
 
 		template <class T>
 		using IfHasFieldList = std::enable_if_t<IsFieldList<decltype(T::Fields)>::value>;
+
+		template <class T, class = void>
+		struct HasName : std::false_type
+		{};
+		template <class T>
+		struct HasName<
+			T,
+			std::enable_if_t<
+				std::is_same_v<decltype(T::Name), const BasicStringView<char>>>>
+			: std::true_type
+		{};
 	} // namespace _internal
 
 	template <class T>

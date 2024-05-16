@@ -1,19 +1,7 @@
-namespace brk::ecs::_internal {
-	template <class C, class = void>
-	struct HasName : std::false_type
-	{};
-	template <class C>
-	struct HasName<
-		C,
-		std::enable_if_t<std::is_same_v<const StringView, decltype(C::Name)>>>
-		: std::true_type
-	{};
-} // namespace brk::_internal
-
 template <class C>
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 {
-	static_assert(_internal::HasName<C>::value, "Component doesn't have a name");
+	static_assert(brk::_internal::HasName<C>::value, "Component doesn't have a name");
 	static constexpr uint32 h = Hash<StringView>{}(C::Name);
 #ifdef BRK_DEV
 	{
@@ -34,7 +22,7 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 template <class C>
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo() const
 {
-	static_assert(_internal::HasName<C>::value, "Component doesn't have a name");
+	static_assert(brk::_internal::HasName<C>::value, "Component doesn't have a name");
 	static constexpr uint32 h = Hash<StringView>{}(C::Name);
 	const auto it = m_TypeMap.find(h);
 	BRK_ASSERT(
