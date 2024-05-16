@@ -17,11 +17,11 @@ void brk::ResourceManager::PreloadResources(const nlohmann::json& list)
 		Resource* res = CreateResource(desc);
 		if (!JsonLoader<Resource>::Load(*res, desc))
 		{
-			BRK_LOG_WARNING("Loading resource '{}' failed", res->m_Id);
+			BRK_LOG_WARNING("Loading resource '{}' failed", res->GetId());
 			delete res;
 			continue;
 		}
-		m_Resources.emplace(res->m_Id, res);
+		m_Resources.emplace(res->GetId(), res);
 	}
 }
 

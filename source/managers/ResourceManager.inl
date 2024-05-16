@@ -90,7 +90,7 @@ brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id) const
 	using TRef = ResourceRef<R>;
 
 	Resource* ptr = it->second;
-	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->m_Id);
+	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->GetId());
 
 	return { static_cast<TRef::TMutableRes&>(*ptr) };
 }

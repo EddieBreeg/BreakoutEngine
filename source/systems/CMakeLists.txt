@@ -3,6 +3,7 @@ file(GLOB SYSTEMS_H *.h *.hpp *.inl)
 
 add_library(BRK_SYSTEMS
 	ECSManager.cpp
+	ResourceLoadingSystem.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp
 	${SYSTEMS_H}
@@ -17,6 +18,7 @@ target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Rendering
 	Breakout::App
 	Breakout::Debug
+	Breakout::Managers
 	Breakout::Editor
 	ImGui::ImGui
 	SDL2::SDL2

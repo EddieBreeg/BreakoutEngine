@@ -49,6 +49,9 @@ namespace brk::ecs {
 		template <class Component>
 		Component& Get(const entt::entity e)
 		{
+			static_assert(
+				(std::is_same_v<Component, Include> || ...),
+				"Component is not in the include list");
 			return m_View.get<Component>(e);
 		}
 		template <class Component>

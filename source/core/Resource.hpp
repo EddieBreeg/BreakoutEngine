@@ -11,9 +11,15 @@ namespace brk {
 	{
 	public:
 		Resource() = default;
-		virtual ~Resource() = default;
+		virtual ~Resource();
 
 		virtual bool DoLoad() { return false; }
+		virtual void DoUnload() {}
+
+		[[nodiscard]] bool IsLoaded() const noexcept { return m_IsLoaded; }
+		[[nodiscard]] const ULID GetId() const noexcept { return m_Id; }
+		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
+		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
 
 	private:
 		ULID m_Id;
@@ -23,14 +29,15 @@ namespace brk {
 		const uint32 m_Offset;
 #endif
 		uint32 m_RefCount = 0;
+		bool m_IsLoaded = false;
 
 		template <class R>
 		friend class ResourceRef;
-		friend class ResourceManager;
+		friend class ResourceLoadingSystem;
 		friend struct JsonLoader<Resource>;
 	};
 
-	template<>
+	template <>
 	struct JsonLoader<Resource>
 	{
 		static bool Load(Resource& out_res, const nlohmann::json& json);
