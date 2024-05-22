@@ -32,7 +32,7 @@ namespace brk::resource_loading::ut {
 			RAIIHelper helper;
 			Res r;
 			helper.m_Manager.Update(helper.m_Time);
-			assert(!r.IsLoaded());
+			assert(r.GetLoadingState() == Resource::Unloaded);
 		}
 		{
 			RAIIHelper helper;
@@ -41,13 +41,28 @@ namespace brk::resource_loading::ut {
 				helper.m_EntityWorld.create(),
 				static_cast<Resource*>(&r));
 			helper.m_Manager.Update(helper.m_Time);
-			assert(r.IsLoaded());
+			assert(r.GetLoadingState() == Resource::Loaded);
 
 			helper.m_EntityWorld.emplace<ResourceUnloadRequestComponent>(
 				helper.m_EntityWorld.create(),
 				&r);
 			helper.m_Manager.Update(helper.m_Time);
-			assert(!r.IsLoaded());
+			assert(r.GetLoadingState() == Resource::Unloaded);
+		}
+		{
+			RAIIHelper helper;
+			Res r;
+			helper.m_EntityWorld.emplace<ResourceLoadRequestComponent>(
+				helper.m_EntityWorld.create(),
+				static_cast<Resource*>(&r));
+			helper.m_Manager.Update(helper.m_Time);
+			assert(r.GetLoadingState() == Resource::Loaded);
+
+			helper.m_EntityWorld.emplace<ResourceLoadRequestComponent>(
+				helper.m_EntityWorld.create(),
+				static_cast<Resource*>(&r));
+			helper.m_Manager.Update(helper.m_Time);
+			assert(r.GetLoadingState() == Resource::Loaded);
 		}
 	}
 } // namespace brk::resource_loading::ut

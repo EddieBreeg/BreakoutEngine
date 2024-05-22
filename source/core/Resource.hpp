@@ -10,13 +10,23 @@ namespace brk {
 	class Resource
 	{
 	public:
-		Resource() = default;
+		enum ELoadingState
+		{
+			Unloaded,
+			Loading,
+			Loaded,
+		};
+
+		Resource(const ULID id = ULID{});
 		virtual ~Resource();
 
 		virtual bool DoLoad() { return false; }
 		virtual void DoUnload() {}
 
-		[[nodiscard]] bool IsLoaded() const noexcept { return m_IsLoaded; }
+		[[nodiscard]] ELoadingState GetLoadingState() const noexcept
+		{
+			return m_LoadingState;
+		}
 		[[nodiscard]] const ULID GetId() const noexcept { return m_Id; }
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
@@ -29,11 +39,12 @@ namespace brk {
 		const uint32 m_Offset;
 #endif
 		uint32 m_RefCount = 0;
-		bool m_IsLoaded = false;
+		ELoadingState m_LoadingState = Unloaded;
 
+		friend class ResourceLoadingSystem;
+		friend class ResourceManager;
 		template <class R>
 		friend class ResourceRef;
-		friend class ResourceLoadingSystem;
 		friend struct JsonLoader<Resource>;
 	};
 

@@ -2,6 +2,7 @@
 #include <PCH.hpp>
 #include <core/Resource.hpp>
 #include <core/Singleton.hpp>
+#include <entt/entity/fwd.hpp>
 #include <unordered_map>
 
 namespace brk {
@@ -39,26 +40,35 @@ namespace brk {
 		void RegisterResourceType();
 
 #ifdef BRK_DEV
+		/**
+		 * \short Pre-allocates the resource objects and adds them to the internal map,
+		 * without loading the actual data \param list: The list of resource descriptions
+		 * to load
+		 */
 		void PreloadResources(const nlohmann::json& list);
 #endif
 
 		template <class R>
-		ResourceRef<R> GetRef(const ULID id) const;
+		ResourceRef<R> GetRef(const ULID id);
 
 	private:
 		friend class Singleton<ResourceManager>;
 		template <class T>
 		friend class ResourceRef;
 
-		Resource* CreateResource(const nlohmann::json& desc) const;
+		Resource* CreateResource(const StringView type, const ULID id) const;
+
+		void LoadDeferred(Resource* res);
 		void UnloadDeferred(Resource* res);
 
-		ResourceManager() noexcept = default;
+		ResourceManager(entt::registry& world) noexcept;
 
 		TULIDMap<Resource*> m_Resources;
 
-		using TTypeMap = std::unordered_map<uint32, Resource* (*)(), Hash<uint32>>;
+		using TTypeMap =
+			std::unordered_map<uint32, Resource* (*)(const ULID), Hash<uint32>>;
 		TTypeMap m_TypeMap;
+		entt::registry& m_World;
 	};
 } // namespace brk
 

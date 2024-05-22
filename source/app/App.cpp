@@ -1,6 +1,7 @@
 #include "App.hpp"
 
 #include <core/LogManager.hpp>
+#include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
 
 #include <csignal>
@@ -12,6 +13,7 @@
 
 #include <SDL2/SDL_video.h>
 
+#include <systems/ResourceLoadingSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 
@@ -27,7 +29,14 @@ namespace brk {
 			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
 #endif
 			m_ECSManager.AddSystem<WindowSystem>(settings);
+			m_ECSManager.AddSystem<ResourceLoadingSystem>();
 		}
+	}
+
+	void App::InitManagers()
+	{
+		ResourceManager::Init(m_ECSManager.GetWorld());
+		SceneManager::Init();
 	}
 
 	bool App::Update()
@@ -53,8 +62,7 @@ namespace brk {
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
 		m_ECSManager.AddSystem<VisualSystem>();
-
-		SceneManager::Init();
+		InitManagers();
 	}
 
 	int App::Run()

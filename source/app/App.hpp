@@ -21,6 +21,7 @@ namespace brk {
 
 	private:
 		void InitCoreSystems();
+		void InitManagers();
 		bool Update();
 
 		const int m_Argc;

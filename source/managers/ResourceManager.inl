@@ -70,17 +70,18 @@ void brk::ResourceManager::RegisterResourceType()
 		std::is_base_of_v<Resource, R> && _internal::HasName<R>::value &&
 			std::is_default_constructible_v<R>,
 		"Invalid resource type");
+
 	constexpr uint32 h = Hash<StringView>{}(R::Name);
 	m_TypeMap.emplace(
 		h,
-		[]() -> Resource*
+		[](const ULID id) -> Resource*
 		{
-			return new R{};
+			return new R{ id };
 		});
 }
 
 template <class R>
-brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id) const
+brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id)
 {
 	const auto it = m_Resources.find(id);
 	DEBUG_CHECK(it != m_Resources.end())
@@ -91,6 +92,8 @@ brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id) const
 
 	Resource* ptr = it->second;
 	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->GetId());
+	if (ptr->GetLoadingState() == Resource::Unloaded)
+		LoadDeferred(ptr);
 
 	return { static_cast<TRef::TMutableRes&>(*ptr) };
 }

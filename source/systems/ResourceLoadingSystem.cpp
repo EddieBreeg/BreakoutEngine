@@ -1,5 +1,5 @@
-#include "ResourceLoadingComponents.hpp"
 #include "ResourceLoadingSystem.hpp"
+#include "ResourceLoadingComponents.hpp"
 #include <core/Resource.hpp>
 
 void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
@@ -9,7 +9,8 @@ void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 	for (const entt::entity e : loadRequestsWorld)
 	{
 		const auto& req = loadRequestsWorld.Get<const ResourceLoadRequestComponent>(e);
-		req.m_Res->m_IsLoaded = req.m_Res->DoLoad();
+		if (req.m_Res->DoLoad())
+			req.m_Res->m_LoadingState = Resource::Loaded;
 		world.DestroyEntity(e);
 	}
 
@@ -19,7 +20,7 @@ void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 	{
 		const auto& req = unloadRequestsWorld.Get<const ResourceUnloadRequestComponent>(e);
 		req.m_Res->DoUnload();
-		req.m_Res->m_IsLoaded = false;
+		req.m_Res->m_LoadingState = Resource::Unloaded;
 		world.DestroyEntity(e);
 	}
 }
