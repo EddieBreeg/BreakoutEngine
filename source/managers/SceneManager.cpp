@@ -15,19 +15,16 @@ namespace {
 	brk::ecs::GameObject LoadGameObject(const nlohmann::json& json, entt::registry& world)
 	{
 		brk::ecs::GameObject object;
+
+		if (!Visit("id", json, object.m_Id))
 		{
-			auto it = json.find("id");
-			DEBUG_CHECK(it != json.end())
-			{
-				BRK_LOG_WARNING("Game object doesn't have a ULID");
-				return object;
-			}
-			it->get_to(object.m_Id);
-			DEBUG_CHECK(object.m_Id)
-			{
-				BRK_LOG_WARNING("Game object doesn't have a valid ULID");
-				return object;
-			}
+			BRK_LOG_WARNING("Game object doesn't have a ULID");
+			return object;
+		}
+		DEBUG_CHECK(object.m_Id)
+		{
+			BRK_LOG_WARNING("Game object doesn't have a valid ULID");
+			return object;
 		}
 		object.m_Entity = world.create();
 
@@ -56,7 +53,12 @@ void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions
 	for (const nlohmann::json data : descriptions)
 	{
 		SceneDescription desc;
-		JsonLoader<SceneDescription>::Load(desc, data);
+		if(!JsonLoader<SceneDescription>::Load(desc, data))
+		{
+			BRK_LOG_WARNING("Failed to load description for scene '{}'", desc.GetName());
+			continue;
+		}
+
 		BRK_ASSERT(desc.GetId(), "Scene '{}' has invalid ULID", desc.GetName());
 		BRK_ASSERT(
 			desc.GetName().length(),
@@ -84,14 +86,13 @@ void brk::SceneManager::LoadScene(const ULID id)
 		return;
 	}
 	nlohmann::json json = nlohmann::json::parse(file);
-	const auto keyPos = json.find("objects");
-	if (keyPos == json.end())
-	{
-		BRK_LOG_WARNING("Scene '{}' doesn't have an objects key", it->second.GetName());
+	std::vector<nlohmann::json> objects;
+
+	if(!Visit("objects", json, objects))
 		return;
-	}
+
 	entt::registry& world = ecs::Manager::GetInstance().GetWorld();
-	for (const nlohmann::json& objectDesc : *keyPos)
+	for (const nlohmann::json& objectDesc : objects)
 	{
 		ecs::GameObject object = LoadGameObject(objectDesc, world);
 		m_Objects.emplace(object.m_Id, std::move(object));

@@ -196,6 +196,10 @@ namespace brk {
 			it->get_to(out_value);
 			return true;
 		}
+		else if constexpr(std::is_same_v<V, nlohmann::json>)
+		{
+			out_value = *it;
+		}
 		else
 		{
 			return JsonLoader<V>::Load(out_value, json);
