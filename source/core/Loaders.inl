@@ -152,7 +152,7 @@ namespace brk {
 		const nlohmann::json& json)
 	{
 		bool result = true;
-		((result &= LoadField(out_object.*Fields, json, list.m_Names[I])), ...);
+		((result &= Visit(list.m_Names[I], json, out_object.*Fields)), ...);
 		return result;
 	}
 
@@ -169,28 +169,6 @@ namespace brk {
 
 	template <class T>
 	template <class F>
-	bool JsonLoader<T, _internal::IfHasFieldList<T>>::LoadField(
-		F& field,
-		const nlohmann::json& json,
-		const char* name)
-	{
-		const auto iter = json.find(name);
-		if (iter == json.end())
-			return false;
-
-		if constexpr (_internal::IsNativeJsonCompatible<F>::value)
-		{
-			iter->get_to(field);
-		}
-		else
-		{
-			field = std::move(JsonLoader<F>::Load(*iter));
-		}
-		return true;
-	}
-
-	template <class T>
-	template <class F>
 	void JsonLoader<T, _internal::IfHasFieldList<T>>::SaveField(
 		const F& field,
 		nlohmann::json& out_json,
@@ -203,6 +181,24 @@ namespace brk {
 		else
 		{
 			out_json[name] = JsonLoader<F>::Save(field);
+		}
+	}
+
+	template <class K, class V>
+	bool Visit(K&& key, const nlohmann::json& json, V& out_value)
+	{
+		const auto it = json.find(std::forward<K>(key));
+		if (it == json.end())
+			return false;
+		
+		if constexpr(_internal::IsNativeJsonCompatible<V>::value)
+		{
+			it->get_to(out_value);
+			return true;
+		}
+		else
+		{
+			return JsonLoader<V>::Load(out_value, json);
 		}
 	}
 } // namespace brk

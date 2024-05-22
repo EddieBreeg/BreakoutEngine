@@ -97,9 +97,9 @@ namespace brk {
 			nlohmann::json& out_json);
 
 		template <class F>
-		static bool LoadField(F& field, const nlohmann::json& json, const char* name);
-
-		template <class F>
 		static void SaveField(const F& field, nlohmann::json& out_json, const char* name);
 	};
+
+	template<class K, class V>
+	bool Visit(K&& key, const nlohmann::json& json, V& out_value);
 } // namespace brk
