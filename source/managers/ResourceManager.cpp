@@ -12,9 +12,8 @@ brk::ResourceManager::~ResourceManager()
 		delete res;
 }
 
-void brk::ResourceManager::PreloadResources(const nlohmann::json& list)
+void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& list)
 {
-	BRK_ASSERT(list.is_array(), "Trying to preload resources from a non-array object");
 	ULID resId;
 	StringView resType;
 

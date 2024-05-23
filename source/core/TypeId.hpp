@@ -3,6 +3,12 @@
 #include <PCH.hpp>
 
 namespace brk {
+	/**
+	 * Uniquely identifies a type, within a family.
+	 * \tparam Family The family of types within which the IDs are generated.
+	 * This can be useful when these IDs need to be sequential, for example when
+	 * used as array indices.
+	 */
 	template <class Family>
 	struct BasicTypeId
 	{
@@ -76,5 +82,6 @@ namespace brk {
 		, m_Alignment{ 0 }
 	{}
 
+	// General purpose type identifier
 	using TypeId = BasicTypeId<void>;
 } // namespace brk

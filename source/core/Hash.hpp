@@ -23,7 +23,7 @@ namespace brk {
 	} // namespace _internal
 
 	template <class T>
-	static constexpr bool IsHashable = IsComplete<_internal::HashInfo<T>>;
+	static constexpr bool IsHashable = meta::IsComplete<_internal::HashInfo<T>>;
 
 	template <class T>
 	static constexpr bool IsNoThrowHashable =

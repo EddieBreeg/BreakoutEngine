@@ -1,8 +1,7 @@
 #include <core/Hash.hpp>
 #include <core/ULID.hpp>
 
-namespace brk::hash::ut
-{
+namespace brk::hash::ut {
 	void Tests()
 	{
 		static_assert(IsNoThrowHashable<int>);

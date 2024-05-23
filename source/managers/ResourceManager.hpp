@@ -42,10 +42,11 @@ namespace brk {
 #ifdef BRK_DEV
 		/**
 		 * \short Pre-allocates the resource objects and adds them to the internal map,
-		 * without loading the actual data \param list: The list of resource descriptions
-		 * to load
+		 * without loading the actual data
+		 * \param list: The list of resource descriptions to load. If a resource is
+		 * already present in the map, it is ignored
 		 */
-		void PreloadResources(const nlohmann::json& list);
+		void CreateResources(const std::vector<nlohmann::json>& list);
 #endif
 
 		template <class R>

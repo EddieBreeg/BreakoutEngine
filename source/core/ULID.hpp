@@ -23,26 +23,50 @@ namespace brk {
 	template <class, class>
 	struct BinaryLoader;
 
+	/**
+	 * Unique lexographically sortable identifier. The spec for this format can
+	 * be found here: https://github.com/ulid/spec
+	 */
 	class ULID
 	{
 	public:
+		/**
+		 * Creates a null identifier (all 0s)
+		 */
 		constexpr ULID() noexcept = default;
 		constexpr ULID(const ULID&) = default;
 		~ULID() = default;
 		ULID& operator=(const ULID&) = default;
 
+		/**
+		 * Constructs a ULID from a timestamp and random values
+		 */
 		constexpr ULID(
 			const uint64 timestamp,
 			const uint16 rand1,
 			const uint64 rand2) noexcept;
 
+		/**
+		 * Generates a new identifier, with a 48-bit unix timestamp (in milliseconds) and
+		 * 96 bits of pseudo-random data
+		 */
 		[[nodiscard]] static ULID Generate();
 
+		/**
+		 * Converts the ULID object into a base 32 string
+		 */
 		template <uint32 N>
 		constexpr char* ToChars(char (&out_buf)[N]) const noexcept;
 
+		/**
+		 * Attempts to create a ULID object from a base 32 string. If the string doesn't
+		 * represent a valid ULID object, a null id is returned instead
+		 */
 		[[nodiscard]] static constexpr ULID FromString(const StringView str) noexcept;
 
+		/**
+		 * Tests whether this id is non-null
+		 */
 		[[nodiscard]] constexpr operator bool() const noexcept
 		{
 			return m_Left && m_Right;

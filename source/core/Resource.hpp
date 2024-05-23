@@ -7,6 +7,13 @@
 #include <string>
 
 namespace brk {
+	/**
+	 * Represents an generic resource. This class is meant to be subclassed for specific
+	 * types of resources.
+	 * A subclass should meet the following criteria:
+	 * - Be constructible from a ULID object
+	 * - Have an accessible static 
+	 */
 	class Resource
 	{
 	public:

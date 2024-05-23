@@ -15,5 +15,7 @@ namespace brk::utf8::ut {
 		static_assert(FromString<int>("123") == 123);
 		static_assert(FromString<int, 16>("ff") == 255);
 		static_assert(!FromString<int, 16>(" ff").has_value());
+
+		static_assert(FromString<int>("-1") == -1);
 	}
 } // namespace brk::utf8::ut

@@ -67,7 +67,7 @@ template <class R>
 void brk::ResourceManager::RegisterResourceType()
 {
 	static_assert(
-		std::is_base_of_v<Resource, R> && _internal::HasName<R>::value &&
+		std::is_base_of_v<Resource, R> && meta::HasName<R> &&
 			std::is_default_constructible_v<R>,
 		"Invalid resource type");
 

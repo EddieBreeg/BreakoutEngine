@@ -1,7 +1,7 @@
 template <class C>
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 {
-	static_assert(brk::_internal::HasName<C>::value, "Component doesn't have a name");
+	static_assert(meta::HasName<C>, "Component doesn't have a name");
 	static constexpr uint32 h = Hash<StringView>{}(C::Name);
 #ifdef BRK_DEV
 	{
@@ -22,7 +22,7 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 template <class C>
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo() const
 {
-	static_assert(brk::_internal::HasName<C>::value, "Component doesn't have a name");
+	static_assert(meta::HasName<C>, "Component doesn't have a name");
 	static constexpr uint32 h = Hash<StringView>{}(C::Name);
 	const auto it = m_TypeMap.find(h);
 	BRK_ASSERT(

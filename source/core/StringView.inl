@@ -20,6 +20,21 @@ constexpr brk::BasicStringView<Char>::BasicStringView(const std::string& str)
 {}
 
 template <class Char>
+constexpr void brk::BasicStringView<Char>::TrimLeft(const uint32 n) noexcept
+{
+	if (n >= m_Len)
+	{
+		m_Ptr = nullptr;
+		m_Len = 0;
+	}
+	else
+	{
+		m_Ptr += n;
+		m_Len -= n;
+	}
+}
+
+template <class Char>
 Char brk::BasicStringView<Char>::operator[](const uint32 index) const
 {
 	BRK_ASSERT(index < m_Len, "Index {} is out of range!", index);

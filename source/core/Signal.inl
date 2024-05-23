@@ -1,7 +1,6 @@
-#include "Signal.hpp"
 template <class R, class... Args>
 template <class F>
-void brk::Signal<R(Args...)>::operator+=(F&& callback)
+void brk::Signal<R(Args...)>::Connect(F&& callback)
 {
 	m_Callbacks.emplace_back(std::forward<F>(callback));
 }

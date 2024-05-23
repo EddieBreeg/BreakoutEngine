@@ -34,7 +34,7 @@ namespace brk::resource_ref::ut {
 		{
 			RAIIHelper helper;
 			helper.m_Manager.RegisterResourceType<Res1>();
-			const nlohmann::json desc{
+			const std::vector<nlohmann::json> desc{
 				{
 					{ "type", Res1::Name },
 					{ "id", s_ResId1 },
@@ -48,7 +48,7 @@ namespace brk::resource_ref::ut {
 					{ "file", "r2.res" },
 				},
 			};
-			helper.m_Manager.PreloadResources(desc);
+			helper.m_Manager.CreateResources(desc);
 			ResourceRef<const Res1> ref = helper.m_Manager.GetRef<const Res1>(s_ResId1);
 			assert(ref.IsValid());
 			assert(ref->GetLoadingState() == Resource::Loading);

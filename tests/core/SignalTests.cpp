@@ -7,14 +7,16 @@ namespace brk::signal::ut {
 		{
 			int res = 0;
 			Signal<void(int)> s;
-			s += [&](int x)
-			{
-				res += x;
-			};
-			s += [&](int x)
-			{
-				res -= x / 2;
-			};
+			s.Connect(
+				[&](int x)
+				{
+					res += x;
+				});
+			s.Connect(
+				[&](int x)
+				{
+					res -= x / 2;
+				});
 
 			s.Emit(2);
 			assert(res == 1);
@@ -22,14 +24,16 @@ namespace brk::signal::ut {
 		{
 			int res = 0;
 			Signal<int(int)> s;
-			s += [](int x)
-			{
-				return x;
-			};
-			s += [](int x)
-			{
-				return x * 2;
-			};
+			s.Connect(
+				[](int x)
+				{
+					return x;
+				});
+			s.Connect(
+				[](int x)
+				{
+					return x * 2;
+				});
 
 			s.Emit(
 				[&res](int x)
