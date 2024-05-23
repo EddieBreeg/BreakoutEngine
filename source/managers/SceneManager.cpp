@@ -5,7 +5,7 @@
 #include <core/LogManager.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>
-#include <systems/ECSManager.hpp>
+#include "ECSManager.hpp"
 
 #ifdef BRK_EDITOR
 #include <fstream>

@@ -3,7 +3,7 @@
 #include <ecs/ComponentRegistry.hpp>
 #include <managers/SceneManager.hpp>
 #include <nlohmann/json.hpp>
-#include <systems/ECSManager.hpp>
+#include <managers/ECSManager.hpp>
 
 namespace brk::scene_loading::ut {
 	class RAIIHelper

@@ -3,7 +3,7 @@
 #include <core/Singleton.hpp>
 #include <core/TimeInfo.hpp>
 
-#include <systems/ECSManager.hpp>
+#include <managers/ECSManager.hpp>
 
 #include <entt/entity/registry.hpp>
 

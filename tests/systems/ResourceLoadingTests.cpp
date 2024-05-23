@@ -1,6 +1,6 @@
 #include <core/Resource.hpp>
 #include <core/TimeInfo.hpp>
-#include <systems/ECSManager.hpp>
+#include <managers/ECSManager.hpp>
 #include <systems/ResourceLoadingComponents.hpp>
 #include <systems/ResourceLoadingSystem.hpp>
 

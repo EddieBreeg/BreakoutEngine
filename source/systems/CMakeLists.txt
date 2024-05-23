@@ -2,7 +2,6 @@
 file(GLOB SYSTEMS_H *.h *.hpp *.inl)
 
 add_library(BRK_SYSTEMS
-	ECSManager.cpp
 	ResourceLoadingSystem.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp

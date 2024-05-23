@@ -1,7 +1,8 @@
 
 file(GLOB MANAGER_HEADERS *.hpp)
 
-add_library(BRK_MANAGERS 
+add_library(BRK_MANAGERS
+	ECSManager.cpp
 	ResourceManager.cpp
 	SceneManager.cpp
 	${MANAGER_HEADERS}
