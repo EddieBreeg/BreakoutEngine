@@ -12,7 +12,7 @@ namespace brk {
 	 * types of resources.
 	 * A subclass should meet the following criteria:
 	 * - Be constructible from a ULID object
-	 * - Have an accessible static 
+	 * - Have an accessible static
 	 */
 	class Resource
 	{
@@ -25,8 +25,15 @@ namespace brk {
 		};
 
 		Resource(const ULID id = ULID{});
+		Resource(const ULID id, std::string&& name, std::string&& file);
+		/**
+		 * Unloads the resource.
+		 */
 		virtual ~Resource();
 
+		/**
+		 * \return true if the resource was loaded succesfully, false otherwise.
+		 */
 		virtual bool DoLoad() { return false; }
 		virtual void DoUnload() {}
 
