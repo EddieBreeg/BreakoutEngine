@@ -1,4 +1,3 @@
-#include "World.hpp"
 namespace brk::ecs {
 	template <class... Components>
 	inline WorldView<Components...>::WorldView(entt::registry& world)
@@ -13,8 +12,14 @@ namespace brk::ecs {
 
 	template <class... Components>
 	template <class C, class... Args>
-	decltype(auto) WorldView<Components...>::AddComponent(const entt::entity e, Args&&... args)
+	decltype(auto) WorldView<Components...>::AddComponent(
+		const entt::entity e,
+		Args&&... args)
 	{
+		static_assert(!std::is_const_v<C>, "Trying to add const component type");
+		static_assert(
+			(std::is_same_v<C, Components> || ...),
+			"Component is not in the access list");
 		return m_EntityWorld.emplace<C>(e, std::forward<Args>(args)...);
 	}
 
@@ -22,6 +27,7 @@ namespace brk::ecs {
 	template <class TQuery>
 	QueryWorld<TQuery> WorldView<Components...>::Query()
 	{
+		static_assert(ValidateQuery<TQuery>::value);
 		return { m_EntityWorld };
 	}
 } // namespace brk::ecs

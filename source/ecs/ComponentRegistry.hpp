@@ -14,6 +14,9 @@
 namespace brk::ecs {
 	struct ComponentInfo
 	{
+		/**
+		 * This is called when loading a component from a scene file in the editor
+		 */
 		void (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
 			nullptr;
 		const char* m_Name;
@@ -21,19 +24,38 @@ namespace brk::ecs {
 	private:
 		friend class ComponentRegistry;
 		ComponentInfo() = default;
-	};	
+	};
 
+	/**
+	 * A global map containing type erased information about registered ECS components
+	 */
 	class ComponentRegistry : public Singleton<ComponentRegistry>
 	{
 	public:
 		~ComponentRegistry() = default;
 
-		template<class C>
+		/**
+		 * Generates a ComponentInfo object for the provided type, and adds it to the map.
+		 * \tparam C The component type. Must meet the meta::HasName trait.
+		 * \return A reference to the newly created info object, or the existing one if
+		 * the component had already been registered.
+		 */
+		template <class C>
 		const ComponentInfo& Register();
 
+		/**
+		 * Gets a component's info from its type
+		 * \return A reference to the provided component's info object. Asserts if C had
+		 * not been registered
+		 */
 		template <class C>
 		const ComponentInfo& GetInfo() const;
 
+		/**
+		 * Gets a component's info from its name
+		 * \return A reference to the component's info object. Asserts if the object
+		 * wasn't found in the map
+		 */
 		const ComponentInfo& GetInfo(const StringView name) const;
 
 	private:
@@ -42,9 +64,6 @@ namespace brk::ecs {
 
 		template <class C>
 		static ComponentInfo CreateInfo();
-
-		template<class C>
-		static constexpr uint32 ComputeHash() noexcept;
 
 		using TMap = std::unordered_map<uint32, const ComponentInfo, Hash<uint32>>;
 		TMap m_TypeMap;
