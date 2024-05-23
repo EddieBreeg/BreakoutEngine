@@ -6,12 +6,12 @@
 #include <fmt/core.h>
 
 namespace brk::_internal {
-	void AssertImpl(std::string&& message, const char* file, int line);
+	void AssertImpl(std::string&& message, const char* file, const uint32 line);
 
 	template <class... Args>
 	void Assert(bool cond,
 				const char* file,
-				int line,
+				const uint32 line,
 				fmt::format_string<Args...> format,
 				Args&&... args)
 	{

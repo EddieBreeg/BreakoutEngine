@@ -6,13 +6,13 @@
 #include "DebugBreak.hpp"
 
 namespace brk::_internal {
-	void AssertImpl(std::string&& message, const char* file, int line)
+	void AssertImpl(std::string&& message, const char* file, const uint32 line)
 	{
-		LogManager::GetInstance().Log(LogManager::LogLevel::Critical,
-									  "\033[1;31m[ASSERT] {}({}): {}\033[0m",
-									  file,
-									  line,
-									  std::move(message));
+		LogManager::GetInstance().Log(
+			LogManager::LogLevel::Critical,
+			{ file, line },
+			"\033[1;31m[ASSERT] {}({}): {}\033[0m",
+			std::move(message));
 		dbg::Break();
 	}
 } // namespace brk::_internal

@@ -48,18 +48,14 @@ void brk::editor::Editor::LoadProject()
 	std::ifstream projectFile{ m_ProjectFilePath.GetPtr() };
 	if (!projectFile.is_open())
 	{
-		LogManager::GetInstance().Log(
-			LogManager::Warning,
+		BRK_LOG_WARNING(
 			"Couldn't open project file '{}': {}",
 			m_ProjectFilePath,
 			std::error_code{ errno, std::system_category() }.message());
 		m_ProjectFilePath = {};
 		return;
 	}
-	LogManager::GetInstance().Log(
-		LogManager::Trace,
-		"Loading project '{}'",
-		m_ProjectFilePath);
+	BRK_LOG_TRACE("Loading project '{}'", m_ProjectFilePath);
 
 	const nlohmann::json desc = nlohmann::json::parse(projectFile);
 	Project proj;
@@ -72,7 +68,7 @@ void brk::editor::Editor::LoadProject()
 		SceneManager::GetInstance().LoadSceneDescriptions(*it);
 	}
 
-	LogManager::GetInstance().Log(LogManager::Trace, "Finished loading project");
+	BRK_LOG_TRACE("Finished loading project");
 }
 
 void brk::editor::Editor::LoadScene()

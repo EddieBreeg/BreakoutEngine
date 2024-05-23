@@ -41,7 +41,7 @@ Char brk::BasicStringView<Char>::operator[](const uint32 index) const
 	return m_Ptr[index];
 }
 
-constexpr uint32 brk::Hash<brk::StringView>::operator()(
+constexpr uint32 brk::Hash<brk::StringView, void>::operator()(
 	const StringView str) const noexcept
 {
 	uint32_t hash = 0;

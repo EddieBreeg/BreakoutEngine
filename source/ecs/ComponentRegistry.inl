@@ -8,10 +8,7 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 		const auto it = m_TypeMap.find(h);
 		if (it != m_TypeMap.end())
 		{
-			LogManager::GetInstance().Log(
-				LogManager::Warning,
-				"Trying to register component '{}' mutliple times!",
-				C::Name);
+			BRK_LOG_WARNING("Trying to register component '{}' mutliple times!", C::Name);
 			return it->second;
 		}
 	}

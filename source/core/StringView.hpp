@@ -1,11 +1,13 @@
 #pragma once
 
 #include <PCH.hpp>
-#include "Hash.hpp"
 #include "Assert.hpp"
 #include <nlohmann/json_fwd.hpp>
 
 namespace brk {
+	template<class T, class>
+	struct Hash;
+
 	template <class Char>
 	struct BasicStringView
 	{
@@ -36,7 +38,7 @@ namespace brk {
 	using StringView = BasicStringView<char>;
 
 	template <>
-	struct Hash<StringView>
+	struct Hash<StringView, void>
 	{
 		[[nodiscard]] constexpr uint32 operator()(const StringView str) const noexcept;
 	};

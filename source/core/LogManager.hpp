@@ -3,10 +3,15 @@
 #include <PCH.hpp>
 
 #include <string>
-#include "StringView.hpp"
 #include "StringViewFormatter.hpp"
 
 namespace brk {
+	struct CodeLocation
+	{
+		const char* m_File;
+		const uint32 m_Line;
+	};
+
 	class LogManager
 	{
 	public:
@@ -15,6 +20,7 @@ namespace brk {
 			Trace,
 			Warning,
 			Critical,
+			LogLevelMax,
 		};
 
 		LogManager(const LogManager&) = delete;
@@ -23,13 +29,17 @@ namespace brk {
 
 		[[nodiscard]] static LogManager& GetInstance() noexcept { return s_Instance; }
 
-		void Log(LogLevel level, const StringView message);
+		void Log(LogLevel level, const CodeLocation location, const StringView message);
 
 		template <class... Args>
-		void Log(LogLevel level, fmt::format_string<Args...> fmt, Args&&... args)
+		void Log(
+			LogLevel level,
+			const CodeLocation location,
+			fmt::format_string<Args...> fmt,
+			Args&&... args)
 		{
 			const std::string str = fmt::format(fmt, std::forward<Args>(args)...);
-			Log(level, StringView{ str.c_str(), (uint32)str.length() });
+			Log(level, location, StringView{ str.c_str(), (uint32)str.length() });
 		}
 
 	private:
@@ -39,5 +49,20 @@ namespace brk {
 	};
 } // namespace brk
 
-#define BRK_LOG_WARNING(fmt, ...)                                                        \
-	brk::LogManager::GetInstance().Log(brk::LogManager::Warning, fmt, __VA_ARGS__)
+#define BRK_LOG_TRACE(...)                                                               \
+	brk::LogManager::GetInstance().Log(                                                  \
+		brk::LogManager::Trace,                                                          \
+		{ __FILE__, __LINE__ },                                                          \
+		__VA_ARGS__)
+
+#define BRK_LOG_WARNING(...)                                                             \
+	brk::LogManager::GetInstance().Log(                                                  \
+		brk::LogManager::Warning,                                                        \
+		{ __FILE__, __LINE__ },                                                          \
+		__VA_ARGS__)
+
+#define BRK_LOG_CRITICAL(...)                                                            \
+	brk::LogManager::GetInstance().Log(                                                  \
+		brk::LogManager::Critical,                                                       \
+		{ __FILE__, __LINE__ },                                                          \
+		__VA_ARGS__)

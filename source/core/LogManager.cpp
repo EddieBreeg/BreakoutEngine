@@ -2,30 +2,42 @@
 
 #include <math/Vector.hpp>
 
+#include <fmt/ostream.h>
 #include <iostream>
 
-namespace
-{
+namespace {
 	std::ostream& operator<<(std::ostream& os, const brk::StringView str)
 	{
 		os.write(str.GetPtr(), str.GetLen());
 		return os;
 	}
-} // namespace
 
+	constexpr const char* s_Styles[brk::LogManager::LogLevelMax] = {
+		"\033[37m",
+		"\033[1;38;5;202m",
+		"\033[1;31m",
+	};
+} // namespace
 
 namespace brk {
 	LogManager LogManager::s_Instance;
 
-	void LogManager::Log(LogLevel level, const StringView message)
+	void LogManager::Log(
+		LogLevel level,
+		const CodeLocation location,
+		const StringView message)
 	{
-		if (level < m_Level)
+		if (level < m_Level || level >= LogLevelMax)
 			return;
 
-		if (level < LogLevel::Critical)
-			std::cout << message << '\n';
-		else
-			std::cerr << message << '\n';
+		std::ostream& out = level < LogLevel::Critical ? std::cout : std::cerr;
+		fmt::print(
+			out,
+			"{}{}({}): {}\033[0m\n",
+			s_Styles[level],
+			location.m_File,
+			location.m_Line,
+			message);
 	}
 
 } // namespace brk
