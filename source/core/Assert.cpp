@@ -11,7 +11,7 @@ namespace brk::_internal {
 		LogManager::GetInstance().Log(
 			LogManager::LogLevel::Critical,
 			{ file, line },
-			"\033[1;31m[ASSERT] {}({}): {}\033[0m",
+			"[ASSERT] {}",
 			std::move(message));
 		dbg::Break();
 	}

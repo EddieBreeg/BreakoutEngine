@@ -30,6 +30,7 @@ namespace brk {
 #endif
 			m_ECSManager.AddSystem<WindowSystem>(settings);
 			m_ECSManager.AddSystem<ResourceLoadingSystem>();
+			m_ECSManager.AddSystem<VisualSystem>();
 		}
 	}
 
@@ -58,11 +59,10 @@ namespace brk {
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 		InitCoreSystems();
+		InitManagers();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif
-		m_ECSManager.AddSystem<VisualSystem>();
-		InitManagers();
 	}
 
 	int App::Run()
