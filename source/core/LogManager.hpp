@@ -49,20 +49,20 @@ namespace brk {
 	};
 } // namespace brk
 
-#define BRK_LOG_TRACE(...)                                                               \
-	brk::LogManager::GetInstance().Log(                                                  \
-		brk::LogManager::Trace,                                                          \
-		{ __FILE__, __LINE__ },                                                          \
-		__VA_ARGS__)
+#ifdef BRK_DEV
 
-#define BRK_LOG_WARNING(...)                                                             \
-	brk::LogManager::GetInstance().Log(                                                  \
-		brk::LogManager::Warning,                                                        \
-		{ __FILE__, __LINE__ },                                                          \
-		__VA_ARGS__)
+#define BRK_LOG(level, ...)                                                              \
+	brk::LogManager::GetInstance().Log((level), { __FILE__, __LINE__ }, __VA_ARGS__)
 
-#define BRK_LOG_CRITICAL(...)                                                            \
-	brk::LogManager::GetInstance().Log(                                                  \
-		brk::LogManager::Critical,                                                       \
-		{ __FILE__, __LINE__ },                                                          \
-		__VA_ARGS__)
+#define BRK_LOG_TRACE(...)	  BRK_LOG(brk::LogManager::Trace, __VA_ARGS__)
+#define BRK_LOG_WARNING(...)  BRK_LOG(brk::LogManager::Warning, __VA_ARGS__)
+#define BRK_LOG_CRITICAL(...) BRK_LOG(brk::LogManager::Critical, __VA_ARGS__)
+
+#else
+
+#define BRK_LOG(level, ...) 0
+
+#define BRK_LOG_TRACE(...)	  0
+#define BRK_LOG_WARNING(...)  0
+#define BRK_LOG_CRITICAL(...) 0
+#endif
