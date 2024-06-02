@@ -23,13 +23,6 @@ constexpr std::optional<Int> brk::utf8::FromString(StringView str) noexcept
 	return result * sign;
 }
 
-/**
- * Converts a single character into a integral value, if said character can be interpreted
- * as a digit.
- * \return If c is between '0' and '9', the digit represented by c is returned.
- * If c is a letter (a-z or A-Z), the index of c in the alphabet is returned.
- * Otherwise, static_cast<Int>(-1) is returned.
- */
 template <class Int, std::enable_if_t<std::is_integral_v<Int>, int>>
 constexpr Int brk::utf8::FromChar(const char c) noexcept
 {
