@@ -1,6 +1,7 @@
 template <class Int, uint8 Base, std::enable_if_t<std::is_integral_v<Int>, int>>
 constexpr std::optional<Int> brk::utf8::FromString(StringView str) noexcept
 {
+	static_assert(Base <= 36, "Invalid base");
 	if (str.IsEmpty())
 		return {};
 
