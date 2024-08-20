@@ -5,6 +5,8 @@
 #include <array>
 #include <imgui.h>
 
+#include "SceneCreation.hpp"
+
 namespace {
 	const char* s_BrkExt = "*.brk";
 } // namespace
@@ -25,6 +27,13 @@ void brk::editor::MenuBar()
 				Editor::GetInstance().LoadProjectDeferred(filePath);
 			}
 		}
+
+		if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+		{
+			SceneCreationWindow::s_Instance.Open();
+		}
+
+		ImGui::MenuItem("Save", "Ctrl+S", nullptr, false);
 		ImGui::EndMenu();
 	}
 

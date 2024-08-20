@@ -32,10 +32,14 @@ namespace brk::editor {
 
 		void LoadProject();
 		void LoadScene();
+		void CreateNewScene(const char* path);
 
-		StringView m_ProjectFilePath;
+		void SaveProjectFile();
+
+		std::string m_ProjectFilePath;
 		std::optional<Project> m_Project;
 		ULID m_CurrentScene;
+		bool m_NewSceneRequested = false;
 	};
 } // namespace brk::editor
 

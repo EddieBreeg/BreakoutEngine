@@ -5,14 +5,11 @@
 
 #include <imgui.h>
 
-void brk::editor::SceneSelectionWindow()
+void brk::editor::SceneSelectionWindow(const TULIDMap<SceneDescription>& scenes)
 {
-	ImGui::Begin(
-		"Select a scene",
-		nullptr,
-		ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoDocking);
+	ImGui::Begin("Select a scene", nullptr);
 
-	for (const auto& [id, descr] : SceneManager::GetInstance().GetObjects())
+	for (const auto& [id, descr] : scenes)
 	{
 		if (ImGui::Button(descr.GetName().c_str()))
 		{

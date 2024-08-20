@@ -14,6 +14,7 @@ namespace brk {
 	{
 	public:
 		SceneDescription() = default;
+		SceneDescription(std::string name, std::string file);
 		SceneDescription(const SceneDescription&) = default;
 		SceneDescription(SceneDescription&&) = default;
 
@@ -48,5 +49,4 @@ namespace brk {
 			Fields{};
 #endif
 	};
-
 } // namespace brk

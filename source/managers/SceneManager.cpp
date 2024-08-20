@@ -53,7 +53,7 @@ void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions
 	for (const nlohmann::json data : descriptions)
 	{
 		SceneDescription desc;
-		if(!JsonLoader<SceneDescription>::Load(desc, data))
+		if (!JsonLoader<SceneDescription>::Load(desc, data))
 		{
 			BRK_LOG_WARNING("Failed to load description for scene '{}'", desc.GetName());
 			continue;
@@ -66,6 +66,14 @@ void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions
 			desc.GetId());
 		m_Descriptions.emplace(desc.GetId(), std::move(desc));
 	}
+}
+
+const brk::SceneDescription& brk::SceneManager::CreateNewScene(
+	std::string name,
+	std::string path)
+{
+	SceneDescription desc{ std::move(name), std::move(path) };
+	return m_Descriptions.emplace(desc.GetId(), std::move(desc)).first->second;
 }
 #endif
 
@@ -88,7 +96,7 @@ void brk::SceneManager::LoadScene(const ULID id)
 	nlohmann::json json = nlohmann::json::parse(file);
 	std::vector<nlohmann::json> objects;
 
-	if(!Visit("objects", json, objects))
+	if (!Visit("objects", json, objects))
 		return;
 
 	entt::registry& world = ecs::Manager::GetInstance().GetWorld();

@@ -19,6 +19,7 @@ namespace brk {
 
 #ifdef BRK_EDITOR
 		void LoadSceneDescriptions(const nlohmann::json& descriptions);
+		const SceneDescription& CreateNewScene(std::string name, std::string path);
 #endif
 		void LoadScene(const ULID sceneId);
 
@@ -35,5 +36,6 @@ namespace brk {
 
 		TULIDMap<SceneDescription> m_Descriptions;
 		TULIDMap<ecs::GameObject> m_Objects;
+		ULID m_CurrentSceneId;
 	};
 } // namespace brk

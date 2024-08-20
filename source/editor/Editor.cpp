@@ -2,6 +2,7 @@
 
 #ifdef BRK_EDITOR
 #include "ui/Menubar.hpp"
+#include "ui/SceneCreation.hpp"
 #include "ui/SceneSelection.hpp"
 #include "ui/StartupWindow.hpp"
 
@@ -10,6 +11,8 @@
 
 #include <managers/SceneManager.hpp>
 
+#include <cerrno>
+#include <filesystem>
 #include <fstream>
 #include <system_error>
 
@@ -23,13 +26,52 @@ brk::editor::Editor::Editor(int argc, const char** argv)
 void brk::editor::Editor::LoadProjectDeferred(const StringView filePath) noexcept
 {
 	m_LoadState = LoadState::Project;
-	m_ProjectFilePath = filePath;
+	m_ProjectFilePath = std::string{ filePath.GetPtr(), filePath.GetLen() };
 }
 
 void brk::editor::Editor::LoadSceneDeferred(const ULID sceneId) noexcept
 {
 	m_LoadState = LoadState::Scene;
 	m_CurrentScene = sceneId;
+}
+
+void brk::editor::Editor::CreateNewScene(const char* path)
+{
+	const std::filesystem::path scenePath = std::filesystem::relative(path);
+	const std::string name = scenePath.filename().stem().u8string();
+
+	const SceneDescription& sceneDesc =
+		SceneManager::GetInstance().CreateNewScene(std::move(name), scenePath.u8string());
+
+	std::ofstream outFile{ scenePath };
+	BRK_ASSERT(outFile.is_open(), "Couldn't create {}", sceneDesc.GetPath());
+
+	nlohmann::json json{
+		{ "name", sceneDesc.GetName() },
+		{ "id", sceneDesc.GetId() },
+	};
+
+	outFile << json.dump(4);
+}
+
+void brk::editor::Editor::SaveProjectFile()
+{
+	nlohmann::json json;
+	JsonLoader<Project>::Save(*m_Project, json);
+	nlohmann::json& scenesArr = json["scenes"] = nlohmann::json::array();
+
+	nlohmann::json sceneJson;
+	for (const auto& [id, desc] : SceneManager::GetInstance().GetObjects())
+	{
+		JsonLoader<SceneDescription>::Save(desc, sceneJson);
+		scenesArr.emplace_back(std::move(sceneJson));
+	}
+	std::ofstream projectFile{ m_ProjectFilePath };
+	BRK_ASSERT(
+		projectFile.is_open(),
+		"Couldn't save project file: {}",
+		std::system_category().message(errno));
+	projectFile << json.dump(4);
 }
 
 void brk::editor::Editor::Update()
@@ -40,12 +82,19 @@ void brk::editor::Editor::Update()
 	case LoadState::Scene: LoadScene(); break;
 	default: break;
 	}
+
+	if (m_NewSceneRequested)
+	{
+		m_NewSceneRequested = false;
+		CreateNewScene(SceneCreationWindow::s_Instance.GetScenePath());
+		SaveProjectFile();
+	}
 }
 
 void brk::editor::Editor::LoadProject()
 {
 	m_LoadState = LoadState::None;
-	std::ifstream projectFile{ m_ProjectFilePath.GetPtr() };
+	std::ifstream projectFile{ m_ProjectFilePath };
 	if (!projectFile.is_open())
 	{
 		BRK_LOG_WARNING(
@@ -56,6 +105,7 @@ void brk::editor::Editor::LoadProject()
 		return;
 	}
 	BRK_LOG_TRACE("Loading project '{}'", m_ProjectFilePath);
+	std::filesystem::current_path(std::filesystem::path(m_ProjectFilePath).parent_path());
 
 	const nlohmann::json desc = nlohmann::json::parse(projectFile);
 	Project proj;
@@ -84,10 +134,22 @@ void brk::editor::Editor::ShowUI()
 	if (!m_Project.has_value())
 	{
 		StartupWindow();
+		return;
 	}
-	else if (!m_CurrentScene)
+
+	const TULIDMap<SceneDescription>& scenes = SceneManager::GetInstance().GetObjects();
+	if (scenes.empty())
+		SceneCreationWindow::s_Instance.Open();
+
+	if (SceneCreationWindow::s_Instance.IsOpen())
 	{
-		SceneSelectionWindow();
+		m_NewSceneRequested = SceneCreationWindow::s_Instance.Show();
+		return;
+	}
+
+	if (!m_CurrentScene)
+	{
+		SceneSelectionWindow(scenes);
 	}
 }
 
