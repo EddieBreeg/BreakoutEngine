@@ -31,7 +31,7 @@ namespace brk {
 		friend class Singleton<App>;
 		App(const int argc, const char** argv);
 
-		void InitCoreSystems();
+		void InitSystems();
 		void InitManagers();
 		bool Update();
 

@@ -1,4 +1,4 @@
-#include "App.hpp"
+#include "Entry.hpp"
 
 #include <core/LogManager.hpp>
 #include <managers/ResourceManager.hpp>
@@ -21,7 +21,7 @@ namespace brk {
 
 	App::~App() {}
 
-	void App::InitCoreSystems()
+	void App::InitSystems()
 	{
 		{
 			WindowSystemSettings settings;
@@ -30,6 +30,9 @@ namespace brk {
 #endif
 			m_ECSManager.AddSystem<WindowSystem>(settings);
 			m_ECSManager.AddSystem<ResourceLoadingSystem>();
+
+			RegisterGameSystems(m_ECSManager);
+
 			m_ECSManager.AddSystem<VisualSystem>();
 		}
 	}
@@ -58,7 +61,7 @@ namespace brk {
 #ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
-		InitCoreSystems();
+		InitSystems();
 		InitManagers();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(m_Argc, m_Argv);

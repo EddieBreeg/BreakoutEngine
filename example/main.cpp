@@ -1,9 +1,3 @@
-#include <app/App.hpp>
-#include <iostream>
+#include <app/Entry.hpp>
 
-int main(int argc, const char** argv)
-{
-	auto& app = brk::App::Init(argc, argv);
-
-	return app.Run();
-}
+void brk::RegisterGameSystems(brk::ecs::Manager& ecsManager) {}
