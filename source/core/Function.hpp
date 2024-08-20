@@ -27,7 +27,7 @@ namespace brk {
 		template <class F>
 		using IfSuitable = std::enable_if_t<
 			!std::is_same_v<std::decay_t<F>, UniqueFunction> &&
-				std::is_same_v<std::invoke_result_t<F, Args...>, R>,
+				std::is_convertible_v<std::invoke_result_t<F, Args...>, R>,
 			int>;
 
 	public:
