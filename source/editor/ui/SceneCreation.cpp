@@ -9,7 +9,6 @@ namespace {
 } // namespace
 
 brk::editor::SceneCreationWindow brk::editor::SceneCreationWindow::s_Instance;
-#endif
 
 void brk::editor::SceneCreationWindow::Open() noexcept
 {
@@ -51,3 +50,5 @@ bool brk::editor::SceneCreationWindow::Show()
 	m_Show = !res;
 	return res;
 }
+
+#endif // BRK_EDITOR

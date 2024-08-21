@@ -7,7 +7,7 @@
 #include <ecs/ComponentRegistry.hpp>
 #include "ECSManager.hpp"
 
-#ifdef BRK_EDITOR
+#ifdef BRK_DEV
 #include <fstream>
 #include <nlohmann/json.hpp>
 

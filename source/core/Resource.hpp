@@ -50,7 +50,7 @@ namespace brk {
 		std::string m_Name;
 		std::string m_FilePath;
 #ifndef BRK_DEV
-		const uint32 m_Offset;
+		uint32 m_Offset;
 #endif
 		uint32 m_RefCount = 0;
 		ELoadingState m_LoadingState = Unloaded;

@@ -14,20 +14,24 @@ namespace brk {
 	{
 	public:
 		SceneDescription() = default;
+#ifdef BRK_DEV
 		SceneDescription(std::string name, std::string file);
+#endif
 		SceneDescription(const SceneDescription&) = default;
 		SceneDescription(SceneDescription&&) = default;
 
 		SceneDescription& operator=(const SceneDescription&) = default;
 
 		[[nodiscard]] ULID GetId() const noexcept { return m_Id; }
+#ifdef BRK_DEV
 		[[nodiscard]] const std::string& GetPath() const noexcept { return m_File; }
+#endif
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 
 	private:
 		ULID m_Id;
 		std::string m_Name;
-#ifdef BRK_EDITOR
+#ifdef BRK_DEV
 		std::string m_File;
 		friend struct JsonLoader<SceneDescription, void>;
 

@@ -17,7 +17,7 @@ namespace brk {
 	public:
 		~SceneManager() = default;
 
-#ifdef BRK_EDITOR
+#ifdef BRK_DEV
 		void LoadSceneDescriptions(const nlohmann::json& descriptions);
 		const SceneDescription& CreateNewScene(std::string name, std::string path);
 #endif

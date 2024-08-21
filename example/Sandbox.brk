@@ -5,6 +5,11 @@
             "file": "Data\\Scenes\\Scene0.brkscn",
             "id": "01J5RJXZPRWSSVPHFHRXBF9VG6",
             "name": "Scene0"
+        },
+        {
+            "file": "Data\\Scenes\\Scene1.brkscn",
+            "id": "01J5TCPYV7YWZQMRAYAJDMET7X",
+            "name": "Scene1"
         }
     ]
 }

@@ -12,6 +12,7 @@ brk::ResourceManager::~ResourceManager()
 		delete res;
 }
 
+#ifdef BRK_EDITOR
 void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& list)
 {
 	ULID resId;
@@ -44,6 +45,7 @@ void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& li
 		m_Resources.emplace(res->GetId(), res);
 	}
 }
+#endif
 
 brk::Resource* brk::ResourceManager::CreateResource(const StringView type, const ULID id)
 	const

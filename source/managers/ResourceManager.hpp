@@ -65,7 +65,7 @@ namespace brk {
 		template <class R>
 		void RegisterResourceType();
 
-#ifdef BRK_DEV
+#ifdef BRK_EDITOR
 		/**
 		 * \short Pre-allocates the resource objects and adds them to the internal map,
 		 * without loading the actual data.
