@@ -1,3 +1,4 @@
+#ifdef BRK_SDL2
 #include <rendering/Renderer.hpp>
 #include <core/Assert.hpp>
 #include <SDL2/SDL.h>
@@ -55,6 +56,8 @@ void brk::rdr::Renderer::NewImGuiFrame()
 }
 #endif
 
+void brk::rdr::Renderer::ResizeFrameBuffers() {}
+
 void brk::rdr::Renderer::StartRender()
 {
 #ifdef BRK_DEV
@@ -75,15 +78,15 @@ void brk::rdr::Renderer::StartRender()
 	SDL_RenderClear(m_Data->m_NativeRenderer);
 }
 
-void brk::rdr::Renderer::DoRender()
+void brk::rdr::Renderer::RenderUI()
 {
 #ifdef BRK_DEV
 	ImGui_ImplSDLRenderer2_RenderDrawData(ImGui::GetDrawData());
-	SDL_RenderPresent(m_Data->m_NativeRenderer);
 #endif
 }
 
-brk::rdr::Renderer::~Renderer()
+void brk::rdr::Renderer::Present()
 {
-	Shutdown();
+	SDL_RenderPresent(m_Data->m_NativeRenderer);
 }
+#endif

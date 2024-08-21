@@ -16,8 +16,7 @@
 
 #include <SDL2/SDL.h>
 
-namespace
-{
+namespace {
 	template <brk::inputs::EEventType Evt, class... Args>
 	inline entt::entity CreateInputEventEntity(
 		brk::WindowSystem::World& world,
@@ -97,9 +96,19 @@ void brk::WindowSystem::ProcessEvents(World& world)
 	{
 		switch (evt.type)
 		{
-		case SDL_QUIT:
-		case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
-		case SDL_MOUSEMOTION: {
+		case SDL_WINDOWEVENT:
+			switch (evt.window.event)
+			{
+			case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
+			case SDL_WINDOWEVENT_RESIZED:
+				rdr::Renderer::s_Instance.ResizeFrameBuffers();
+				break;
+			default: break;
+			}
+			break;
+		case SDL_QUIT: App::GetInstance().Terminate(); break;
+		case SDL_MOUSEMOTION:
+		{
 			const int2 pos{ evt.motion.x, evt.motion.y };
 			const int2 oldPos = pos - int2{ evt.motion.xrel, evt.motion.yrel };
 			CreateInputEventEntity<inputs::MouseMove>(world, oldPos, pos);

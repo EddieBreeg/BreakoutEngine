@@ -15,6 +15,13 @@
 				"SDL_SHARED": false
 			},
 			"binaryDir": "build"
+		},
+		{
+			"name": "Default Windows",
+			"inherits": "Default",
+			"cacheVariables": {
+				"BRK_RENDER_BACKEND": "DX11"
+			}
 		}
 	],
 	"testPresets": [
@@ -29,12 +36,12 @@
 		{
 			"name": "Dev",
 			"configuration": "Debug",
-			"configurePreset": "Default"
+			"configurePreset": "Default Windows"
 		},
 		{
 			"name": "DevOptimized",
 			"configuration": "RelWithDebInfo",
-			"configurePreset": "Default"
+			"configurePreset": "Default Windows"
 		}
 	]
 }

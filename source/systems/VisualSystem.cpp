@@ -13,7 +13,7 @@ namespace brk
 	void VisualSystem::Update(World& world, const TimeInfo& timeInfo)
 	{
 		rdr::Renderer::s_Instance.StartRender();
-		rdr::Renderer::s_Instance.DoRender();
+		rdr::Renderer::s_Instance.RenderUI();
 
 #ifdef BRK_DEV
 		// Update and Render additional Platform Windows
@@ -22,8 +22,9 @@ namespace brk
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 		}
-		ImGui::EndFrame();
+		// ImGui::EndFrame();
 #endif
+		rdr::Renderer::s_Instance.Present();
 	}
 
 	void VisualSystem::Terminate()

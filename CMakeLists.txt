@@ -28,3 +28,5 @@ add_subdirectory(example)
 
 set(CMAKE_FOLDER "Tests")
 add_subdirectory(tests)
+
+message("Selected ${BRK_RENDER_BACKEND} as a rendering backend")

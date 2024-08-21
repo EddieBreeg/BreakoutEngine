@@ -14,7 +14,7 @@ target_include_directories(BRK_INCLUDES INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
 )
 target_compile_definitions(BRK_INCLUDES INTERFACE
-	_BRK_EDITOR_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
+	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>
 )
 target_compile_definitions(BRK_INCLUDES INTERFACE
 	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>

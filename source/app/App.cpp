@@ -26,7 +26,9 @@ namespace brk {
 		{
 			WindowSystemSettings settings;
 #ifdef BRK_DEV
-			settings.m_Flags |= SDL_WINDOW_RESIZABLE;
+			settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+#else
+			settings.m_Flags = SDL_WINDOW_FULLSCREEN;
 #endif
 			m_ECSManager.AddSystem<WindowSystem>(settings);
 			m_ECSManager.AddSystem<ResourceLoadingSystem>();

@@ -20,8 +20,12 @@ namespace brk::rdr
 		void NewImGuiFrame();
 #endif
 
+		void ResizeFrameBuffers();
+
 		void StartRender();
-		void DoRender();
+		void RenderUI();
+
+		void Present();
 
 		static Renderer s_Instance;
 		float4 m_ClearColor;
