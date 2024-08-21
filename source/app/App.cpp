@@ -72,7 +72,11 @@ namespace brk {
 		InitSystems();
 		RegisterComponents();
 #ifdef BRK_EDITOR
-		editor::Editor::Init(m_Argc, m_Argv);
+		editor::Editor::Init(
+			ecs::Manager::GetInstance(),
+			SceneManager::GetInstance(),
+			m_Argc,
+			m_Argv);
 #endif
 	}
 

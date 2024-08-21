@@ -61,7 +61,7 @@ namespace brk {
 	}
 
 	template <class R, class... Args>
-	R UniqueFunction<R(Args...)>::operator()(Args... args)
+	R UniqueFunction<R(Args...)>::operator()(Args... args) const
 	{
 		BRK_ASSERT(m_Table, "Tried to invoke an empty function object");
 		return m_Table->m_Invoke(GetPtr(), std::forward<Args>(args)...);
@@ -86,6 +86,12 @@ namespace brk {
 	void* brk::UniqueFunction<R(Args...)>::GetPtr() noexcept
 	{
 		return m_Table->m_Id.m_Size <= sizeof(m_Buf) ? m_Buf : m_Ptr;
+	}
+
+	template <class R, class... Args>
+	void* brk::UniqueFunction<R(Args...)>::GetPtr() const noexcept
+	{
+		return const_cast<void*>(m_Table->m_Id.m_Size <= sizeof(m_Buf) ? m_Buf : m_Ptr);
 	}
 
 } // namespace brk

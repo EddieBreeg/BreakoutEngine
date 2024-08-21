@@ -7,7 +7,7 @@
 
 brk::editor::Outliner brk::editor::Outliner::s_Instance;
 
-bool brk::editor::Outliner::Display()
+bool brk::editor::Outliner::Display(SceneManager& sceneManager)
 {
 	if (!ImGui::Begin("Outliner"))
 	{
@@ -19,17 +19,14 @@ bool brk::editor::Outliner::Display()
 		return false;
 	bool result = false;
 
-	for (const auto& [id, obj] : SceneManager::GetInstance().GetGameObjects())
+	for (const auto& [id, obj] : sceneManager.GetGameObjects())
 	{
-		char idStr[27];
-		idStr[26] = '\0';
-		id.ToChars(idStr);
-		const bool isSelected = obj.m_Entity == m_SelectedEntity;
+		const bool isSelected = obj.m_Id == m_SelectedObjectId;
 
-		if (ImGui::Selectable(idStr, isSelected))
+		if (ImGui::Selectable(obj.m_Name.c_str(), isSelected))
 		{
-			result |= m_SelectedEntity != obj.m_Entity;
-			m_SelectedEntity = obj.m_Entity;
+			result |= !isSelected;
+			m_SelectedObjectId = obj.m_Id;
 		}
 		if (isSelected)
 			ImGui::SetItemDefaultFocus();

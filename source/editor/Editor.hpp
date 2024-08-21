@@ -1,12 +1,20 @@
 #pragma once
 
 #include <PCH.hpp>
+#ifdef BRK_EDITOR
+
 #include <core/Singleton.hpp>
 #include <core/ULID.hpp>
 #include "Project.hpp"
 #include <optional>
 
-#ifdef BRK_EDITOR
+namespace brk {
+	class SceneManager;
+} // namespace brk
+
+namespace brk::ecs {
+	class Manager;
+} // namespace brk::ecs
 
 namespace brk::editor {
 	class Editor : public Singleton<Editor>
@@ -21,7 +29,11 @@ namespace brk::editor {
 
 	private:
 		friend class Singleton<Editor>;
-		Editor(int argc, const char** argv);
+		Editor(
+			ecs::Manager& ecsManager,
+			SceneManager& sceneManager,
+			int argc,
+			const char** argv);
 
 		enum class LoadState
 		{
@@ -39,6 +51,10 @@ namespace brk::editor {
 		std::string m_ProjectFilePath;
 		std::optional<Project> m_Project;
 		ULID m_CurrentScene;
+
+		ecs::Manager& m_ECSManager;
+		SceneManager& m_SceneManager;
+
 		bool m_NewSceneRequested = false;
 	};
 } // namespace brk::editor

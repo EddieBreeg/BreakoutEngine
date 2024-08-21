@@ -4,6 +4,7 @@
 	"objects": [
 		{
 			"id": "01J5TV32BVE4Y37P1J5KYWZPCZ",
+			"name": "TestObject0",
 			"components": {
 				"transform": {
 					"translate": {

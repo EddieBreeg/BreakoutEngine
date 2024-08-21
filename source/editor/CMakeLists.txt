@@ -4,6 +4,7 @@ add_library(BRK_EDITOR STATIC
 	${EDITOR_HEADERS}
 	Editor.cpp
 	ui/ComponentWidgets.cpp
+	ui/Inspector.cpp
 	ui/MenuBar.cpp
 	ui/Outliner.cpp
 	ui/StartupWindow.cpp

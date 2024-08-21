@@ -9,7 +9,7 @@ namespace brk::unique_function::ut {
 		Foo() { ++n; }
 		Foo(Foo&& other) { other.moved = true; }
 
-		void operator()() {}
+		void operator()() const {}
 
 		~Foo()
 		{

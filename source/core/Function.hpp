@@ -68,7 +68,7 @@ namespace brk {
 			return *this;
 		}
 
-		R operator()(Args... args);
+		R operator()(Args... args) const;
 
 		void Reset() noexcept;
 
@@ -77,6 +77,7 @@ namespace brk {
 
 	private:
 		void* GetPtr() noexcept;
+		void* GetPtr() const noexcept;
 		union {
 			void* m_Ptr = nullptr;
 			uint8 m_Buf[sizeof(m_Ptr)];

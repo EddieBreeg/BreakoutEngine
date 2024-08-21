@@ -16,7 +16,7 @@ namespace {
 	{
 		brk::ecs::GameObject object;
 
-		if (!Visit("id", json, object.m_Id))
+		if (!brk::Visit("id", json, object.m_Id))
 		{
 			BRK_LOG_WARNING("Game object doesn't have a ULID");
 			return object;
@@ -26,6 +26,13 @@ namespace {
 			BRK_LOG_WARNING("Game object doesn't have a valid ULID");
 			return object;
 		}
+
+		if(!brk::Visit("name", json, object.m_Name))
+		{
+			BRK_LOG_WARNING("Game object {} doesn't have a name", object.m_Id);
+			return object;
+		}
+
 		object.m_Entity = world.create();
 
 		auto it = json.find("components");

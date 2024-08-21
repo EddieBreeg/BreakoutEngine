@@ -48,5 +48,6 @@ brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C
 			return widget(comp);
 		};
 	}
+	info.m_Name = C::Name.GetPtr();
 	return info;
 }

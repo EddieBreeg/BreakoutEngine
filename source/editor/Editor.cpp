@@ -1,6 +1,7 @@
 #include "Editor.hpp"
 
 #ifdef BRK_EDITOR
+#include "ui/Inspector.hpp"
 #include "ui/Menubar.hpp"
 #include "ui/Outliner.hpp"
 #include "ui/SceneCreation.hpp"
@@ -11,6 +12,7 @@
 #include <core/LogManager.hpp>
 #include <core/ULIDFormatter.hpp>
 
+#include <managers/ECSManager.hpp>
 #include <managers/SceneManager.hpp>
 
 #include <cerrno>
@@ -18,7 +20,13 @@
 #include <fstream>
 #include <system_error>
 
-brk::editor::Editor::Editor(int argc, const char** argv)
+brk::editor::Editor::Editor(
+	ecs::Manager& ecsManager,
+	SceneManager& sceneManager,
+	int argc,
+	const char** argv)
+	: m_ECSManager{ ecsManager }
+	, m_SceneManager{ sceneManager }
 {
 	if (argc < 2)
 		return;
@@ -143,8 +151,7 @@ void brk::editor::Editor::ShowUI()
 		return;
 	}
 
-	const TULIDMap<SceneDescription>& scenes =
-		SceneManager::GetInstance().GetSceneDesriptions();
+	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
 	if (scenes.empty())
 		SceneCreationWindow::s_Instance.Open();
 
@@ -160,7 +167,14 @@ void brk::editor::Editor::ShowUI()
 		return;
 	}
 
-	Outliner::s_Instance.Display();
+	if (Outliner::s_Instance.Display(m_SceneManager))
+	{
+		Inspector::s_Instance.Open();
+		Inspector::s_Instance.m_SelectedObjectId =
+			Outliner::s_Instance.GetSelectedObjectId();
+	}
+
+	Inspector::s_Instance.Display(m_ECSManager.GetWorld(), m_SceneManager);
 }
 
 #endif
