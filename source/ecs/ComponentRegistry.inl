@@ -1,5 +1,5 @@
 template <class C>
-const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
+const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register(bool (*widget)(C&))
 {
 	static_assert(meta::HasName<C>, "Component doesn't have a name");
 	static constexpr uint32 h = Hash<StringView>{}(C::Name);
@@ -13,7 +13,7 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 		}
 	}
 #endif
-	return m_TypeMap.emplace(h, CreateInfo<C>()).first->second;
+	return m_TypeMap.emplace(h, CreateInfo<C>(widget)).first->second;
 }
 
 template <class C>
@@ -30,9 +30,9 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo() const
 }
 
 template <class C>
-brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo()
+brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C&))
 {
-	return {
+	ComponentInfo info{
 		[](const nlohmann::json& json, entt::registry& world, const entt::entity entity)
 		{
 			C comp{};
@@ -40,4 +40,13 @@ brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo()
 			world.emplace<C>(entity, std::move(comp));
 		},
 	};
+	if (widget)
+	{
+		info.m_UiWidget = [widget](entt::registry& reg, const entt::entity entity)
+		{
+			C& comp = reg.get<C>(entity);
+			return widget(comp);
+		};
+	}
+	return info;
 }

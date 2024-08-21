@@ -33,6 +33,7 @@ namespace brk {
 
 		void InitSystems();
 		void InitManagers();
+		void RegisterComponents();
 		bool Update();
 
 		const int m_Argc;

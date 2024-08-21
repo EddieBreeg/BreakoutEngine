@@ -205,4 +205,23 @@ namespace brk {
 			return JsonLoader<V>::Load(out_value, json);
 		}
 	}
+
+	template<>
+	struct JsonLoader<float3>
+	{
+		static bool Load(float3 out_vec, const nlohmann::json& json)
+		{
+			bool res = Visit("x", json, out_vec.x);
+			res |= Visit("y", json, out_vec.y);
+			res |= Visit("y", json, out_vec.z);
+			return res;
+		}
+
+		static void Save(const float3 vec, nlohmann::json& out_json)
+		{
+			out_json["x"] = vec.x;
+			out_json["y"] = vec.y;
+			out_json["z"] = vec.z;
+		}
+	};
 } // namespace brk

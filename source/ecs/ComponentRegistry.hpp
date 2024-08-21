@@ -2,6 +2,7 @@
 
 #include <PCH.hpp>
 #include <core/Assert.hpp>
+#include <core/Function.hpp>
 #include <core/Hash.hpp>
 #include <core/LoadersFwd.hpp>
 #include <core/LogManager.hpp>
@@ -19,6 +20,9 @@ namespace brk::ecs {
 		 */
 		void (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
 			nullptr;
+#ifdef BRK_DEV
+		UniqueFunction<bool(entt::registry&, const entt::entity)> m_UiWidget;
+#endif
 		const char* m_Name;
 
 	private:
@@ -37,11 +41,12 @@ namespace brk::ecs {
 		/**
 		 * Generates a ComponentInfo object for the provided type, and adds it to the map.
 		 * \tparam C The component type. Must meet the meta::HasName trait.
+		 * \param uiWidget: The function which displays the component
 		 * \return A reference to the newly created info object, or the existing one if
 		 * the component had already been registered.
 		 */
 		template <class C>
-		const ComponentInfo& Register();
+		const ComponentInfo& Register(bool (*uiWidget)(C&) = nullptr);
 
 		/**
 		 * Gets a component's info from its type
@@ -63,7 +68,7 @@ namespace brk::ecs {
 		ComponentRegistry() = default;
 
 		template <class C>
-		static ComponentInfo CreateInfo();
+		static ComponentInfo CreateInfo(bool (*widget)(C&));
 
 		using TMap = std::unordered_map<uint32, const ComponentInfo, Hash<uint32>>;
 		TMap m_TypeMap;

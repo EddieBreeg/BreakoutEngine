@@ -1,6 +1,7 @@
 #include "Entry.hpp"
 
 #include <core/LogManager.hpp>
+#include <ecs/ComponentRegistry.hpp>
 #include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
 
@@ -9,13 +10,16 @@
 
 #include <debug/DebugOverlay.hpp>
 
+#ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
+#endif
 
 #include <SDL2/SDL_video.h>
 
 #include <systems/ResourceLoadingSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
+#include "App.hpp"
 
 namespace brk {
 
@@ -43,6 +47,7 @@ namespace brk {
 	{
 		ResourceManager::Init(m_ECSManager.GetWorld());
 		SceneManager::Init();
+		ecs::ComponentRegistry::Init();
 	}
 
 	bool App::Update()
@@ -63,8 +68,9 @@ namespace brk {
 #ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
-		InitSystems();
 		InitManagers();
+		InitSystems();
+		RegisterComponents();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(m_Argc, m_Argv);
 #endif

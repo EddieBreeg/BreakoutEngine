@@ -100,11 +100,14 @@ void brk::SceneManager::LoadScene(const ULID id)
 		return;
 
 	entt::registry& world = ecs::Manager::GetInstance().GetWorld();
+	uint32 nObjects = 0;
 	for (const nlohmann::json& objectDesc : objects)
 	{
 		ecs::GameObject object = LoadGameObject(objectDesc, world);
 		m_Objects.emplace(object.m_Id, std::move(object));
+		++nObjects;
 	}
+	BRK_LOG_TRACE("Loaded {} game objects from scene file", nObjects);
 #endif
 }
 

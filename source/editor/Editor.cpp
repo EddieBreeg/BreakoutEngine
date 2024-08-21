@@ -2,12 +2,14 @@
 
 #ifdef BRK_EDITOR
 #include "ui/Menubar.hpp"
+#include "ui/Outliner.hpp"
 #include "ui/SceneCreation.hpp"
 #include "ui/SceneSelection.hpp"
 #include "ui/StartupWindow.hpp"
 
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/ULIDFormatter.hpp>
 
 #include <managers/SceneManager.hpp>
 
@@ -61,7 +63,7 @@ void brk::editor::Editor::SaveProjectFile()
 	nlohmann::json& scenesArr = json["scenes"] = nlohmann::json::array();
 
 	nlohmann::json sceneJson;
-	for (const auto& [id, desc] : SceneManager::GetInstance().GetObjects())
+	for (const auto& [id, desc] : SceneManager::GetInstance().GetSceneDesriptions())
 	{
 		JsonLoader<SceneDescription>::Save(desc, sceneJson);
 		scenesArr.emplace_back(std::move(sceneJson));
@@ -78,7 +80,10 @@ void brk::editor::Editor::Update()
 {
 	switch (m_LoadState)
 	{
-	case LoadState::Project: LoadProject(); break;
+	case LoadState::Project:
+		LoadProject();
+		Outliner::s_Instance.Open();
+		break;
 	case LoadState::Scene: LoadScene(); break;
 	default: break;
 	}
@@ -123,6 +128,7 @@ void brk::editor::Editor::LoadProject()
 
 void brk::editor::Editor::LoadScene()
 {
+	BRK_LOG_TRACE("Loading scene {}", m_CurrentScene);
 	SceneManager::GetInstance().LoadScene(m_CurrentScene);
 	m_LoadState = LoadState::None;
 }
@@ -137,7 +143,8 @@ void brk::editor::Editor::ShowUI()
 		return;
 	}
 
-	const TULIDMap<SceneDescription>& scenes = SceneManager::GetInstance().GetObjects();
+	const TULIDMap<SceneDescription>& scenes =
+		SceneManager::GetInstance().GetSceneDesriptions();
 	if (scenes.empty())
 		SceneCreationWindow::s_Instance.Open();
 
@@ -150,7 +157,10 @@ void brk::editor::Editor::ShowUI()
 	if (!m_CurrentScene)
 	{
 		SceneSelectionWindow(scenes);
+		return;
 	}
+
+	Outliner::s_Instance.Display();
 }
 
 #endif
