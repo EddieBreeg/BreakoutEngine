@@ -1,4 +1,5 @@
 add_executable(MathTests
+	QuaternionTests.cpp
 	VectorTests.cpp
 	main.cpp)
 
