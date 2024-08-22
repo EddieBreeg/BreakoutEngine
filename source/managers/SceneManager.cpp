@@ -30,7 +30,6 @@ namespace {
 		if (!brk::Visit("name", json, object.m_Name))
 		{
 			BRK_LOG_WARNING("Game object {} doesn't have a name", object.m_Id);
-			return object;
 		}
 
 		object.m_Entity = world.create();
