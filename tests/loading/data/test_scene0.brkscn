@@ -3,6 +3,7 @@
 	"objects": [
 		{
 			"id": "01HXARTASQ9HX1SEJPF85A52VR",
+			"name": "TestObject0",
 			"components": {
 				"C1": {
 					"x": 1,

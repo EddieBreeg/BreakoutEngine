@@ -1,4 +1,8 @@
+namespace math::ut {
+	void VectorTests();
+} // namespace math::ut
+
 int main(int argc, char const* argv[])
 {
-	return 0;
+	math::ut::VectorTests();
 }
