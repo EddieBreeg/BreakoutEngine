@@ -24,10 +24,12 @@ namespace brk {
 		void LoadScene(const ULID sceneId);
 
 		[[nodiscard]] const ecs::GameObject* GetObject(const ULID id) const;
+		[[nodiscard]] ecs::GameObject* GetObject(const ULID id);
 		[[nodiscard]] const TULIDMap<ecs::GameObject>& GetGameObjects() const
 		{
 			return m_Objects;
 		}
+		[[nodiscard]] TULIDMap<ecs::GameObject>& GetGameObjects() { return m_Objects; }
 
 		[[nodiscard]] const TULIDMap<SceneDescription>& GetSceneDesriptions()
 			const noexcept

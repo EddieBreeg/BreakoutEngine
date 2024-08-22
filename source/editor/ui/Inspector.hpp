@@ -16,7 +16,7 @@ namespace brk::editor {
 	public:
 		~Inspector() = default;
 		void Open() noexcept { m_Show = true; }
-		bool Display(entt::registry& entityWorld, const SceneManager& sceneManager);
+		bool Display(entt::registry& entityWorld, SceneManager& sceneManager);
 
 		static Inspector s_Instance;
 
@@ -25,7 +25,7 @@ namespace brk::editor {
 	private:
 		Inspector() = default;
 
-		bool m_Show = false;
+		bool m_Show = true;
 	};
 } // namespace brk::editor
 

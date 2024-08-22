@@ -3,8 +3,9 @@ add_library(IMGUI STATIC
 	imgui_tables.cpp
 	imgui_widgets.cpp
 	imgui.cpp
+	misc/cpp/imgui_stdlib.cpp
 )
-target_include_directories(IMGUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(IMGUI PUBLIC ${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_SOURCE_DIR}/misc/cpp)
 
 add_subdirectory(backends)
 target_link_libraries(IMGUI PUBLIC IMGUI_SDL2)

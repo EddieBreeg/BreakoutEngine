@@ -27,7 +27,7 @@ namespace {
 			return object;
 		}
 
-		if(!brk::Visit("name", json, object.m_Name))
+		if (!brk::Visit("name", json, object.m_Name))
 		{
 			BRK_LOG_WARNING("Game object {} doesn't have a name", object.m_Id);
 			return object;
@@ -119,6 +119,12 @@ void brk::SceneManager::LoadScene(const ULID id)
 }
 
 const brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id) const
+{
+	const auto it = m_Objects.find(id);
+	return it == m_Objects.end() ? nullptr : &it->second;
+}
+
+brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id)
 {
 	const auto it = m_Objects.find(id);
 	return it == m_Objects.end() ? nullptr : &it->second;

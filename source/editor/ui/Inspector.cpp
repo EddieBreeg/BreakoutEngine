@@ -3,6 +3,8 @@
 #ifdef BRK_EDITOR
 #include <core/ULIDFormatter.hpp>
 #include <imgui.h>
+#include <imgui_macros.hpp>
+#include <imgui_stdlib.h>
 #include <debug/GameObjectInfoComponent.hpp>
 #include <managers/SceneManager.hpp>
 #include <entt/entity/registry.hpp>
@@ -11,7 +13,7 @@ brk::editor::Inspector brk::editor::Inspector::s_Instance;
 
 bool brk::editor::Inspector::Display(
 	entt::registry& entityWorld,
-	const SceneManager& sceneManager)
+	SceneManager& sceneManager)
 {
 	if (!m_Show)
 		return false;
@@ -25,7 +27,7 @@ bool brk::editor::Inspector::Display(
 		return false;
 	}
 
-	const ecs::GameObject* object = sceneManager.GetObject(m_SelectedObjectId);
+	ecs::GameObject* object = sceneManager.GetObject(m_SelectedObjectId);
 	DEBUG_CHECK(object)
 	{
 		BRK_LOG_WARNING(
@@ -41,10 +43,9 @@ bool brk::editor::Inspector::Display(
 		idStr[26] = 0;
 		object->m_Id.ToChars(idStr);
 		ImGui::Text("ULID: %s", idStr);
-		ImGui::Text("Name: %s", object->m_Name.c_str());
+		IMGUI_LEFT_LABEL(ImGui::InputText, "Name", &object->m_Name);
 		ImGui::TreePop();
 	}
-
 
 	bool result = false;
 	for (const ecs::ComponentInfo* comp : object->m_Components)
