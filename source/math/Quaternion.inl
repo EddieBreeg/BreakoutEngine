@@ -21,20 +21,20 @@ namespace math {
 		, w{ 0 }
 	{}
 
-	inline Quaternion Quaternion::AxisAngle(float3 axis, float angle)
+	inline Quaternion Quaternion::AxisAngle(float3 axis, float angle, bool normalize)
 	{
 		angle /= 2.0f;
+		if (normalize)
+			axis.Normalize();
 		const float w = std::cosf(angle);
 		const float s = std::sinf(angle);
 		return { s * axis.x, s * axis.y, s * axis.z, w };
 	}
 
-	inline float3 Quaternion::Rotate(Quaternion q, float3 v, bool normalize)
+	inline float3 Quaternion::Rotate(Quaternion q, float3 v)
 	{
-		if (normalize)
-			q = q.Normalized();
 		Quaternion p{ v };
-		return q * p * q.Conjugate();
+		return q * p * q.Inverse();
 	}
 
 	inline constexpr Quaternion::operator float3() const noexcept

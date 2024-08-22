@@ -15,14 +15,14 @@ namespace math {
 		~Quaternion() = default;
 		constexpr Quaternion& operator=(const Quaternion&) = default;
 
-		static Quaternion AxisAngle(float3 axis, float angle);
+		static Quaternion AxisAngle(float3 axis, float angle, bool normalize = false);
 
 		[[nodiscard]] static constexpr Quaternion Identity() noexcept
 		{
 			return Quaternion{};
 		};
 
-		[[nodiscard]] static float3 Rotate(Quaternion q, float3 v, bool normalize = false);
+		[[nodiscard]] static float3 Rotate(Quaternion q, float3 v);
 
 		[[nodiscard]] constexpr operator float3() const noexcept;
 
