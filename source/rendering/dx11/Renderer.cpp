@@ -171,6 +171,8 @@ void brk::rdr::Renderer::StartRender()
 	m_Data->m_DeviceContext->ClearRenderTargetView(
 		m_Data->m_FrameBufferView.get(),
 		(float*)&m_ClearColor);
+	ID3D11RenderTargetView* targetViewPtr = m_Data->m_FrameBufferView.get();
+	m_Data->m_DeviceContext->OMSetRenderTargets(1, &targetViewPtr, nullptr);
 
 	RECT winRect;
 	GetClientRect(m_Data->m_NativeWindow, &winRect);
@@ -186,8 +188,6 @@ void brk::rdr::Renderer::StartRender()
 
 void brk::rdr::Renderer::RenderUI()
 {
-	ID3D11RenderTargetView* view = m_Data->m_FrameBufferView.get();
-	m_Data->m_DeviceContext->OMSetRenderTargets(1, &view, nullptr);
 #ifdef BRK_DEV
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 #endif
