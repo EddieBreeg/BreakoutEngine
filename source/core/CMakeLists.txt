@@ -34,6 +34,7 @@ target_link_libraries(BRK_CORE PUBLIC
 	BRK_INCLUDES
 	nlohmann_json::nlohmann_json
 	fmt::fmt
+	BRK_MATH
 )
 	
 target_link_libraries(BRK_CORE PRIVATE

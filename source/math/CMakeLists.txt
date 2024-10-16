@@ -7,4 +7,4 @@ target_sources(BRK_MATH INTERFACE
 )
 target_compile_features(BRK_MATH INTERFACE cxx_std_17)
 add_library(Breakout::Math ALIAS BRK_MATH)
-target_link_libraries(BRK_MATH INTERFACE BRK_INCLUDES)
+target_link_libraries(BRK_MATH INTERFACE BRK_INCLUDES glm::glm)

@@ -10,3 +10,6 @@
 [submodule "3rd_party/json"]
 	path = 3rd_party/json
 	url = https://github.com/nlohmann/json
+[submodule "3rd_party/glm"]
+	path = 3rd_party/glm
+	url = git@github.com:g-truc/glm.git
