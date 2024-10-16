@@ -101,7 +101,9 @@ void brk::WindowSystem::ProcessEvents(World& world)
 			{
 			case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
 			case SDL_WINDOWEVENT_RESIZED:
-				rdr::Renderer::s_Instance.ResizeFrameBuffers();
+				rdr::Renderer::s_Instance.ResizeFrameBuffers(
+					uint32(evt.window.data1),
+					uint32(evt.window.data2));
 				break;
 			default: break;
 			}

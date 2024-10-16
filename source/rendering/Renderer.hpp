@@ -20,7 +20,7 @@ namespace brk::rdr
 		void NewImGuiFrame();
 #endif
 
-		void ResizeFrameBuffers();
+		void ResizeFrameBuffers(uint32 width, uint32 height);
 
 		void StartRender();
 		void RenderUI();

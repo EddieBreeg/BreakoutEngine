@@ -56,7 +56,7 @@ void brk::rdr::Renderer::NewImGuiFrame()
 }
 #endif
 
-void brk::rdr::Renderer::ResizeFrameBuffers() {}
+void brk::rdr::Renderer::ResizeFrameBuffers(uint32, uint32) {}
 
 void brk::rdr::Renderer::StartRender()
 {
