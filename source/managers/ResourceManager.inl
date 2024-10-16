@@ -68,7 +68,7 @@ void brk::ResourceManager::RegisterResourceType()
 {
 	static_assert(
 		std::is_base_of_v<Resource, R> && meta::HasName<R> &&
-			std::is_default_constructible_v<R>,
+			std::is_constructible_v<R, const ULID&>,
 		"Invalid resource type");
 
 	constexpr uint32 h = Hash<StringView>{}(R::Name);
@@ -76,7 +76,7 @@ void brk::ResourceManager::RegisterResourceType()
 		h,
 		[](const ULID id) -> Resource*
 		{
-			return new R{ id };
+			return static_cast<Resource*>(new R{ id });
 		});
 }
 

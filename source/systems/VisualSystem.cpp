@@ -22,7 +22,6 @@ namespace brk
 			ImGui::UpdatePlatformWindows();
 			ImGui::RenderPlatformWindowsDefault();
 		}
-		// ImGui::EndFrame();
 #endif
 		rdr::Renderer::s_Instance.Present();
 	}
