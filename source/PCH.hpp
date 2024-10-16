@@ -7,6 +7,7 @@
 #include <new>
 
 #include <core/MetaLists.hpp>
+#include <math/Quaternion.hpp>
 #include <core/TypeTraits.hpp>
 #include <core/Utility.hpp>
 #include <math/Vector.hpp>

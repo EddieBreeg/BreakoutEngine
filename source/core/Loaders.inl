@@ -209,7 +209,7 @@ namespace brk {
 	template<>
 	struct JsonLoader<float3>
 	{
-		static bool Load(float3 out_vec, const nlohmann::json& json)
+		static bool Load(float3& out_vec, const nlohmann::json& json)
 		{
 			bool res = Visit("x", json, out_vec.x);
 			res |= Visit("y", json, out_vec.y);
@@ -222,6 +222,27 @@ namespace brk {
 			out_json["x"] = vec.x;
 			out_json["y"] = vec.y;
 			out_json["z"] = vec.z;
+		}
+	};
+
+	template<>
+	struct JsonLoader<math::Quaternion>
+	{
+		static bool Load(math::Quaternion& out_quat, const nlohmann::json& json)
+		{
+			bool res = Visit("w", json, out_quat.w);
+			res |= Visit("x", json, out_quat.x);
+			res |= Visit("y", json, out_quat.y);
+			res |= Visit("z", json, out_quat.z);
+			return res;
+		}
+
+		static void Save(const math::Quaternion& quat, nlohmann::json& out_json)
+		{
+			out_json["w"] = quat.w;
+			out_json["x"] = quat.x;
+			out_json["y"] = quat.y;
+			out_json["z"] = quat.z;
 		}
 	};
 } // namespace brk

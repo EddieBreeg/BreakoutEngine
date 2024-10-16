@@ -12,7 +12,7 @@ namespace math {
 		float3 m_Scale = { 1, 1, 1 };
 		Quaternion m_Rotation = glm::identity<Quaternion>();
 
-		[[nodiscard]] constexpr Matrix44 GetMatrix() const noexcept
+		[[nodiscard]] Matrix44 GetMatrix() const noexcept
 		{
 			const float4x4 rotation = glm::mat4_cast(m_Rotation);
 			return glm::translate(glm::scale(rotation, m_Scale), m_Translate);
