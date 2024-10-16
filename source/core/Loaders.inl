@@ -202,7 +202,7 @@ namespace brk {
 		}
 		else
 		{
-			return JsonLoader<V>::Load(out_value, json);
+			return JsonLoader<V>::Load(out_value, *it);
 		}
 	}
 
@@ -213,7 +213,7 @@ namespace brk {
 		{
 			bool res = Visit("x", json, out_vec.x);
 			res |= Visit("y", json, out_vec.y);
-			res |= Visit("y", json, out_vec.z);
+			res |= Visit("z", json, out_vec.z);
 			return res;
 		}
 

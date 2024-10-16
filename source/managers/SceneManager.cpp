@@ -40,7 +40,7 @@ namespace {
 
 		auto& registry = brk::ecs::ComponentRegistry::GetInstance();
 
-		for (auto comp : it->items())
+		for (auto& comp : it->items())
 		{
 			const brk::ecs::ComponentInfo& info = registry.GetInfo(comp.key());
 			object.m_Components.emplace_back(&info);
