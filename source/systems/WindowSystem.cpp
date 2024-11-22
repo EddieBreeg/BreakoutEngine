@@ -49,6 +49,11 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 								  ImGuiConfigFlags_DockingEnable |
 								  ImGuiConfigFlags_ViewportsEnable;
+	const float uiScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_WinPtr));
+	BRK_ASSERT(uiScale, "Failed to retrieve DPI scaling value: {}", SDL_GetError());
+	ImGuiStyle& style = ImGui::GetStyle();
+	ImGui::StyleColorsDark(&style);
+	style.ScaleAllSizes(uiScale);
 #endif
 
 	rdr::Renderer::s_Instance.Init(m_WinPtr);
