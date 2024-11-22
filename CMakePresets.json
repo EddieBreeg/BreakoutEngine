@@ -21,6 +21,7 @@
 		{
 			"name": "win64",
 			"inherits": "Default",
+			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
 				"BRK_RENDER_BACKEND": "DX11"
 			}
