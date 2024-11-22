@@ -2,6 +2,10 @@ namespace brk::core::ut {
 	void EventTests();
 } // namespace brk::core::ut
 
+namespace brk::retain_ptr::ut {
+	void Tests();
+} // namespace brk::retain_ptr::ut
+
 namespace brk::ulid::ut {
 	void ULIDTests();
 } // namespace brk::ulid::ut
@@ -25,5 +29,6 @@ int main(int argc, char const* argv[])
 	brk::string_view::ut::Tests();
 	brk::unique_function::ut::Tests();
 	brk::signal::ut::Tests();
+	brk::retain_ptr::ut::Tests();
 	return 0;
 }
