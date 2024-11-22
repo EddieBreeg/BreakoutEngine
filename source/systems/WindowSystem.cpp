@@ -95,16 +95,23 @@ void brk::WindowSystem::ProcessEvents(World& world)
 		world.DestroyEntity(event);
 
 	SDL_Event evt;
+	const SDL_WindowID mainWindowId = SDL_GetWindowID(m_WinPtr);
 
 	while (SDL_PollEvent(&evt))
 	{
 		switch (evt.type)
 		{
-		case SDL_EVENT_WINDOW_CLOSE_REQUESTED: App::GetInstance().Terminate(); break;
+		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
+			if (evt.window.windowID == mainWindowId)
+				App::GetInstance().Terminate();
+			break;
 		case SDL_EVENT_WINDOW_RESIZED:
-			rdr::Renderer::s_Instance.ResizeFrameBuffers(
-				uint32(evt.window.data1),
-				uint32(evt.window.data2));
+			if (evt.window.windowID == mainWindowId)
+			{
+				rdr::Renderer::s_Instance.ResizeFrameBuffers(
+					uint32(evt.window.data1),
+					uint32(evt.window.data2));
+			}
 			break;
 		case SDL_EVENT_QUIT: App::GetInstance().Terminate(); break;
 		case SDL_EVENT_MOUSE_MOTION:
