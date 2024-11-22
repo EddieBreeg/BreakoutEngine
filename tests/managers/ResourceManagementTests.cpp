@@ -10,6 +10,11 @@ namespace brk::resource_ref::ut {
 	{
 		using Resource::Resource;
 		static constexpr StringView Name = "Res1";
+		bool DoLoad()
+		{
+			m_LoadingState = Loaded;
+			return true;
+		}
 	};
 
 	constexpr ULID s_ResId1 = ULID::FromString("01HXARTASQ9HX1SEJPF85A52VR");
@@ -49,15 +54,28 @@ namespace brk::resource_ref::ut {
 				},
 			};
 			helper.m_Manager.CreateResources(desc);
-			ResourceRef<const Res1> ref = helper.m_Manager.GetRef<const Res1>(s_ResId1);
-			assert(ref.IsValid());
+			ResourceRef<Res1> ref = helper.m_Manager.GetRef<Res1>(s_ResId1);
+			assert(ref);
 			assert(ref->GetLoadingState() == Resource::Loading);
 
-			auto view = helper.m_EntityWorld.view<ResourceLoadRequestComponent>();
-			int reqCount = 0;
-			for (const entt::entity req : view)
-				++reqCount;
-			assert(reqCount == 1);
+			{
+				auto view = helper.m_EntityWorld.view<ResourceLoadRequestComponent>();
+				int reqCount = 0;
+				for (const entt::entity req : view)
+					++reqCount;
+				assert(reqCount == 1);
+			}
+			ref->DoLoad();
+			auto* rawPtr = ref.Get();
+			ref.Reset();
+			assert(rawPtr->GetLoadingState() == Resource::Unloading);
+			{
+				auto view = helper.m_EntityWorld.view<ResourceUnloadRequestComponent>();
+				int reqCount = 0;
+				for (const entt::entity req : view)
+					++reqCount;
+				assert(reqCount == 1);
+			}
 		}
 	}
 } // namespace brk::resource_ref::ut

@@ -119,6 +119,8 @@ namespace brk {
 		[[nodiscard]] T& operator*() { return *m_Ptr; }
 		[[nodiscard]] const T& operator*() const { return *m_Ptr; }
 
+		[[nodiscard]] constexpr operator bool() const noexcept { return bool(m_Ptr); }
+
 		[[nodiscard]] auto GetCount() const;
 
 		T* Release() noexcept { return std::exchange(m_Ptr, nullptr); }

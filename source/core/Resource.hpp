@@ -4,15 +4,17 @@
 #include "FieldList.hpp"
 #include "LoadersFwd.hpp"
 #include "ULID.hpp"
+
 #include <string>
 
 namespace brk {
+	struct ResourceRetainTraits;
+
 	/**
 	 * Represents an generic resource. This class is meant to be subclassed for specific
 	 * types of resources.
 	 * A subclass should meet the following criteria:
 	 * - Be constructible from a ULID object
-	 * - Have an accessible static
 	 */
 	class Resource
 	{
@@ -22,6 +24,7 @@ namespace brk {
 			Unloaded,
 			Loading,
 			Loaded,
+			Unloading,
 		};
 
 		Resource(const ULID id = ULID{});
@@ -35,7 +38,7 @@ namespace brk {
 		 * \return true if the resource was loaded succesfully, false otherwise.
 		 */
 		virtual bool DoLoad() { return false; }
-		virtual void DoUnload() {}
+		virtual void DoUnload() { m_LoadingState = ELoadingState::Unloaded; }
 
 		[[nodiscard]] ELoadingState GetLoadingState() const noexcept
 		{
@@ -45,7 +48,7 @@ namespace brk {
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
 
-	private:
+	protected:
 		ULID m_Id;
 		std::string m_Name;
 		std::string m_FilePath;
@@ -57,9 +60,8 @@ namespace brk {
 
 		friend class ResourceLoadingSystem;
 		friend class ResourceManager;
-		template <class R>
-		friend class ResourceRef;
 		friend struct JsonLoader<Resource>;
+		friend struct ResourceRetainTraits;
 	};
 
 	template <>

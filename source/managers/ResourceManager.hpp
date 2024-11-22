@@ -1,57 +1,22 @@
 #pragma once
 #include <PCH.hpp>
 #include <core/Resource.hpp>
+#include <core/RetainPtr.hpp>
 #include <core/Singleton.hpp>
 #include <entt/entity/fwd.hpp>
 #include <unordered_map>
 
 namespace brk {
-	/**
-	 * Wrapper around a resource object pointer. This allows to automatically load/unload
-	 * the resource when necessary.
-	 */
-	template <class Res>
-	class ResourceRef
+	struct ResourceRetainTraits
 	{
-	public:
-		using TMutableRes = std::remove_const_t<Res>;
-		static_assert(std::is_base_of_v<Resource, TMutableRes>, "Invalid resource type");
-
-		// Constructs a null resource
-		ResourceRef() noexcept = default;
-		/**
-		 * Creates a new reference and increments the resource's internal ref count.
-		 */
-		ResourceRef(TMutableRes& ref);
-		/**
-		 * Copies a reference and increments the resource's internal ref count.
-		 */
-		ResourceRef(const ResourceRef&);
-		/**
-		 * Moves the pointer and sets the other reference to null.
-		 */
-		ResourceRef(ResourceRef&&) noexcept;
-		/**
-		 * If the resource pointer is not nullptr, decrements the resource's internal ref
-		 * count.
-		 */
-		~ResourceRef();
-
-		/**
-		 * Copies the resource reference and increment the resource's internal ref count.
-		 */
-		ResourceRef& operator=(const ResourceRef& other);
-		// Swaps *this with other.
-		ResourceRef& operator=(ResourceRef&& other) noexcept;
-
-		[[nodiscard]] bool IsValid() const noexcept { return m_Ptr; }
-
-		[[nodiscard]] Res* operator->();
-		[[nodiscard]] Res& operator*();
-
-	private:
-		TMutableRes* m_Ptr = nullptr;
+		static constexpr Retain_t DefaultAction = {};
+		static void Increment(Resource* res);
+		static void Decrement(Resource* res);
+		static uint32 GetCount(const Resource* res);
 	};
+
+	template <class Res>
+	using ResourceRef = RetainPtr<Res, ResourceRetainTraits>;
 
 	class ResourceManager : public Singleton<ResourceManager>
 	{
@@ -87,8 +52,8 @@ namespace brk {
 
 	private:
 		friend class Singleton<ResourceManager>;
-		template <class T>
-		friend class ResourceRef;
+
+		friend struct ResourceRetainTraits;
 
 		Resource* CreateResource(const StringView type, const ULID id) const;
 
