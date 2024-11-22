@@ -28,7 +28,7 @@ target_link_libraries(BRK_RENDERING PRIVATE
 	BRK_INCLUDES
 	Breakout::Core
 	ImGui::ImGui
-	SDL2::SDL2
+	SDL3::SDL3
 )
 
 add_library(Breakout::Rendering ALIAS BRK_RENDERING)

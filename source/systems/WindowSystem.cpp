@@ -14,7 +14,8 @@
 
 #include "private/ImGuiIncludes.hpp"
 
-#include <SDL2/SDL.h>
+#include <SDL3/SDL_init.h>
+#include <SDL3/SDL_video.h>
 
 namespace {
 	template <brk::inputs::EEventType Evt, class... Args>
@@ -34,12 +35,10 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	: m_Settings{ settings }
 {
 	const int initCode = SDL_Init(SDL_INIT_VIDEO);
-	BRK_ASSERT(!initCode, "Failed to initialize SDL: {}", SDL_GetError());
+	BRK_ASSERT(initCode, "Failed to initialize SDL: {}", SDL_GetError());
 
 	m_WinPtr = SDL_CreateWindow(
 		m_Settings.m_Title,
-		SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED,
 		m_Settings.m_Size.x,
 		m_Settings.m_Size.y,
 		m_Settings.m_Flags);
@@ -70,7 +69,7 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
 #if defined(BRK_DEV)
 	rdr::Renderer::s_Instance.NewImGuiFrame();
-	ImGui::DockSpaceOverViewport(nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+	ImGui::DockSpaceOverViewport(0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
 #endif
 
 	ProcessEvents(world);
@@ -96,49 +95,43 @@ void brk::WindowSystem::ProcessEvents(World& world)
 	{
 		switch (evt.type)
 		{
-		case SDL_WINDOWEVENT:
-			switch (evt.window.event)
-			{
-			case SDL_WINDOWEVENT_CLOSE: App::GetInstance().Terminate(); break;
-			case SDL_WINDOWEVENT_RESIZED:
-				rdr::Renderer::s_Instance.ResizeFrameBuffers(
-					uint32(evt.window.data1),
-					uint32(evt.window.data2));
-				break;
-			default: break;
-			}
+		case SDL_EVENT_WINDOW_CLOSE_REQUESTED: App::GetInstance().Terminate(); break;
+		case SDL_EVENT_WINDOW_RESIZED:
+			rdr::Renderer::s_Instance.ResizeFrameBuffers(
+				uint32(evt.window.data1),
+				uint32(evt.window.data2));
 			break;
-		case SDL_QUIT: App::GetInstance().Terminate(); break;
-		case SDL_MOUSEMOTION:
+		case SDL_EVENT_QUIT: App::GetInstance().Terminate(); break;
+		case SDL_EVENT_MOUSE_MOTION:
 		{
 			const int2 pos{ evt.motion.x, evt.motion.y };
 			const int2 oldPos = pos - int2{ evt.motion.xrel, evt.motion.yrel };
 			CreateInputEventEntity<inputs::MouseMove>(world, oldPos, pos);
 			break;
 		}
-		case SDL_MOUSEBUTTONUP:
-		case SDL_MOUSEBUTTONDOWN:
+		case SDL_EVENT_MOUSE_BUTTON_UP:
+		case SDL_EVENT_MOUSE_BUTTON_DOWN:
 			CreateInputEventEntity<inputs::MouseButton>(
 				world,
 				evt.button.button,
-				evt.button.state == SDL_PRESSED,
+				evt.button.down,
 				evt.button.clicks,
 				int2{ evt.button.x, evt.button.y });
 			break;
-		case SDL_KEYUP:
-		case SDL_KEYDOWN:
+		case SDL_EVENT_KEY_UP:
+		case SDL_EVENT_KEY_DOWN:
 			CreateInputEventEntity<inputs::Key>(
 				world,
-				evt.key.keysym.sym,
-				evt.key.keysym.mod,
-				evt.key.state == SDL_PRESSED,
+				evt.key.key,
+				evt.key.mod,
+				evt.key.down,
 				evt.key.repeat);
 			break;
 		default: break;
 		}
 
 #if defined(BRK_DEV)
-		ImGui_ImplSDL2_ProcessEvent(&evt);
+		ImGui_ImplSDL3_ProcessEvent(&evt);
 #endif
 	}
 }

@@ -14,7 +14,7 @@
 #include <editor/Editor.hpp>
 #endif
 
-#include <SDL2/SDL_video.h>
+#include <SDL3/SDL_video.h>
 
 #include <systems/ResourceLoadingSystem.hpp>
 #include <systems/VisualSystem.hpp>

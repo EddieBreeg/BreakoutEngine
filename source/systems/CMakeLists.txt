@@ -20,7 +20,7 @@ target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Managers
 	Breakout::Editor
 	ImGui::ImGui
-	SDL2::SDL2
+	SDL3::SDL3
 )
 
 add_library(Breakout::Systems ALIAS BRK_SYSTEMS)

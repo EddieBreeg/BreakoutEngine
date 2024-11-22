@@ -1,4 +1,4 @@
-set(CMAKE_FOLDER "3rd_party/SDL2")
+set(CMAKE_FOLDER "3rd_party/SDL3")
 add_subdirectory(SDL)
 
 set(CMAKE_FOLDER "3rd_party/ImGUI")

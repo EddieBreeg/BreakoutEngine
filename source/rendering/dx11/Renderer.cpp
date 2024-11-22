@@ -8,9 +8,9 @@
 
 #include <imgui.h>
 #include <backends/imgui_impl_dx11.h>
-#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdl3.h>
 
-#include <SDL2/SDL_syswm.h>
+#include <SDL3/SDL_Video.h>
 
 #include <array>
 #include <system_error>
@@ -35,10 +35,10 @@ struct brk::rdr::RendererData
 namespace {
 	HWND GetNativeWindowHandle(SDL_Window* window)
 	{
-		SDL_SysWMinfo info;
-		SDL_VERSION(&info.version);
-		SDL_GetWindowWMInfo(window, &info);
-		return info.info.win.window;
+		return static_cast<HWND>(SDL_GetPointerProperty(
+			SDL_GetWindowProperties(window),
+			SDL_PROP_WINDOW_WIN32_HWND_POINTER,
+			nullptr));
 	}
 
 	bool LogError(HRESULT err, const char* format)
@@ -254,7 +254,7 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 	};
 
 #ifdef BRK_DEV
-	ImGui_ImplSDL2_InitForD3D(window);
+	ImGui_ImplSDL3_InitForD3D(window);
 	ImGui_ImplDX11_Init(dev, devContext);
 #endif
 }
@@ -263,7 +263,7 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 void brk::rdr::Renderer::NewImGuiFrame()
 {
 	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplSDL2_NewFrame();
+	ImGui_ImplSDL3_NewFrame();
 	ImGui::NewFrame();
 }
 #endif
@@ -298,7 +298,9 @@ void brk::rdr::Renderer::StartRender()
 		(float*)&m_ClearColor);
 	ID3D11RenderTargetView* targetViewPtr = m_Data->m_FrameBufferView.get();
 	m_Data->m_DeviceContext->OMSetRenderTargets(
-		1, &targetViewPtr, m_Data->m_DepthStencilView.get());
+		1,
+		&targetViewPtr,
+		m_Data->m_DepthStencilView.get());
 
 	RECT winRect;
 	GetClientRect(m_Data->m_NativeWindow, &winRect);
@@ -326,7 +328,7 @@ void brk::rdr::Renderer::Shutdown()
 
 #ifdef BRK_DEV
 	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplSDL2_Shutdown();
+	ImGui_ImplSDL3_Shutdown();
 	ImGui::DestroyContext();
 #endif
 

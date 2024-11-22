@@ -1,7 +1,7 @@
 #pragma once
 
 #include <imgui.h>
-#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_sdl3.h>
 
 #if defined(BRK_DX11)
 #include <backends/imgui_impl_dx11.h>
@@ -11,7 +11,7 @@
 #elif defined(BRK_OPENGL)
 #include <backends/imgui_impl_opengl3.h>
 #elif defined(BRK_SDL2_RENDERER)
-#include <backends/imgui_impl_sdlrenderer2.h>
+#include <backends/imgui_impl_sdlrenderer3.h>
 #else
 #error "Unsupported rendering backend"
 #endif

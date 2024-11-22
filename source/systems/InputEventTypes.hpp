@@ -39,7 +39,7 @@ namespace brk {
 	template <>
 	struct EventData<inputs::EEventType::Key>
 	{
-		int32 m_Key;
+		uint32 m_Key;
 		uint16 m_Modifiers;
 		uint8 m_Pressed;
 		uint8 m_Repeat;

@@ -39,5 +39,5 @@ target_link_libraries(BRK_CORE PUBLIC
 	
 target_link_libraries(BRK_CORE PRIVATE
 	EnTT::EnTT
-	SDL2::SDL2
+	SDL3::SDL3
 )
