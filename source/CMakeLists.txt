@@ -7,7 +7,11 @@ add_subdirectory(debug)
 add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
+
+set(CMAKE_FOLDER "Engine/Tools")
 add_subdirectory(tools)
+
+set(CMAKE_FOLDER "Engine")
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE

@@ -7,17 +7,19 @@
 	"configurePresets": [
 		{
 			"name": "Default",
+			"hidden": true,
 			"cacheVariables": {
-				"JSON_BuildTests": false,
-				"SDL_AUDIO": false,
-				"SDL_DISKAUDIO": false,
-				"SDL_DUMMYAUDIO": false,
-				"SDL_SHARED": false
+				"JSON_BuildTests": "OFF",
+				"SDL_AUDIO": "OFF",
+				"SDL_DISKAUDIO": "OFF",
+				"SDL_DUMMYAUDIO": "OFF",
+				"SDL_SHARED": "OFF",
+				"SDL_STATIC": "ON"
 			},
-			"binaryDir": "build"
+			"binaryDir": "build/${presetName}"
 		},
 		{
-			"name": "Default Windows",
+			"name": "win64",
 			"inherits": "Default",
 			"cacheVariables": {
 				"BRK_RENDER_BACKEND": "DX11"
@@ -34,14 +36,14 @@
 	],
 	"buildPresets": [
 		{
-			"name": "Dev",
+			"name": "win64_dev",
 			"configuration": "Debug",
-			"configurePreset": "Default Windows"
+			"configurePreset": "win64"
 		},
 		{
-			"name": "DevOptimized",
+			"name": "win64_devopt",
 			"configuration": "RelWithDebInfo",
-			"configurePreset": "Default Windows"
+			"configurePreset": "win64"
 		}
 	]
 }
