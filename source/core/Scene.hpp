@@ -10,6 +10,7 @@ namespace brk {
 	template <class T, class>
 	struct JsonLoader;
 
+	/** Contains essential info about a scene, such as its ID, name, file etc */
 	class SceneDescription
 	{
 	public:

@@ -15,6 +15,7 @@ namespace brk {
 	class LogManager
 	{
 	public:
+		/** Log Level, which acts as a filter mechanism for log messages */
 		enum LogLevel : uint8
 		{
 			Trace,
@@ -24,13 +25,29 @@ namespace brk {
 		};
 
 		LogManager(const LogManager&) = delete;
-
+		/** Current log level. Determines which log messages will be output */
 		LogLevel m_Level = Critical;
 
 		[[nodiscard]] static LogManager& GetInstance() noexcept { return s_Instance; }
 
+		/**
+		 * Logs a message
+		 * \param level: The priority level of the message. If level < m_Level, the
+		 * message will not be output
+		 * \param location: The location in code the message originated from
+		 * \param message: The message itself
+		 */
 		void Log(LogLevel level, const CodeLocation location, const StringView message);
 
+		/**
+		 * Logs a message
+		 * \param level: The priority level of the message. If level < m_Level, the
+		 * message will not be output
+		 * \param location: The location in code the message originated from
+		 * \param fmt: A string which determines how the arguments will be displayed. See
+		 * fmtlib for detail
+		 * \param args: The arguments to be formatted in the output message
+		 */
 		template <class... Args>
 		void Log(
 			LogLevel level,
@@ -60,9 +77,9 @@ namespace brk {
 
 #else
 
-#define BRK_LOG(level, ...) 0
+#define BRK_LOG(level, ...)
 
-#define BRK_LOG_TRACE(...)	  0
-#define BRK_LOG_WARNING(...)  0
-#define BRK_LOG_CRITICAL(...) 0
+#define BRK_LOG_TRACE(...)
+#define BRK_LOG_WARNING(...)
+#define BRK_LOG_CRITICAL(...)
 #endif

@@ -2,13 +2,14 @@
 
 #include <ecs/System.hpp>
 
-namespace brk
-{
+namespace brk {
 	class TimeInfo;
 }
 
-namespace brk
-{
+namespace brk {
+	/**
+	 * Rendering system
+	 */
 	class VisualSystem
 	{
 	public:
@@ -20,6 +21,7 @@ namespace brk
 		using World = ecs::WorldView<>;
 
 		void Update(World& world, const TimeInfo& timeInfo);
+
 	private:
 	};
 

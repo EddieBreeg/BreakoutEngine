@@ -7,6 +7,9 @@
 #include <string>
 
 namespace brk::ecs {
+	/**
+	 * Represents a game object with a scene
+	 */
 	struct GameObject
 	{
 		ULID m_Id;

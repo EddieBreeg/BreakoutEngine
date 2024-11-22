@@ -13,8 +13,7 @@
 
 struct SDL_Window;
 
-namespace brk
-{
+namespace brk {
 
 	struct WindowSystemSettings
 	{
@@ -24,8 +23,7 @@ namespace brk
 		uint32 m_Flags = 0;
 	};
 
-	namespace inputs
-	{
+	namespace inputs {
 		struct EventOneFrameComponent
 		{
 			TInputEvent m_Event;
@@ -33,6 +31,9 @@ namespace brk
 
 	} // namespace inputs
 
+	/**
+	 * Handles user input and all things window related
+	 */
 	class WindowSystem
 	{
 	public:
@@ -45,7 +46,6 @@ namespace brk
 		void Terminate();
 
 	private:
-
 		void ProcessEvents(World& world);
 
 		WindowSystemSettings m_Settings;

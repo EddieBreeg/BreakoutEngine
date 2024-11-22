@@ -6,7 +6,9 @@
  * This class is a singleton: just access the s_Instance static member to use it.
  * The instance is marked as thread_local, this generator is therefore thread safe and
  * will give you a different sequence per thread.
- * \note The initial seed can be selected by defining the RNG_INIT_SEED macro
+ * \note The initial seed can be selected by defining the RNG_INIT_SEED macro. If not
+ * defined, the seed will be generated at random using available hardware random
+ * generation features
  */
 class RNG
 {

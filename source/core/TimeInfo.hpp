@@ -4,6 +4,9 @@
 #include <chrono>
 
 namespace brk {
+	/**
+	 * A utility used to track time
+	 */
 	class TimeInfo
 	{
 	public:
@@ -11,7 +14,10 @@ namespace brk {
 		using Clock = std::chrono::steady_clock;
 		using TimePoint = Clock::time_point;
 
+		/** Initializes the start point to Clock::now() */
 		TimeInfo();
+		/** Sets the LastUpdate point, and computes the time delta since the last call to
+		 * this function */
 		Duration Update();
 		~TimeInfo();
 

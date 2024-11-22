@@ -12,15 +12,24 @@
 #include <unordered_map>
 
 namespace brk {
+	/*
+	 * Manages scenes
+	 */
 	class SceneManager : public Singleton<SceneManager>
 	{
 	public:
 		~SceneManager() = default;
 
 #ifdef BRK_DEV
+		/**
+		 * Loads a list of scene descriptions, read from a project file
+		 */
 		void LoadSceneDescriptions(const nlohmann::json& descriptions);
 		const SceneDescription& CreateNewScene(std::string name, std::string path);
 #endif
+		/**
+		 * Attemps to get a scene description and load all the corresponding game objects
+		 */
 		void LoadScene(const ULID sceneId);
 
 		[[nodiscard]] const ecs::GameObject* GetObject(const ULID id) const;

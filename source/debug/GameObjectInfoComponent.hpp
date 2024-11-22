@@ -9,8 +9,10 @@
 
 #include <string>
 
-namespace brk::dbg
-{
+namespace brk::dbg {
+	/**
+	 * Contains debug info for an object, used for the inspector
+	 */
 	struct GameObjectInfoComponent
 	{
 		std::string m_Name;
@@ -18,5 +20,5 @@ namespace brk::dbg
 	};
 
 	bool GameObjectInfoWidget(GameObjectInfoComponent& comp);
-} // namespace brk
+} // namespace brk::dbg
 #endif

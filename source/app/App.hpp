@@ -10,6 +10,9 @@
 #include <vector>
 
 namespace brk {
+	/**
+	 * Application class, which represents the game/editor program
+	 */
 	class App : public Singleton<App>
 	{
 	public:

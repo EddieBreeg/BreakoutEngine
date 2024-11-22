@@ -13,6 +13,10 @@
 #include <unordered_map>
 
 namespace brk::ecs {
+	/**
+	 * Runtime information about a component type. Used for loading/unloading, as well as
+	 * ui widgets
+	 */
 	struct ComponentInfo
 	{
 		/**
@@ -21,6 +25,10 @@ namespace brk::ecs {
 		void (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
 			nullptr;
 #ifdef BRK_DEV
+		/**
+		 * The widget used to display the component in an ImGui overlay. Should
+		 *  return true if the component data was modified, false otherwise
+		 */
 		UniqueFunction<bool(entt::registry&, const entt::entity)> m_UiWidget;
 #endif
 		const char* m_Name;

@@ -36,7 +36,7 @@ namespace brk {
 		 * without loading the actual data.
 		 * \param list: The list of resource descriptions to load. If a resource is
 		 * already present in the map, it is ignored.
-		 * \attention All resource relevant resource types must be registered using
+		 * \attention All relevant resource types must be registered using
 		 * RegisterResourceType before calling this function. Will assert if this
 		 * condition isn't met.
 		 */

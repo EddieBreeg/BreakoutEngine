@@ -17,12 +17,25 @@ namespace brk::meta {
 		{};
 	}; // namespace _internal
 
+	/**
+	 * Checks whether T matches a trait
+	 * \tparam T: The type to be tested
+	 * \tparam Trait: A template class which, for another type T, declares a public
+	 * constexpr static boolean named 'value', equal to true if T matches some condition,
+	 * false otherwise.
+	 * \example HasTrait<int, std::is_integral> is true, whereas HasTrait<float,
+	 * std::is_integral> is false
+	 */
 	template <class T, template <class> class Trait>
 	static constexpr bool HasTrait = _internal::HasTrait<T, Trait>::value;
 
+	/** A generic list of types */
 	template <class... T>
 	struct TypeList
 	{
+		/**
+		 * Creates TypeList<T..., U...>
+		 */
 		template <class... U>
 		using Append = TypeList<T..., U...>;
 
@@ -64,18 +77,35 @@ namespace brk::meta {
 		};
 
 	public:
+		/**
+		 * If Other is itself list of types U..., creates TypeList<T..., U...>
+		 */
 		template <class Other>
 		using Concat = typename ConcatImpl<Other>::Type;
 
+		/**
+		 * Returns the Ith element in the list, I being a 0-based index
+		 */
 		template <size_t I>
 		using Get = typename GetImpl<I, T...>::Type;
 
+		/**
+		 * Transforms all types in the list
+		 * \tparam Converter: A templated type such that for any type T, Converter<T> is a
+		 * new type
+		 */
 		template <template <class> class Converter>
 		using Transform = TypeList<Converter<T>...>;
 
+		/**
+		 * Creates a new list with only the types T such that HasTrait<T, Trait> is true
+		 */
 		template <template <class> class Trait>
 		using Where = typename AppendIf<TypeList<>, Trait, T...>::Type;
 
+		/**
+		 * true if the list contains type U, false otherwise
+		 */
 		template <class U>
 		static constexpr bool Contains = std::disjunction_v<std::is_same<U, T>...>;
 	};
@@ -125,7 +155,7 @@ namespace brk::meta {
 		};
 
 	public:
-		template<size_t I>
+		template <size_t I>
 		static constexpr auto Get = GetImpl<I, V...>::Value;
 	};
-} // namespace meta
+} // namespace brk::meta

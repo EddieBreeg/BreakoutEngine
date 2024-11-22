@@ -45,11 +45,8 @@ namespace brk {
 			const uint32 alignment) noexcept;
 		BasicTypeId(const BasicTypeId&) = default;
 
-		static uint32 s_Count;
+		static inline uint32 s_Count = 0;
 	};
-
-	template <class F>
-	uint32 BasicTypeId<F>::s_Count = 0;
 
 	template <class F>
 	template <class T>

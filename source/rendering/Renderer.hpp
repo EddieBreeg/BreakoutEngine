@@ -4,10 +4,10 @@
 
 struct SDL_Window;
 
-namespace brk::rdr
-{
+namespace brk::rdr {
 	struct RendererData;
 
+	/** Platform agnostic rendering api */
 	class Renderer
 	{
 	public:
@@ -22,9 +22,12 @@ namespace brk::rdr
 
 		void ResizeFrameBuffers(uint32 width, uint32 height);
 
+		/* Should be called before rendering anything, to setup the render targets
+		 * properly*/
 		void StartRender();
 		void RenderUI();
 
+		/** Swaps the back and front buffers */
 		void Present();
 
 		static Renderer s_Instance;

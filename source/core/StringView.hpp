@@ -5,12 +5,16 @@
 #include <nlohmann/json_fwd.hpp>
 
 namespace brk {
-	template<class T, class>
+	template <class T, class>
 	struct Hash;
 
+	/**
+	 * Read-only span over a range of characters
+	 */
 	template <class Char>
 	struct BasicStringView
 	{
+		/** Empty view. Calling GetPtr() on the created object returns nullptr */
 		constexpr BasicStringView() noexcept = default;
 		constexpr BasicStringView(const Char* str, const uint32 len);
 		constexpr BasicStringView(const Char* str);
@@ -18,6 +22,11 @@ namespace brk {
 		constexpr BasicStringView(const BasicStringView&) = default;
 		constexpr BasicStringView& operator=(const BasicStringView&) = default;
 
+		/**
+		 * Deletes the first characters of the view
+		 * \param n: The number of characters to trim. If n >= GetLen(), the internal
+		 * pointer is set to nullptr and the length is 0
+		 */
 		constexpr void TrimLeft(const uint32 n) noexcept;
 
 		[[nodiscard]] constexpr bool IsEmpty() const noexcept { return !m_Len; }
@@ -37,6 +46,10 @@ namespace brk {
 
 	using StringView = BasicStringView<char>;
 
+	/**
+	 * Specialized hash algorithm for string views. Uses a modified version of the
+	 * Jenkins-One-At-A-Time algorithm
+	 */
 	template <>
 	struct Hash<StringView, void>
 	{
