@@ -26,5 +26,5 @@ namespace brk::_internal {
 #define BRK_ASSERT(expr, fmt, ...)                                                       \
 	brk::_internal::Assert(!!(expr), __FILE__, __LINE__, fmt, __VA_ARGS__)
 #else
-#define BRK_ASSERT(expr, fmt, ...)
+#define BRK_ASSERT(expr, fmt, ...)	expr
 #endif
