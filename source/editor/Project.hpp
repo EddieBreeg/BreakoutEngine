@@ -4,6 +4,7 @@
 #include <core/FieldList.hpp>
 
 #include <string>
+#include <filesystem>
 
 namespace brk
 {
@@ -25,7 +26,9 @@ namespace brk::editor {
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 
 	private:
+		std::filesystem::path m_ProjectDir;
 		std::string m_Name;
+		friend class Editor;
 		friend struct JsonLoader<Project, void>;
 
 	public:

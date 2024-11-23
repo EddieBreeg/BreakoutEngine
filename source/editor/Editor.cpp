@@ -118,10 +118,21 @@ void brk::editor::Editor::LoadProject()
 		return;
 	}
 	BRK_LOG_TRACE("Loading project '{}'", m_ProjectFilePath);
-	std::filesystem::current_path(std::filesystem::path(m_ProjectFilePath).parent_path());
-
-	const nlohmann::json desc = nlohmann::json::parse(projectFile);
 	Project proj;
+	proj.m_ProjectDir = std::filesystem::path(m_ProjectFilePath).parent_path();
+
+	std::filesystem::current_path(proj.m_ProjectDir);
+	nlohmann::json desc;
+	try
+	{
+		desc = nlohmann::json::parse(projectFile);
+	}
+	catch (const nlohmann::json::parse_error& err)
+	{
+		BRK_LOG_CRITICAL("Failed to parse {}: {}", m_ProjectFilePath, err.what());
+		return;
+	}
+
 	JsonLoader<Project>::Load(proj, desc);
 	m_Project = std::move(proj);
 
