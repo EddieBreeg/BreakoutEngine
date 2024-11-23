@@ -65,7 +65,6 @@ void brk::WindowSystem::Terminate()
 	if (!m_WinPtr)
 		return;
 
-	rdr::Renderer::s_Instance.Shutdown();
 	SDL_DestroyWindow(m_WinPtr);
 	SDL_Quit();
 }

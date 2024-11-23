@@ -21,6 +21,14 @@
 #include <systems/WindowSystem.hpp>
 #include "App.hpp"
 
+namespace {
+	template <class... S>
+	void DestroySingletons()
+	{
+		(S::Reset(), ...);
+	}
+} // namespace
+
 namespace brk {
 
 	App::~App() {}
@@ -92,10 +100,19 @@ namespace brk {
 		while (m_KeepRunning)
 			Update();
 
-		ecs::Manager::Reset();
-#ifdef BRK_EDITOR
-		editor::Editor::Reset();
-#endif
+		Cleanup();
+
 		return 0;
+	}
+
+	void App::Cleanup()
+	{
+		DestroySingletons<
+#ifdef BRK_DEV
+			editor::Editor,
+#endif
+			ecs::Manager,
+			SceneManager,
+			ResourceManager>();
 	}
 } // namespace brk

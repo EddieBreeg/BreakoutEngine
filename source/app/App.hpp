@@ -39,6 +39,8 @@ namespace brk {
 		void RegisterComponents();
 		bool Update();
 
+		void Cleanup();
+
 		const int m_Argc;
 		const char** const m_Argv;
 		TimeInfo m_GameTime;
