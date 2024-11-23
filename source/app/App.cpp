@@ -7,6 +7,7 @@
 
 #include <csignal>
 #include <iostream>
+#include <clocale>
 
 #include <debug/DebugOverlay.hpp>
 
@@ -73,6 +74,7 @@ namespace brk {
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
 	{
+		std::locale::global(std::locale("en_US", std::locale::all));
 #ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif

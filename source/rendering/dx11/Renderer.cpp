@@ -45,7 +45,7 @@ namespace {
 	{
 		DEBUG_CHECK(!err)
 		{
-			BRK_LOG_CRITICAL(format, std::system_category().message(err));
+			BRK_LOG_CRITICAL(format, std::strerror(errno));
 			return true;
 		}
 		return false;

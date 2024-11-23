@@ -80,7 +80,7 @@ void brk::editor::Editor::SaveProjectFile()
 	BRK_ASSERT(
 		projectFile.is_open(),
 		"Couldn't save project file: {}",
-		std::system_category().message(errno));
+		std::strerror(errno));
 	projectFile << json.dump(4);
 }
 
@@ -113,7 +113,7 @@ void brk::editor::Editor::LoadProject()
 		BRK_LOG_WARNING(
 			"Couldn't open project file '{}': {}",
 			m_ProjectFilePath,
-			std::error_code{ errno, std::system_category() }.message());
+			std::strerror(errno));
 		m_ProjectFilePath = {};
 		return;
 	}
