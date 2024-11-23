@@ -13,4 +13,6 @@ void brk::App::RegisterComponents()
 	auto& registry = ecs::ComponentRegistry::GetInstance();
 
 	registry.Register<TransformComponent>(&editor::TransformWidget);
+
+	RegisterGameComponents(registry);
 }
