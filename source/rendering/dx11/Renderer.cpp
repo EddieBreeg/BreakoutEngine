@@ -20,14 +20,14 @@
 
 struct brk::rdr::RendererData
 {
-	d3d::ObjectRef<ID3D11Device> m_Device;
-	d3d::ObjectRef<ID3D11DeviceContext> m_DeviceContext;
-	d3d::ObjectRef<IDXGISwapChain> m_SwapChain;
-	d3d::ObjectRef<ID3D11RenderTargetView> m_FrameBufferView;
+	d3d::Ref<ID3D11Device> m_Device;
+	d3d::Ref<ID3D11DeviceContext> m_DeviceContext;
+	d3d::Ref<IDXGISwapChain> m_SwapChain;
+	d3d::Ref<ID3D11RenderTargetView> m_FrameBufferView;
 
-	d3d::ObjectRef<ID3D11Texture2D> m_DepthStencilBuffer;
-	d3d::ObjectRef<ID3D11DepthStencilView> m_DepthStencilView;
-	d3d::ObjectRef<ID3D11DepthStencilState> m_DepthStencilState;
+	d3d::Ref<ID3D11Texture2D> m_DepthStencilBuffer;
+	d3d::Ref<ID3D11DepthStencilView> m_DepthStencilView;
+	d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
 
 	HWND m_NativeWindow = nullptr;
 };
@@ -243,13 +243,13 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 	devContext->OMSetDepthStencilState(dsState, 1);
 
 	m_Data = new RendererData{
-		d3d::ObjectRef<ID3D11Device>{ dev },
-		d3d::ObjectRef<ID3D11DeviceContext>{ devContext },
-		d3d::ObjectRef<IDXGISwapChain>{ swapChain },
-		d3d::ObjectRef<ID3D11RenderTargetView>{ frameBufferView },
-		d3d::ObjectRef<ID3D11Texture2D>{ depthStencilBuffer },
-		d3d::ObjectRef<ID3D11DepthStencilView>{ depthStencilView },
-		d3d::ObjectRef<ID3D11DepthStencilState>{ dsState },
+		d3d::Ref<ID3D11Device>{ dev },
+		d3d::Ref<ID3D11DeviceContext>{ devContext },
+		d3d::Ref<IDXGISwapChain>{ swapChain },
+		d3d::Ref<ID3D11RenderTargetView>{ frameBufferView },
+		d3d::Ref<ID3D11Texture2D>{ depthStencilBuffer },
+		d3d::Ref<ID3D11DepthStencilView>{ depthStencilView },
+		d3d::Ref<ID3D11DepthStencilState>{ dsState },
 		nativeWinHandle,
 	};
 
@@ -270,13 +270,13 @@ void brk::rdr::Renderer::NewImGuiFrame()
 
 void brk::rdr::Renderer::ResizeFrameBuffers(uint32 width, uint32 height)
 {
-	m_Data->m_FrameBufferView.reset();
-	m_Data->m_DepthStencilView.reset();
+	m_Data->m_FrameBufferView.Reset();
+	m_Data->m_DepthStencilView.Reset();
 
 	m_Data->m_SwapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 
-	m_Data->m_DepthStencilBuffer.reset(CreateTexture2d(
-		m_Data->m_Device.get(),
+	m_Data->m_DepthStencilBuffer.Reset(CreateTexture2d(
+		m_Data->m_Device,
 		width,
 		height,
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
@@ -284,23 +284,23 @@ void brk::rdr::Renderer::ResizeFrameBuffers(uint32 width, uint32 height)
 		D3D11_BIND_DEPTH_STENCIL,
 		D3D11_CPU_ACCESS_FLAG(0)));
 
-	m_Data->m_FrameBufferView.reset(
-		CreateFrameBufferView(m_Data->m_Device.get(), m_Data->m_SwapChain.get()));
-	m_Data->m_DepthStencilView.reset(CreateDepthStencilView(
-		m_Data->m_Device.get(),
-		m_Data->m_DepthStencilBuffer.get()));
+	m_Data->m_FrameBufferView.Reset(
+		CreateFrameBufferView(m_Data->m_Device, m_Data->m_SwapChain));
+	m_Data->m_DepthStencilView.Reset(CreateDepthStencilView(
+		m_Data->m_Device,
+		m_Data->m_DepthStencilBuffer));
 }
 
 void brk::rdr::Renderer::StartRender()
 {
 	m_Data->m_DeviceContext->ClearRenderTargetView(
-		m_Data->m_FrameBufferView.get(),
+		m_Data->m_FrameBufferView,
 		(float*)&m_ClearColor);
-	ID3D11RenderTargetView* targetViewPtr = m_Data->m_FrameBufferView.get();
+	ID3D11RenderTargetView* targetViewPtr = m_Data->m_FrameBufferView;
 	m_Data->m_DeviceContext->OMSetRenderTargets(
 		1,
 		&targetViewPtr,
-		m_Data->m_DepthStencilView.get());
+		m_Data->m_DepthStencilView);
 
 	RECT winRect;
 	GetClientRect(m_Data->m_NativeWindow, &winRect);
