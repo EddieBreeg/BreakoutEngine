@@ -45,3 +45,7 @@ using uint64 = uint64_t;
 #endif
 
 #define MARK_UNUSED(expr) (void)(expr)
+
+#ifndef BIT
+#define BIT(n) (1ull << (n))
+#endif

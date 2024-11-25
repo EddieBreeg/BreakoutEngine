@@ -1,4 +1,5 @@
 add_executable(CoreTests main.cpp
+	EnumFlags.cpp
 	EventTests.cpp
 	FunctionTests.cpp
 	HashTests.cpp
