@@ -38,5 +38,9 @@ using uint64 = uint64_t;
 #ifdef BRK_DEBUG
 #define DEBUG_CHECK(test) if (!(test))
 #else
-#define DEBUG_CHECK(test) if constexpr (false)
+#define DEBUG_CHECK(expr)                                                                \
+	MARK_UNUSED(expr);                                                                   \
+	if constexpr (false)
 #endif
+
+#define MARK_UNUSED(expr) (void)(expr)

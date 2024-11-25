@@ -110,7 +110,7 @@ namespace brk {
 	void App::Cleanup()
 	{
 		DestroySingletons<
-#ifdef BRK_DEV
+#ifdef BRK_EDITOR
 			editor::Editor,
 #endif
 			ecs::Manager,

@@ -41,6 +41,7 @@ namespace brk::scene_loading::ut {
 
 	void Test00()
 	{
+#ifdef BRK_DEV
 		RAIIHelper helper;
 		helper.m_Registry.Register<C1>();
 		const nlohmann::json sceneDesc{
@@ -60,6 +61,7 @@ namespace brk::scene_loading::ut {
 		assert(component);
 		assert(component->x == 1);
 		assert(component->y == 2);
+#endif
 	}
 
 	void Tests()

@@ -40,6 +40,7 @@ brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C
 			world.emplace<C>(entity, std::move(comp));
 		},
 	};
+#ifdef BRK_DEV
 	if (widget)
 	{
 		info.m_UiWidget = [widget](entt::registry& reg, const entt::entity entity)
@@ -48,6 +49,7 @@ brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C
 			return widget(comp);
 		};
 	}
+#endif
 	info.m_Name = C::Name.GetPtr();
 	return info;
 }

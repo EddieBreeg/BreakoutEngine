@@ -9,11 +9,12 @@ namespace brk::_internal {
 	void AssertImpl(std::string&& message, const char* file, const uint32 line);
 
 	template <class... Args>
-	void Assert(bool cond,
-				const char* file,
-				const uint32 line,
-				fmt::format_string<Args...> format,
-				Args&&... args)
+	void Assert(
+		bool cond,
+		const char* file,
+		const uint32 line,
+		fmt::format_string<Args...> format,
+		Args&&... args)
 	{
 		if (cond)
 			return;
@@ -26,5 +27,5 @@ namespace brk::_internal {
 #define BRK_ASSERT(expr, fmt, ...)                                                       \
 	brk::_internal::Assert(!!(expr), __FILE__, __LINE__, fmt, __VA_ARGS__)
 #else
-#define BRK_ASSERT(expr, fmt, ...)	expr
+#define BRK_ASSERT(expr, fmt, ...) MARK_UNUSED(expr)
 #endif

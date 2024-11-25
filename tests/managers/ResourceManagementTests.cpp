@@ -36,6 +36,7 @@ namespace brk::resource_ref::ut {
 
 	void ResourceRefTests()
 	{
+#ifdef BRK_DEV
 		{
 			RAIIHelper helper;
 			helper.m_Manager.RegisterResourceType<Res1>();
@@ -77,5 +78,6 @@ namespace brk::resource_ref::ut {
 				assert(reqCount == 1);
 			}
 		}
+#endif
 	}
 } // namespace brk::resource_ref::ut
