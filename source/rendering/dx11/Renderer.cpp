@@ -19,6 +19,8 @@
 
 #include "ObjectRef.hpp"
 
+#include <comdef.h>
+
 namespace {
 	HWND GetNativeWindowHandle(SDL_Window& window)
 	{
@@ -32,7 +34,7 @@ namespace {
 	{
 		DEBUG_CHECK(!err)
 		{
-			BRK_LOG_CRITICAL(format, std::strerror(errno));
+			BRK_LOG_CRITICAL(format, _com_error(err).ErrorMessage());
 			return true;
 		}
 		return false;
