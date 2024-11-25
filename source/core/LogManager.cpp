@@ -16,6 +16,7 @@ namespace {
 		"\033[37m",
 		"\033[1;38;5;202m",
 		"\033[1;31m",
+		"\033[1;41;37m",
 	};
 } // namespace
 
@@ -33,10 +34,10 @@ namespace brk {
 		std::ostream& out = level < LogLevel::Critical ? std::cout : std::cerr;
 		fmt::print(
 			out,
-			"{}{}({}): {}\033[0m\n",
-			s_Styles[level],
+			"{}({}): {}{}\033[0m\n",
 			location.m_File,
 			location.m_Line,
+			s_Styles[level],
 			message);
 	}
 

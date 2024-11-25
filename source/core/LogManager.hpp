@@ -20,13 +20,14 @@ namespace brk {
 		{
 			Trace,
 			Warning,
+			Error,
 			Critical,
-			LogLevelMax,
+			LogLevelMax
 		};
 
 		LogManager(const LogManager&) = delete;
 		/** Current log level. Determines which log messages will be output */
-		LogLevel m_Level = Critical;
+		LogLevel m_Level = Error;
 
 		[[nodiscard]] static LogManager& GetInstance() noexcept { return s_Instance; }
 
@@ -73,6 +74,7 @@ namespace brk {
 
 #define BRK_LOG_TRACE(...)	  BRK_LOG(brk::LogManager::Trace, __VA_ARGS__)
 #define BRK_LOG_WARNING(...)  BRK_LOG(brk::LogManager::Warning, __VA_ARGS__)
+#define BRK_LOG_ERROR(...)	  BRK_LOG(brk::LogManager::Error, __VA_ARGS__)
 #define BRK_LOG_CRITICAL(...) BRK_LOG(brk::LogManager::Critical, __VA_ARGS__)
 
 #else
