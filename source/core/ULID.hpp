@@ -48,7 +48,7 @@ namespace brk {
 
 		/**
 		 * Generates a new identifier, with a 48-bit unix timestamp (in milliseconds) and
-		 * 96 bits of pseudo-random data
+		 * 80 bits of pseudo-random data
 		 */
 		[[nodiscard]] static ULID Generate();
 
