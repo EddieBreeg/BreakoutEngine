@@ -4,81 +4,47 @@
 
 namespace brk {
 	/**
-	 * Uniquely identifies a type, within a family.
-	 * \tparam Family The family of types within which the IDs are generated.
-	 * This can be useful when these IDs need to be sequential, for example when
-	 * used as array indices.
+	 * Uniquely identifies a type.
 	 */
-	template <class Family>
-	struct BasicTypeId
+	struct TypeId
 	{
-		const uint32 m_Index;
-		const uint32 m_Size;
-		const uint32 m_Alignment;
+		uint32 m_Index;
+		uint32 m_Size = 0;
+		uint32 m_Alignment = 0;
 
 		template <class T>
-		static const BasicTypeId& Get() noexcept
+		static const TypeId& Get() noexcept
 		{
-			if constexpr (std::is_void_v<T>)
-				return VoidWrapper<void>::s_Id;
-			else
-				return Wrapper<T>::s_Id;
+			return s_Id<T>;
+		}
+
+		[[nodiscard]] bool operator==(const TypeId& other) const noexcept
+		{
+			return this == &other;
+		}
+		[[nodiscard]] bool operator!=(const TypeId& other) const noexcept
+		{
+			return this != &other;
 		}
 
 	private:
 		template <class T>
-		struct Wrapper
+		TypeId(std::in_place_type_t<T>)
+			: m_Index{ s_Count++ }
 		{
-			static const BasicTypeId s_Id;
-		};
-
-		template <class = void>
-		struct VoidWrapper
-		{
-			static const BasicTypeId s_Id;
-		};
-
-		BasicTypeId(const uint32 index);
-		BasicTypeId(
-			const uint32 index,
-			const uint32 size,
-			const uint32 alignment) noexcept;
-		BasicTypeId(const BasicTypeId&) = default;
+			if constexpr (!std::is_void_v<T>)
+			{
+				m_Size = sizeof(T);
+				m_Alignment = alignof(T);
+			}
+		}
 
 		static inline uint32 s_Count = 0;
+
+		template <class T>
+		static const TypeId s_Id;
 	};
 
-	template <class F>
 	template <class T>
-	const BasicTypeId<F> BasicTypeId<F>::Wrapper<T>::s_Id{
-		BasicTypeId<F>::s_Count++,
-		sizeof(T),
-		alignof(T),
-	};
-
-	template <class F>
-	template <class T>
-	const BasicTypeId<F> BasicTypeId<F>::VoidWrapper<T>::s_Id{
-		BasicTypeId<F>::s_Count++
-	};
-
-	template <class Family>
-	BasicTypeId<Family>::BasicTypeId(
-		const uint32 index,
-		const uint32 size,
-		const uint32 alignment) noexcept
-		: m_Index{ index }
-		, m_Size{ size }
-		, m_Alignment{ alignment }
-	{}
-
-	template <class Family>
-	BasicTypeId<Family>::BasicTypeId(const uint32 index)
-		: m_Index{ index }
-		, m_Size{ 0 }
-		, m_Alignment{ 0 }
-	{}
-
-	// General purpose type identifier
-	using TypeId = BasicTypeId<void>;
+	const TypeId TypeId::s_Id{ std::in_place_type<T> };
 } // namespace brk

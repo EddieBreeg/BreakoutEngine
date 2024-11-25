@@ -35,9 +35,6 @@ namespace brk::ecs {
 		friend class Singleton<Manager>;
 		Manager();
 
-		struct SystemTypeFamily;
-		using SystemId = BasicTypeId<SystemTypeFamily>;
-
 		template <class T>
 		static inline uint32 s_SysIndex = -1;
 
