@@ -80,11 +80,6 @@ namespace brk {
 	template <class T>
 	struct RetainTraits
 	{
-		static_assert(
-			meta::IsComplete<_internal::RefCountBase<T>>,
-			"Invalid ref counted type; consider inheriting from BasicRefCount or "
-			"specializing RetainTraits");
-
 		static constexpr Adopt_t DefaultAction = {};
 		// Increments the internal ref counter
 		static void Increment(T* ref);

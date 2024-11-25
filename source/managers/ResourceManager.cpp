@@ -6,7 +6,7 @@
 #include <systems/ResourceLoadingComponents.hpp>
 #include <systems/ResourceLoadingSystem.hpp>
 
-void brk::ResourceRetainTraits::Increment(Resource* res)
+void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 {
 	if (++res->m_RefCount == 1)
 	{
@@ -14,7 +14,7 @@ void brk::ResourceRetainTraits::Increment(Resource* res)
 	}
 }
 
-void brk::ResourceRetainTraits::Decrement(Resource* res)
+void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 {
 	if (!--res->m_RefCount)
 	{
@@ -22,7 +22,7 @@ void brk::ResourceRetainTraits::Decrement(Resource* res)
 	}
 }
 
-uint32 brk::ResourceRetainTraits::GetCount(const Resource* res)
+uint32 brk::RetainTraits<brk::Resource>::GetCount(const Resource* res)
 {
 	return res->m_RefCount;
 }

@@ -97,7 +97,7 @@ namespace brk::resource_ref::ut {
 			assert(res.GetId() == s_ResId1);
 			assert(res.GetName() == s_ResName1);
 			assert(res.GetFile() == s_ResPath1);
-			assert(ResourceRetainTraits::GetCount(&res) == 1);
+			assert(RetainTraits<Resource>::GetCount(&res) == 1);
 		}
 	}
 } // namespace brk::resource_ref::ut

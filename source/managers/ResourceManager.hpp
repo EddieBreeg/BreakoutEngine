@@ -7,7 +7,8 @@
 #include <unordered_map>
 
 namespace brk {
-	struct ResourceRetainTraits
+	template<>
+	struct RetainTraits<Resource>
 	{
 		static constexpr Retain_t DefaultAction = {};
 		static void Increment(Resource* res);
@@ -16,7 +17,7 @@ namespace brk {
 	};
 
 	template <class Res>
-	using ResourceRef = RetainPtr<Res, ResourceRetainTraits>;
+	using ResourceRef = RetainPtr<Res, RetainTraits<Resource>>;
 
 	class ResourceManager : public Singleton<ResourceManager>
 	{
@@ -67,7 +68,7 @@ namespace brk {
 	private:
 		friend class Singleton<ResourceManager>;
 
-		friend struct ResourceRetainTraits;
+		friend struct RetainTraits<Resource>;
 
 		Resource* CreateResource(const StringView type, const ULID id) const;
 

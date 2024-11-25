@@ -8,7 +8,8 @@
 #include <string>
 
 namespace brk {
-	struct ResourceRetainTraits;
+	template<class T>
+	struct RetainTraits;
 
 	/**
 	 * Represents an generic resource. This class is meant to be subclassed for specific
@@ -61,7 +62,7 @@ namespace brk {
 		friend class ResourceLoadingSystem;
 		friend class ResourceManager;
 		friend struct JsonLoader<Resource>;
-		friend struct ResourceRetainTraits;
+		friend struct RetainTraits<Resource>;
 	};
 
 	template <>

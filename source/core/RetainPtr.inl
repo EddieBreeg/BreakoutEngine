@@ -2,6 +2,10 @@ namespace brk {
 	template <class T>
 	inline uint32 RetainTraits<T>::GetCount(const T* ptr)
 	{
+		static_assert(
+			meta::IsComplete<_internal::RefCountBase<T>>,
+			"Invalid ref counted type; consider inheriting from BasicRefCount or "
+			"specializing RetainTraits");
 		using TBase = typename _internal::RefCountBase<T>::BaseType;
 		return static_cast<const TBase*>(ptr)->m_Count;
 	}
@@ -9,6 +13,10 @@ namespace brk {
 	template <class T>
 	inline void RetainTraits<T>::Increment(T* ptr)
 	{
+		static_assert(
+			meta::IsComplete<_internal::RefCountBase<T>>,
+			"Invalid ref counted type; consider inheriting from BasicRefCount or "
+			"specializing RetainTraits");
 		using TBase = typename _internal::RefCountBase<T>::BaseType;
 		++(static_cast<TBase*>(ptr)->m_Count);
 	}
@@ -16,6 +24,10 @@ namespace brk {
 	template <class T>
 	inline void RetainTraits<T>::Decrement(T* ptr)
 	{
+		static_assert(
+			meta::IsComplete<_internal::RefCountBase<T>>,
+			"Invalid ref counted type; consider inheriting from BasicRefCount or "
+			"specializing RetainTraits");
 		using TBase = typename _internal::RefCountBase<T>::BaseType;
 		if (!--(static_cast<TBase*>(ptr)->m_Count))
 			delete ptr;
