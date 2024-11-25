@@ -38,6 +38,9 @@ namespace brk::ecs {
 		struct SystemTypeFamily;
 		using SystemId = BasicTypeId<SystemTypeFamily>;
 
+		template <class T>
+		static inline uint32 s_SysIndex = -1;
+
 		std::vector<SystemInstance> m_Systems;
 		entt::registry m_EntityWorld;
 	};
