@@ -1,6 +1,7 @@
 #ifdef BRK_DX11
 
 #include <rendering/Renderer.hpp>
+#include "Renderer.hpp" // private api
 
 #include <core/Assert.hpp>
 #include <core/LogManager.hpp>
@@ -18,25 +19,11 @@
 
 #include "ObjectRef.hpp"
 
-struct brk::rdr::RendererData
-{
-	d3d::Ref<ID3D11Device> m_Device;
-	d3d::Ref<ID3D11DeviceContext> m_DeviceContext;
-	d3d::Ref<IDXGISwapChain> m_SwapChain;
-	d3d::Ref<ID3D11RenderTargetView> m_FrameBufferView;
-
-	d3d::Ref<ID3D11Texture2D> m_DepthStencilBuffer;
-	d3d::Ref<ID3D11DepthStencilView> m_DepthStencilView;
-	d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
-
-	HWND m_NativeWindow = nullptr;
-};
-
 namespace {
-	HWND GetNativeWindowHandle(SDL_Window* window)
+	HWND GetNativeWindowHandle(SDL_Window& window)
 	{
 		return static_cast<HWND>(SDL_GetPointerProperty(
-			SDL_GetWindowProperties(window),
+			SDL_GetWindowProperties(&window),
 			SDL_PROP_WINDOW_WIN32_HWND_POINTER,
 			nullptr));
 	}
@@ -153,14 +140,11 @@ namespace {
 	};
 } // namespace
 
-void brk::rdr::Renderer::Init(SDL_Window* window)
+brk::rdr::RendererData::RendererData(SDL_Window& window)
+	: m_NativeWindow{ GetNativeWindowHandle(window) }
 {
-	m_Window = window;
-	BRK_ASSERT(m_Window, "Trying to initialize renderer with invalid window pointer!");
-	HWND const nativeWinHandle = GetNativeWindowHandle(window);
-
 	int32 width, height;
-	SDL_GetWindowSize(window, &width, &height);
+	SDL_GetWindowSize(&window, &width, &height);
 
 	UINT deviceFlags = 0;
 #ifdef BRK_DEV
@@ -169,7 +153,7 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 
 	DXGI_SWAP_CHAIN_DESC swapChainDesc = {};
 	swapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-	swapChainDesc.OutputWindow = nativeWinHandle;
+	swapChainDesc.OutputWindow = m_NativeWindow;
 	swapChainDesc.SampleDesc = { 1, 0 };
 	swapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -183,10 +167,6 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 	swapChainDesc.BufferCount = 2;
 	swapChainDesc.Windowed = true;
 
-	ID3D11Device* dev = nullptr;
-	IDXGISwapChain* swapChain = nullptr;
-	ID3D11DeviceContext* devContext = nullptr;
-
 	HRESULT result = D3D11CreateDeviceAndSwapChain(
 		nullptr,
 		D3D_DRIVER_TYPE_HARDWARE,
@@ -196,19 +176,19 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 		UINT(s_Dx11FeatureLevels.size()),
 		D3D11_SDK_VERSION,
 		&swapChainDesc,
-		&swapChain,
-		&dev,
+		&m_SwapChain.m_Handle,
+		&m_Device.m_Handle,
 		nullptr,
-		&devContext);
+		&m_DeviceContext.m_Handle);
 
 	DEBUG_CHECK(!LogError(result, "Couldn't initialize D3D11 swap chain: {}"))
 	{
 		dbg::Break();
 	}
 
-	ID3D11RenderTargetView* frameBufferView = CreateFrameBufferView(dev, swapChain);
-	ID3D11Texture2D* depthStencilBuffer = CreateTexture2d(
-		dev,
+	m_FrameBufferView.m_Handle = CreateFrameBufferView(m_Device, m_SwapChain);
+	m_DepthStencilBuffer.m_Handle = CreateTexture2d(
+		m_Device,
 		width,
 		height,
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
@@ -216,47 +196,44 @@ void brk::rdr::Renderer::Init(SDL_Window* window)
 		D3D11_BIND_FLAG(D3D11_BIND_DEPTH_STENCIL),
 		D3D11_CPU_ACCESS_FLAG(0));
 
-	DEBUG_CHECK(frameBufferView && depthStencilBuffer)
+	DEBUG_CHECK(m_FrameBufferView && m_DepthStencilBuffer)
 	{
 		dbg::Break();
 	}
 
-	ID3D11DepthStencilView* depthStencilView =
-		CreateDepthStencilView(dev, depthStencilBuffer);
+	m_DepthStencilView.m_Handle = CreateDepthStencilView(m_Device, m_DepthStencilBuffer);
 
-	DEBUG_CHECK(depthStencilView)
+	DEBUG_CHECK(m_DepthStencilView)
 	{
 		dbg::Break();
 	}
 
-	if (SDL_GetWindowFlags(window) & SDL_WINDOW_FULLSCREEN)
+	if (SDL_GetWindowFlags(&window) & SDL_WINDOW_FULLSCREEN)
 	{
-		swapChain->SetFullscreenState(true, nullptr);
+		m_SwapChain->SetFullscreenState(true, nullptr);
 	}
 
-	ID3D11DepthStencilState* dsState = CreateDepthStencilState(dev, true, true);
-	DEBUG_CHECK(dsState)
+	m_DepthStencilState.m_Handle = CreateDepthStencilState(m_Device, true, true);
+	DEBUG_CHECK(m_DepthStencilState)
 	{
 		dbg::Break();
 	}
 
-	devContext->OMSetDepthStencilState(dsState, 1);
-
-	m_Data = new RendererData{
-		d3d::Ref<ID3D11Device>{ dev },
-		d3d::Ref<ID3D11DeviceContext>{ devContext },
-		d3d::Ref<IDXGISwapChain>{ swapChain },
-		d3d::Ref<ID3D11RenderTargetView>{ frameBufferView },
-		d3d::Ref<ID3D11Texture2D>{ depthStencilBuffer },
-		d3d::Ref<ID3D11DepthStencilView>{ depthStencilView },
-		d3d::Ref<ID3D11DepthStencilState>{ dsState },
-		nativeWinHandle,
-	};
-
+	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilState, 1);
 #ifdef BRK_DEV
-	ImGui_ImplSDL3_InitForD3D(window);
-	ImGui_ImplDX11_Init(dev, devContext);
+	ImGui_ImplSDL3_InitForD3D(&window);
+	ImGui_ImplDX11_Init(m_Device, m_DeviceContext);
 #endif
+}
+
+brk::rdr::RendererData::~RendererData() = default;
+
+void brk::rdr::Renderer::Init(SDL_Window* window)
+{
+	m_Window = window;
+	BRK_ASSERT(m_Window, "Trying to initialize renderer with invalid window pointer!");
+
+	m_Data = new RendererData{ *window };
 }
 
 #ifdef BRK_DEV
@@ -286,9 +263,8 @@ void brk::rdr::Renderer::ResizeFrameBuffers(uint32 width, uint32 height)
 
 	m_Data->m_FrameBufferView.Reset(
 		CreateFrameBufferView(m_Data->m_Device, m_Data->m_SwapChain));
-	m_Data->m_DepthStencilView.Reset(CreateDepthStencilView(
-		m_Data->m_Device,
-		m_Data->m_DepthStencilBuffer));
+	m_Data->m_DepthStencilView.Reset(
+		CreateDepthStencilView(m_Data->m_Device, m_Data->m_DepthStencilBuffer));
 }
 
 void brk::rdr::Renderer::StartRender()
@@ -296,10 +272,9 @@ void brk::rdr::Renderer::StartRender()
 	m_Data->m_DeviceContext->ClearRenderTargetView(
 		m_Data->m_FrameBufferView,
 		(float*)&m_ClearColor);
-	ID3D11RenderTargetView* targetViewPtr = m_Data->m_FrameBufferView;
 	m_Data->m_DeviceContext->OMSetRenderTargets(
 		1,
-		&targetViewPtr,
+		&m_Data->m_FrameBufferView.m_Handle,
 		m_Data->m_DepthStencilView);
 
 	RECT winRect;

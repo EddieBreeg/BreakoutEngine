@@ -33,6 +33,9 @@ namespace brk::rdr {
 		static Renderer s_Instance;
 		float4 m_ClearColor;
 
+		/* Private API access */
+		[[nodiscard]] RendererData* GetData() noexcept { return m_Data; }
+
 	private:
 		Renderer() = default;
 		Renderer(const Renderer&) = delete;
