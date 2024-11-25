@@ -7,9 +7,10 @@
 #include <new>
 
 #include <core/MetaLists.hpp>
-#include <math/Quaternion.hpp>
 #include <core/TypeTraits.hpp>
+#include <core/Unassigned.hpp>
 #include <core/Utility.hpp>
+#include <math/Quaternion.hpp>
 #include <math/Vector.hpp>
 
 #if _BRK_DEBUG_ENABLED
