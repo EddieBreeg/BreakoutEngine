@@ -44,6 +44,20 @@ namespace brk {
 #endif
 
 		/**
+		 * \short Manually adds a new resource to the map. The object is heap allocated
+		 * with new
+		 * \tparam R: The type of resource to create
+		 * \param args: The arguments to be fowarded to the constructor
+		 * \return A reference to the newly created object. Said object is guaranteed to
+		 * be in the same state as after the call to its constructor.
+		 * \attention After constructing the resource object, this function will check the
+		 * id is valid (and assert if it is not), and attempt to insert it into the map.
+		 * It will assert if another object with the same ULID was already present
+		 */
+		template <class R, class... Args>
+		R& AddResource(Args&&... args);
+
+		/**
 		 * \return A reference to the resource with the corresponding ID, or a null
 		 * resource if such ID wasn't found.
 		 */

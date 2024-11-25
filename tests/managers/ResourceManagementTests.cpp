@@ -8,7 +8,15 @@
 namespace brk::resource_ref::ut {
 	struct Res1 : public Resource
 	{
-		using Resource::Resource;
+		Res1(ULID id)
+			: Resource(id)
+		{}
+		Res1(ULID id, std::string name, std::string file)
+			: Resource(id, std::move(name), std::move(file))
+		{
+			m_RefCount = 1;
+		}
+
 		static constexpr StringView Name = "Res1";
 		bool DoLoad()
 		{
@@ -19,6 +27,9 @@ namespace brk::resource_ref::ut {
 
 	constexpr ULID s_ResId1 = ULID::FromString("01HXARTASQ9HX1SEJPF85A52VR");
 	constexpr ULID s_ResId2 = ULID::FromString("01HXAM5KNMZDH2447595V5EH44");
+
+	constexpr const char* s_ResName1 = "resource1";
+	constexpr const char* s_ResPath1 = "resource1.res";
 
 	class RAIIHelper
 	{
@@ -79,5 +90,14 @@ namespace brk::resource_ref::ut {
 			}
 		}
 #endif
+		{
+			RAIIHelper helper;
+			Res1& res =
+				helper.m_Manager.AddResource<Res1>(s_ResId1, s_ResName1, s_ResPath1);
+			assert(res.GetId() == s_ResId1);
+			assert(res.GetName() == s_ResName1);
+			assert(res.GetFile() == s_ResPath1);
+			assert(ResourceRetainTraits::GetCount(&res) == 1);
+		}
 	}
 } // namespace brk::resource_ref::ut

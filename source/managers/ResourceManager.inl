@@ -17,6 +17,20 @@ void brk::ResourceManager::RegisterResourceType()
 		});
 }
 
+template <class R, class... Args>
+R& brk::ResourceManager::AddResource(Args&&... args)
+{
+	static_assert(std::is_base_of_v<Resource, R>, "R must inherit from Resource");
+	R* res = new R{ std::forward<Args>(args)... };
+	Resource* temp = static_cast<Resource*>(res);
+	BRK_ASSERT(temp->m_Id, "Newly created resource has invalid ULID");
+	BRK_ASSERT(
+		m_Resources.try_emplace(temp->m_Id, temp).second,
+		"Couldn't add resource {} to the manager: ID already present",
+		temp->m_Id);
+	return *res;
+}
+
 template <class R>
 brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id)
 {
