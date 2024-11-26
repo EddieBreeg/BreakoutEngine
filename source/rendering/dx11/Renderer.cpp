@@ -1,5 +1,6 @@
 #ifdef BRK_DX11
 
+#include <rendering/Material.hpp>
 #include <rendering/Renderer.hpp>
 #include <rendering/Shaders.hpp>
 #include <rendering/Vertex.hpp>
@@ -193,6 +194,17 @@ namespace {
 			device->CreateRasterizerState(&desc, &ptr),
 			"Failed to create rasterizer state: {}");
 		return ptr;
+	}
+
+	void UpdateShaderStages(
+		ID3D11DeviceContext* context,
+		const brk::rdr::RendererData::PipelineState& state)
+	{
+		context->VSSetShader(state.m_VertexShader, nullptr, 0);
+		context->VSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
+
+		context->PSSetShader(state.m_PixelShader, nullptr, 0);
+		context->PSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
 	}
 
 	constexpr std::array s_Dx11FeatureLevels = {
@@ -415,28 +427,39 @@ void brk::rdr::Renderer::StartRender()
 #endif
 }
 
+void brk::rdr::Renderer::SetMaterial(Material& material)
+{
+	auto& pipelineState = m_Data->m_CurrentPipelineState;
+
+	pipelineState.m_VertexShader = material.GetVertexShader().GetHandle();
+	BRK_ASSERT(
+		pipelineState.m_VertexShader,
+		"Tried to bind material {} to the pipeline, which has an invalid vertex shader",
+		material.GetName());
+
+	pipelineState.m_PixelShader = material.GetFragmentShader().GetHandle();
+	BRK_ASSERT(
+		pipelineState.m_PixelShader,
+		"Tried to bind material {} to the pipeline, which has an invalid fragment shader",
+		material.GetName());
+
+	pipelineState.m_ParamBuffer = material.GetParamBuffer().GetHandle();
+
+	UpdateShaderStages(m_Data->m_DeviceContext, pipelineState);
+}
+
 void brk::rdr::Renderer::DrawIndexed(uint32 nIndices)
 {
-	const auto& state = m_Data->m_CurrentPipelineState;
-	const bool isStateValid = state.m_VertexBuffer && state.m_IndexBuffer &&
-							  state.m_VertexShader && state.m_PixelShader;
-	if (!isStateValid)
-		return;
-
-	constexpr uint32 stride = sizeof(Vertex3d);
+	constexpr uint32 stride = sizeof(brk::rdr::Vertex3d);
 	const uint32 offset = 0;
+	auto& pipelineState = m_Data->m_CurrentPipelineState;
+
 	m_Data->m_DeviceContext
-		->IASetVertexBuffers(0, 1, &state.m_VertexBuffer, &stride, &offset);
+		->IASetVertexBuffers(0, 1, &pipelineState.m_VertexBuffer, &stride, &offset);
 	m_Data->m_DeviceContext->IASetIndexBuffer(
-		state.m_IndexBuffer,
+		pipelineState.m_IndexBuffer,
 		DXGI_FORMAT_R32_UINT,
 		0);
-
-	m_Data->m_DeviceContext->VSSetShader(state.m_VertexShader, nullptr, 0);
-	m_Data->m_DeviceContext->VSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
-	m_Data->m_DeviceContext->PSSetShader(state.m_PixelShader, nullptr, 0);
-	m_Data->m_DeviceContext->PSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
-
 	m_Data->m_DeviceContext->DrawIndexed(nIndices, 0, 0);
 }
 

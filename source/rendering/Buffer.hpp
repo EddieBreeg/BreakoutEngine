@@ -54,7 +54,7 @@ namespace brk::rdr {
 			: Buffer{ type, sizeof(data), &data, options }
 		{}
 
-		Buffer(Buffer&& other)
+		Buffer(Buffer&& other) noexcept
 			: m_Type{ other.m_Type }
 			, m_Options{ other.m_Options }
 		{
@@ -63,7 +63,7 @@ namespace brk::rdr {
 			other.m_Type = Invalid;
 		}
 
-		Buffer& operator=(Buffer&& other)
+		Buffer& operator=(Buffer&& other) noexcept
 		{
 			std::swap(m_Handle, other.m_Handle);
 			m_Type = other.m_Type;

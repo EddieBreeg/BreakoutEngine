@@ -5,6 +5,8 @@
 struct SDL_Window;
 
 namespace brk::rdr {
+	class Material;
+
 	struct RendererData;
 
 	/** Platform agnostic rendering api */
@@ -25,6 +27,8 @@ namespace brk::rdr {
 		/* Should be called before rendering anything, to setup the render targets
 		 * properly*/
 		void StartRender();
+
+		void SetMaterial(Material& material);
 
 		void DrawIndexed(uint32 nIndices);
 

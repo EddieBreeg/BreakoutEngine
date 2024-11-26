@@ -34,25 +34,15 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 brk::sandbox::TestSystem::TestSystem()
 	: m_Vbo{ rdr::Buffer::VertexBuffer, s_Vertices }
 	, m_Ibo{ rdr::Buffer::IndexBuffer, s_Indices }
-	, m_ParamBuff{ rdr::Buffer::ParamBuffer,
-				   sizeof(FragmentParams),
-				   nullptr,
-				   EnumFlags{ rdr::EBufferOptions::Dynamic } }
-	, m_FragmentShader{ s_ShaderSource }
+	, m_Material{ float4{ 1, 0, 0, 0 }, {}, s_ShaderSource }
 {
 	auto& pipelineState = rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState;
 	pipelineState.m_VertexBuffer = m_Vbo.GetHandle(),
 	pipelineState.m_IndexBuffer = m_Ibo.GetHandle(),
-	pipelineState.m_ParamBuffer = m_ParamBuff.GetHandle(),
 
-	pipelineState.m_VertexShader = m_VertexShader.GetHandle();
-	pipelineState.m_PixelShader = m_FragmentShader.GetHandle();
+	rdr::Renderer::s_Instance.SetMaterial(m_Material);
 }
 
 brk::sandbox::TestSystem::~TestSystem() = default;
 
-void brk::sandbox::TestSystem::Update(World&, const TimeInfo&)
-{
-	const FragmentParams params = { { 1.0f, 0.0f, 0.0f, 1.0f } };
-	m_ParamBuff.SetData(params);
-}
+void brk::sandbox::TestSystem::Update(World&, const TimeInfo&) {}
