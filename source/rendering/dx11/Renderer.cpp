@@ -1,7 +1,9 @@
 #ifdef BRK_DX11
 
 #include <rendering/Renderer.hpp>
+#include <rendering/Shaders.hpp>
 #include "Renderer.hpp" // private api
+#include "Shaders.hpp"
 
 #include <core/Assert.hpp>
 #include <core/LogManager.hpp>
@@ -226,6 +228,10 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	ImGui_ImplSDL3_InitForD3D(&window);
 	ImGui_ImplDX11_Init(m_Device, m_DeviceContext);
 #endif
+
+	m_DefaultVShader = d3d::CompileShader(s_DefaultShaderCode, "vs_5_0", "vs_main");
+	m_DefaultPShader = d3d::CompileShader(s_DefaultShaderCode, "ps_5_0", "fs_main");
+	BRK_ASSERT(m_DefaultVShader && m_DefaultPShader, "Failed to compile default shaders");
 }
 
 brk::rdr::RendererData::~RendererData() = default;

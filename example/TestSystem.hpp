@@ -3,6 +3,7 @@
 #include <PCH.hpp>
 #include <ecs/World.hpp>
 #include <rendering/Buffer.hpp>
+#include <rendering/Shaders.hpp>
 
 namespace brk {
 	class TimeInfo;
@@ -17,9 +18,11 @@ namespace brk::sandbox {
 		TestSystem();
 		void Update(World&, const TimeInfo&);
 
-		~TestSystem() = default;
+		~TestSystem();
 
 	private:
 		rdr::Buffer m_Vbo, m_Ibo, m_ParamBuff;
+		rdr::VertexShader m_VertexShader;
+		rdr::FragmentShader m_FragmentShader;
 	};
 } // namespace brk::sandbox

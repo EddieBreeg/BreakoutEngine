@@ -1,4 +1,7 @@
+#include "d3d11.h"
 #include "TestSystem.hpp"
+#include <rendering/dx11/Shaders.hpp>
+#include <rendering/Shaders.hpp>
 #include <rendering/Vertex.hpp>
 
 namespace {
@@ -25,6 +28,8 @@ brk::sandbox::TestSystem::TestSystem()
 		EnumFlags{ rdr::EBufferOptions::Dynamic },
 	}
 {}
+
+brk::sandbox::TestSystem::~TestSystem() = default;
 
 void brk::sandbox::TestSystem::Update(World&, const TimeInfo&)
 {

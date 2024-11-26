@@ -22,6 +22,8 @@ namespace brk::rdr {
 		d3d::Ref<ID3D11DepthStencilView> m_DepthStencilView;
 		d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
 
+		d3d::Ref<ID3DBlob> m_DefaultVShader, m_DefaultPShader;
+
 		HWND m_NativeWindow = nullptr;
 
 		~RendererData();

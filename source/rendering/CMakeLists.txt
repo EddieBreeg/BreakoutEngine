@@ -21,6 +21,7 @@ file(GLOB BACKEND_HEADERS ${IMPL_DIR}/*.h ${IMPL_DIR}/*.hpp)
 target_sources(BRK_RENDERING PUBLIC
 	${IMPL_DIR}/Buffer.cpp
 	${IMPL_DIR}/Renderer.cpp
+	${IMPL_DIR}/Shaders.cpp
 	${IMPL_DIR}/ResourceHandles.cpp
 	${BACKEND_HEADERS}
 )

@@ -5,3 +5,4 @@ lib/
 .vs/
 imgui.ini
 *.afdesign
+*.cap
