@@ -32,7 +32,8 @@ namespace brk {
 		constexpr EnumFlags& operator=(E flags) noexcept;
 
 		[[nodiscard]] constexpr E Get() const noexcept;
-		constexpr void Set(E flags, bool value = true) noexcept;
+		constexpr void Set(E flags) noexcept;
+		constexpr void Clear(E flags) noexcept;
 		constexpr void Flip(E flags) noexcept;
 
 		constexpr void SetAll() noexcept;

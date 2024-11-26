@@ -71,7 +71,7 @@ namespace brk::enums::ut {
 			{
 				EnumFlags<E0> flags;
 				flags.SetAll();
-				flags.Set(E0::F1 | E0::F3, false);
+				flags.Clear(E0::F1 | E0::F3);
 				return flags;
 			}();
 			static_assert(flags.HasAny(E0::F2));

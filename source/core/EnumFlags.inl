@@ -14,11 +14,15 @@ namespace brk {
 	}
 
 	template <class E>
-	inline constexpr void EnumFlags<E>::Set(E flags, bool value) noexcept
+	inline constexpr void EnumFlags<E>::Set(E flags) noexcept
 	{
-		m_Flags &= ~ToInt(flags); // set the bits to 0 first
-		if (value)
-			m_Flags |= ToInt(flags);
+		m_Flags |= ToInt(flags);
+	}
+
+	template <class E>
+	inline constexpr void EnumFlags<E>::Clear(E flags) noexcept
+	{
+		m_Flags &= ~ToInt(flags);
 	}
 
 	template <class E>
