@@ -15,13 +15,33 @@ struct Vertex
 	float3 Normal: NORMAL;
 	float2 Uv: TEXCOORD;
 };
-
-float4 vs_main(Vertex v): SV_POSITION
+struct Fragment
 {
-	return float4(v.Position, 1);
+	float4 Position: SV_POSITION;
+	float3 Normal: NORMAL;
+	float2 Uv: TEXCOORD;
+};
+
+cbuffer GlobalFrameData: register(b1)
+{
+	float4x4 ViewProjection;
 }
 
-float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
+cbuffer ObjectTransform: register(b2)
+{
+	float4x4 Model;
+}
+
+Fragment vs_main(Vertex v)
+{
+	Fragment result;
+	result.Position = mul(mul(float4(v.Position, 1), Model), ViewProjection);
+	result.Normal = v.Normal;
+	result.Uv = v.Uv;
+	return result;
+}
+
+float4 fs_main(Fragment frag): SV_TARGET
 {
 	return float4(1, 1, 1, 1);
 }

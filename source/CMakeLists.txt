@@ -19,11 +19,9 @@ target_include_directories(BRK_INCLUDES INTERFACE
 )
 target_compile_definitions(BRK_INCLUDES INTERFACE
 	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>
-)
-target_compile_definitions(BRK_INCLUDES INTERFACE
 	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
+	GLM_FORCE_DEPTH_ZERO_TO_ONE=1,
 )
-
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE

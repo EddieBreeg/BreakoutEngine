@@ -25,12 +25,21 @@ namespace brk::rdr {
 
 		d3d::Ref<ID3DBlob> m_DefaultVShader, m_DefaultPShader;
 		d3d::Ref<ID3D11InputLayout> m_InputLayout;
+		d3d::Ref<ID3D11Buffer> m_FrameDataBuffer, m_TransformDataBuffer;
+
+		ID3D11Buffer* CreateBuffer(
+			const D3D11_BUFFER_DESC& desc,
+			const void* data = nullptr);
 
 		struct PipelineState
 		{
 			ID3D11Buffer* m_VertexBuffer = nullptr;
 			ID3D11Buffer* m_IndexBuffer = nullptr;
+
 			ID3D11Buffer* m_ParamBuffer = nullptr;
+			ID3D11Buffer* m_FrameData = nullptr;
+			ID3D11Buffer* m_TransformData = nullptr;
+
 			ID3D11VertexShader* m_VertexShader = nullptr;
 			ID3D11PixelShader* m_PixelShader = nullptr;
 		} m_CurrentPipelineState;

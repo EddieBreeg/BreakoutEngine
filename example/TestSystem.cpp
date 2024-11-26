@@ -19,18 +19,6 @@ cbuffer Params: register(b0)
 	float4 DiffuseColor;
 }
 
-struct Vertex
-{
-	float3 Position: POSITION;
-	float3 Normal: NORMAL;
-	float2 Uv: TEXCOORD;
-};
-
-float4 vs_main(Vertex v): SV_POSITION
-{
-	return float4(v.Position, 1);
-}
-
 float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 {
 	return DiffuseColor;
@@ -50,16 +38,15 @@ brk::sandbox::TestSystem::TestSystem()
 				   sizeof(FragmentParams),
 				   nullptr,
 				   EnumFlags{ rdr::EBufferOptions::Dynamic } }
-	, m_VertexShader{ s_ShaderSource }
 	, m_FragmentShader{ s_ShaderSource }
 {
-	rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState = {
-		m_Vbo.GetHandle(),
-		m_Ibo.GetHandle(),
-		m_ParamBuff.GetHandle(),
-		m_VertexShader.GetHandle(),
-		m_FragmentShader.GetHandle(),
-	};
+	auto& pipelineState = rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState;
+	pipelineState.m_VertexBuffer = m_Vbo.GetHandle(),
+	pipelineState.m_IndexBuffer = m_Ibo.GetHandle(),
+	pipelineState.m_ParamBuffer = m_ParamBuff.GetHandle(),
+
+	pipelineState.m_VertexShader = m_VertexShader.GetHandle();
+	pipelineState.m_PixelShader = m_FragmentShader.GetHandle();
 }
 
 brk::sandbox::TestSystem::~TestSystem() = default;

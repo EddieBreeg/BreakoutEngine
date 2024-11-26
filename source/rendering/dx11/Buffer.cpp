@@ -28,7 +28,6 @@ namespace brk::rdr {
 		BRK_ASSERT(
 			type > EType::Invalid && type < EType::NumTypes,
 			"Invalid buffer type");
-		ID3D11Device* device = Renderer::s_Instance.GetData()->m_Device;
 		CD3D11_BUFFER_DESC desc{
 			size,
 			UINT(s_BindFlags[type]),
@@ -48,14 +47,7 @@ namespace brk::rdr {
 			desc.Usage = D3D11_USAGE_DYNAMIC;
 		}
 
-		const D3D11_SUBRESOURCE_DATA dataDesc{ data, size };
-		const HRESULT err =
-			device->CreateBuffer(&desc, data ? &dataDesc : nullptr, &m_Handle);
-		DEBUG_CHECK(SUCCEEDED(err))
-		{
-			const char* msg = _com_error(err).ErrorMessage();
-			BRK_LOG_ERROR("Failed to create buffer: {}", msg);
-		}
+		m_Handle = Renderer::s_Instance.GetData()->CreateBuffer(desc, data);
 	}
 
 	void brk::rdr::Buffer::SetData(const void* data, uint32 size)

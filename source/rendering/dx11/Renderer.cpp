@@ -20,6 +20,8 @@
 #include <system_error>
 #include <d3d11.h>
 
+#include <glm/ext/matrix_clip_space.hpp>
+
 #include "ObjectRef.hpp"
 
 #include <comdef.h>
@@ -303,6 +305,42 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 		dbg::Break();
 	}
 	m_DeviceContext->IASetInputLayout(m_InputLayout);
+
+	{
+		constexpr auto defaultTransform = glm::identity<glm::mat4x4>();
+		const float ratio = float(width) / float(height);
+		const auto proj = glm::orthoRH(-ratio, ratio, -1.f, 1.0f, 0.01f, 100.f);
+		m_FrameDataBuffer = CreateBuffer(
+			CD3D11_BUFFER_DESC{
+				sizeof(proj),
+				D3D11_BIND_CONSTANT_BUFFER,
+				D3D11_USAGE_DYNAMIC,
+				D3D11_CPU_ACCESS_WRITE,
+			},
+			&proj);
+		m_TransformDataBuffer = CreateBuffer(
+			CD3D11_BUFFER_DESC{
+				sizeof(defaultTransform),
+				D3D11_BIND_CONSTANT_BUFFER,
+				D3D11_USAGE_DYNAMIC,
+				D3D11_CPU_ACCESS_WRITE,
+			},
+			&defaultTransform);
+	}
+	m_CurrentPipelineState.m_FrameData = m_FrameDataBuffer;
+	m_CurrentPipelineState.m_TransformData = m_TransformDataBuffer;
+}
+
+ID3D11Buffer* brk::rdr::RendererData::CreateBuffer(
+	const D3D11_BUFFER_DESC& desc,
+	const void* data)
+{
+	ID3D11Buffer* ptr = nullptr;
+	const D3D11_SUBRESOURCE_DATA subRes{ data, desc.ByteWidth };
+	LogError(
+		m_Device->CreateBuffer(&desc, data ? &subRes : nullptr, &ptr),
+		"Failed to create buffer: {}");
+	return ptr;
 }
 
 brk::rdr::RendererData::~RendererData() = default;
@@ -395,9 +433,9 @@ void brk::rdr::Renderer::DrawIndexed(uint32 nIndices)
 		0);
 
 	m_Data->m_DeviceContext->VSSetShader(state.m_VertexShader, nullptr, 0);
-	m_Data->m_DeviceContext->VSSetConstantBuffers(0, 1, &state.m_ParamBuffer);
+	m_Data->m_DeviceContext->VSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
 	m_Data->m_DeviceContext->PSSetShader(state.m_PixelShader, nullptr, 0);
-	m_Data->m_DeviceContext->PSSetConstantBuffers(0, 1, &state.m_ParamBuffer);
+	m_Data->m_DeviceContext->PSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
 
 	m_Data->m_DeviceContext->DrawIndexed(nIndices, 0, 0);
 }

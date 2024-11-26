@@ -14,6 +14,8 @@ struct ID3D11Texture2D;
 struct ID3D11VertexShader;
 struct IDXGISwapChain;
 
+struct D3D11_BUFFER_DESC;
+
 using ID3DBlob = ID3D10Blob;
 
 using HWND = struct HWND__*;
