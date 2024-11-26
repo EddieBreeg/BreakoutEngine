@@ -1,4 +1,7 @@
-add_executable(Sandbox main.cpp)
+add_executable(Sandbox 
+	main.cpp
+	TestSystem.cpp
+)
 target_link_libraries(Sandbox PRIVATE Breakout::Breakout)
 
 if(${WIN32})
