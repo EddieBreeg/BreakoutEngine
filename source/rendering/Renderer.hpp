@@ -25,6 +25,9 @@ namespace brk::rdr {
 		/* Should be called before rendering anything, to setup the render targets
 		 * properly*/
 		void StartRender();
+
+		void DrawIndexed(uint32 nIndices);
+
 		void RenderUI();
 
 		/** Swaps the back and front buffers */

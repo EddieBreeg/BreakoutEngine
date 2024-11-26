@@ -54,6 +54,10 @@ ID3DBlob* brk::rdr::d3d::CompileShader(
 	const char* entryPoint)
 {
 	ID3DBlob *byteCode = nullptr, *logs = nullptr;
+	uint32 flags = 0;
+#ifdef BRK_DEV
+	flags |= D3DCOMPILE_DEBUG;
+#endif
 	D3DCompile(
 		source.GetPtr(),
 		source.GetLen(),
@@ -62,7 +66,7 @@ ID3DBlob* brk::rdr::d3d::CompileShader(
 		nullptr,
 		entryPoint,
 		target,
-		0,
+		flags,
 		0,
 		&byteCode,
 		&logs);

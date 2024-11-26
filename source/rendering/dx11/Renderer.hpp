@@ -21,9 +21,19 @@ namespace brk::rdr {
 		d3d::Ref<ID3D11Texture2D> m_DepthStencilBuffer;
 		d3d::Ref<ID3D11DepthStencilView> m_DepthStencilView;
 		d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
+		d3d::Ref<ID3D11RasterizerState> m_DefaultRasterizer;
 
 		d3d::Ref<ID3DBlob> m_DefaultVShader, m_DefaultPShader;
 		d3d::Ref<ID3D11InputLayout> m_InputLayout;
+
+		struct PipelineState
+		{
+			ID3D11Buffer* m_VertexBuffer = nullptr;
+			ID3D11Buffer* m_IndexBuffer = nullptr;
+			ID3D11Buffer* m_ParamBuffer = nullptr;
+			ID3D11VertexShader* m_VertexShader = nullptr;
+			ID3D11PixelShader* m_PixelShader = nullptr;
+		} m_CurrentPipelineState;
 
 		HWND m_NativeWindow = nullptr;
 

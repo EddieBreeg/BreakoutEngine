@@ -46,7 +46,7 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 	public:
 		/* Constructs the default fragment shader (compile from s_DefaultShaderCode)*/
 		FragmentShader();
-		FragmentShader(StringView source, const char* entryPoint = "ps_main");
+		FragmentShader(StringView source, const char* entryPoint = "fs_main");
 		~FragmentShader();
 
 		void* GetByteCode() noexcept { return m_ByteCode; }

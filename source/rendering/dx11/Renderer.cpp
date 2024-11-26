@@ -2,6 +2,7 @@
 
 #include <rendering/Renderer.hpp>
 #include <rendering/Shaders.hpp>
+#include <rendering/Vertex.hpp>
 #include "Renderer.hpp" // private api
 #include "Shaders.hpp"
 
@@ -170,12 +171,25 @@ namespace {
 			},
 		};
 		ID3D11InputLayout* ptr = nullptr;
-		LogError(device->CreateInputLayout(
-			elements,
-			std::extent_v<decltype(elements)>,
-			vShaderCode->GetBufferPointer(),
-			vShaderCode->GetBufferSize(),
-			&ptr), "Failed to create input layout: {}");
+		LogError(
+			device->CreateInputLayout(
+				elements,
+				std::extent_v<decltype(elements)>,
+				vShaderCode->GetBufferPointer(),
+				vShaderCode->GetBufferSize(),
+				&ptr),
+			"Failed to create input layout: {}");
+		return ptr;
+	}
+
+	ID3D11RasterizerState* CreateRasterizer(
+		ID3D11Device* device,
+		const D3D11_RASTERIZER_DESC& desc)
+	{
+		ID3D11RasterizerState* ptr = nullptr;
+		LogError(
+			device->CreateRasterizerState(&desc, &ptr),
+			"Failed to create rasterizer state: {}");
 		return ptr;
 	}
 
@@ -263,6 +277,16 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	{
 		dbg::Break();
 	}
+	{
+		CD3D11_RASTERIZER_DESC rasterizerDesc{ D3D11_DEFAULT };
+		rasterizerDesc.FrontCounterClockwise = true;
+		m_DefaultRasterizer = CreateRasterizer(m_Device, rasterizerDesc);
+	}
+	DEBUG_CHECK(m_DefaultRasterizer)
+	{
+		dbg::Break();
+	}
+	m_DeviceContext->RSSetState(m_DefaultRasterizer);
 
 	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilState, 1);
 #ifdef BRK_DEV
@@ -327,6 +351,11 @@ void brk::rdr::Renderer::StartRender()
 	m_Data->m_DeviceContext->ClearRenderTargetView(
 		m_Data->m_FrameBufferView,
 		(float*)&m_ClearColor);
+	m_Data->m_DeviceContext->ClearDepthStencilView(
+		m_Data->m_DepthStencilView,
+		D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL,
+		1.0f,
+		0);
 	m_Data->m_DeviceContext->OMSetRenderTargets(
 		1,
 		&m_Data->m_FrameBufferView.m_Handle,
@@ -337,11 +366,40 @@ void brk::rdr::Renderer::StartRender()
 	D3D11_VIEWPORT viewport = {};
 	viewport.Width = float(winRect.right - winRect.left);
 	viewport.Height = float(winRect.bottom - winRect.top);
+	viewport.MinDepth = 0.0f;
+	viewport.MaxDepth = 1.0f;
 	m_Data->m_DeviceContext->RSSetViewports(1, &viewport);
+	m_Data->m_DeviceContext->IASetPrimitiveTopology(
+		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 #ifdef BRK_DEV
 	ImGui::Render();
 #endif
+}
+
+void brk::rdr::Renderer::DrawIndexed(uint32 nIndices)
+{
+	const auto& state = m_Data->m_CurrentPipelineState;
+	const bool isStateValid = state.m_VertexBuffer && state.m_IndexBuffer &&
+							  state.m_VertexShader && state.m_PixelShader;
+	if (!isStateValid)
+		return;
+
+	constexpr uint32 stride = sizeof(Vertex3d);
+	const uint32 offset = 0;
+	m_Data->m_DeviceContext
+		->IASetVertexBuffers(0, 1, &state.m_VertexBuffer, &stride, &offset);
+	m_Data->m_DeviceContext->IASetIndexBuffer(
+		state.m_IndexBuffer,
+		DXGI_FORMAT_R32_UINT,
+		0);
+
+	m_Data->m_DeviceContext->VSSetShader(state.m_VertexShader, nullptr, 0);
+	m_Data->m_DeviceContext->VSSetConstantBuffers(0, 1, &state.m_ParamBuffer);
+	m_Data->m_DeviceContext->PSSetShader(state.m_PixelShader, nullptr, 0);
+	m_Data->m_DeviceContext->PSSetConstantBuffers(0, 1, &state.m_ParamBuffer);
+
+	m_Data->m_DeviceContext->DrawIndexed(nIndices, 0, 0);
 }
 
 void brk::rdr::Renderer::RenderUI()

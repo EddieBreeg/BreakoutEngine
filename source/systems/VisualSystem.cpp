@@ -6,14 +6,16 @@
 #endif
 #include <rendering/Renderer.hpp>
 
-namespace brk
-{
+namespace brk {
 	VisualSystem::VisualSystem() {}
 
 	void VisualSystem::Update(World& world, const TimeInfo& timeInfo)
 	{
-		rdr::Renderer::s_Instance.StartRender();
-		rdr::Renderer::s_Instance.RenderUI();
+		auto& renderer = rdr::Renderer::s_Instance;
+
+		renderer.StartRender();
+		renderer.DrawIndexed(3); // #hack, for testing purposes
+		renderer.RenderUI();
 
 #ifdef BRK_DEV
 		// Update and Render additional Platform Windows
