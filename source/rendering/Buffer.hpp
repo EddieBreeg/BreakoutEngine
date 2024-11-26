@@ -54,6 +54,24 @@ namespace brk::rdr {
 			: Buffer{ type, sizeof(data), &data, options }
 		{}
 
+		Buffer(Buffer&& other)
+			: m_Type{ other.m_Type }
+			, m_Options{ other.m_Options }
+		{
+			m_Handle = other.m_Handle;
+			other.m_Handle = nullptr;
+			other.m_Type = Invalid;
+		}
+
+		Buffer& operator=(Buffer&& other)
+		{
+			std::swap(m_Handle, other.m_Handle);
+			m_Type = other.m_Type;
+			other.m_Type = Invalid;
+			m_Options = other.m_Options;
+			return *this;
+		}
+
 		void SetData(const void* data, uint32 size);
 		template <class T>
 		void SetData(const T* data, uint32 n)

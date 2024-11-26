@@ -54,6 +54,19 @@ float4 fs_main(Fragment frag): SV_TARGET
 		VertexShader();
 		VertexShader(StringView source, const char* entryPoint = "vs_main");
 		~VertexShader();
+		VertexShader(VertexShader&& other)
+			: BasicResource(std::move(other))
+			, m_ByteCode{ other.m_ByteCode }
+		{
+			other.m_ByteCode = nullptr;
+		}
+
+		VertexShader& operator=(VertexShader&& other)
+		{
+			std::swap(m_Handle, other.m_Handle);
+			std::swap(m_ByteCode, other.m_ByteCode);
+			return *this;
+		}
 
 		void* GetByteCode() noexcept { return m_ByteCode; }
 
@@ -68,6 +81,20 @@ float4 fs_main(Fragment frag): SV_TARGET
 		FragmentShader();
 		FragmentShader(StringView source, const char* entryPoint = "fs_main");
 		~FragmentShader();
+
+		FragmentShader(FragmentShader&& other)
+			: BasicResource(std::move(other))
+			, m_ByteCode{ other.m_ByteCode }
+		{
+			other.m_ByteCode = nullptr;
+		}
+
+		FragmentShader& operator=(FragmentShader&& other)
+		{
+			std::swap(m_Handle, other.m_Handle);
+			std::swap(m_ByteCode, other.m_ByteCode);
+			return *this;
+		}
 
 		void* GetByteCode() noexcept { return m_ByteCode; }
 

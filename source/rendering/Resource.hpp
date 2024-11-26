@@ -44,6 +44,11 @@ namespace brk::rdr {
 			return *this;
 		}
 
+		[[nodiscard]] operator bool() const noexcept
+		{
+			return m_Handle != Unassigned<HandleType>;
+		}
+
 		~BasicResource()
 		{
 			if (m_Handle != Unassigned<HandleType>)
