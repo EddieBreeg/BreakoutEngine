@@ -138,6 +138,47 @@ namespace {
 		return ptr;
 	}
 
+	ID3D11InputLayout* CreateInputLayout(ID3D11Device* device, ID3DBlob* vShaderCode)
+	{
+		constexpr D3D11_INPUT_ELEMENT_DESC elements[] = {
+			{
+				"POSITION",
+				0,
+				DXGI_FORMAT_R32G32B32_FLOAT,
+				0,
+				0,
+				D3D11_INPUT_PER_VERTEX_DATA,
+				0,
+			},
+			{
+				"NORMAL",
+				0,
+				DXGI_FORMAT_R32G32B32_FLOAT,
+				0,
+				D3D11_APPEND_ALIGNED_ELEMENT,
+				D3D11_INPUT_PER_VERTEX_DATA,
+				0,
+			},
+			{
+				"TEXCOORD",
+				0,
+				DXGI_FORMAT_R32G32_FLOAT,
+				0,
+				D3D11_APPEND_ALIGNED_ELEMENT,
+				D3D11_INPUT_PER_VERTEX_DATA,
+				0,
+			},
+		};
+		ID3D11InputLayout* ptr = nullptr;
+		LogError(device->CreateInputLayout(
+			elements,
+			std::extent_v<decltype(elements)>,
+			vShaderCode->GetBufferPointer(),
+			vShaderCode->GetBufferSize(),
+			&ptr), "Failed to create input layout: {}");
+		return ptr;
+	}
+
 	constexpr std::array s_Dx11FeatureLevels = {
 		D3D_FEATURE_LEVEL_11_1,
 		D3D_FEATURE_LEVEL_11_0,
@@ -232,6 +273,12 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	m_DefaultVShader = d3d::CompileShader(s_DefaultShaderCode, "vs_5_0", "vs_main");
 	m_DefaultPShader = d3d::CompileShader(s_DefaultShaderCode, "ps_5_0", "fs_main");
 	BRK_ASSERT(m_DefaultVShader && m_DefaultPShader, "Failed to compile default shaders");
+	m_InputLayout = CreateInputLayout(m_Device, m_DefaultVShader);
+	DEBUG_CHECK(m_InputLayout)
+	{
+		dbg::Break();
+	}
+	m_DeviceContext->IASetInputLayout(m_InputLayout);
 }
 
 brk::rdr::RendererData::~RendererData() = default;

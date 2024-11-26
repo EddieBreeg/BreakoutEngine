@@ -4,6 +4,10 @@
 #include "Resource.hpp"
 
 namespace brk::rdr {
+	/**
+	 * Default shader implementation. This automatically gets compile to byte code
+	 * by the renderer upon initialization.
+	 */
 	constexpr const char* s_DefaultShaderCode = R"hlsl(
 struct Vertex
 {

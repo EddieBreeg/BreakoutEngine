@@ -6,6 +6,7 @@ struct ID3D11DepthStencilState;
 struct ID3D11DepthStencilView;
 struct ID3D11Device;
 struct ID3D11DeviceContext;
+struct ID3D11InputLayout;
 struct ID3D11PixelShader;
 struct ID3D11RasterizerState;
 struct ID3D11RenderTargetView;

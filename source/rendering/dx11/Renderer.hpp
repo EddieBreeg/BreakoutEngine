@@ -9,7 +9,7 @@
 struct SDL_Window;
 
 namespace brk::rdr {
-	struct brk::rdr::RendererData
+	struct RendererData
 	{
 		RendererData(SDL_Window& window);
 
@@ -23,6 +23,7 @@ namespace brk::rdr {
 		d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
 
 		d3d::Ref<ID3DBlob> m_DefaultVShader, m_DefaultPShader;
+		d3d::Ref<ID3D11InputLayout> m_InputLayout;
 
 		HWND m_NativeWindow = nullptr;
 
