@@ -35,6 +35,41 @@ constexpr void brk::BasicStringView<Char>::TrimLeft(const uint32 n) noexcept
 }
 
 template <class Char>
+inline constexpr uint32 brk::BasicStringView<Char>::Find(Char c) const noexcept
+{
+	for (uint32 i = 0; i < m_Len; i++)
+	{
+		if (m_Ptr[i] == c)
+			return i;
+	}
+	return NPos;
+}
+
+template <class Char>
+inline constexpr uint32 brk::BasicStringView<Char>::Find(
+	BasicStringView sub) const noexcept
+{
+	if (sub.m_Len > m_Len)
+		return NPos;
+	const uint32 end = m_Len - sub.m_Len + 1;
+	for (uint32 i = 0; i < end; i++)
+	{
+		bool found = true;
+		for (uint32 j = 0; j < sub.m_Len; ++j)
+		{
+			if (m_Ptr[i + j] != sub.m_Ptr[j])
+			{
+				found = false;
+				break;
+			}
+		}
+		if (found)
+			return i;
+	}
+	return NPos;
+}
+
+template <class Char>
 Char brk::BasicStringView<Char>::operator[](const uint32 index) const
 {
 	BRK_ASSERT(index < m_Len, "Index {} is out of range!", index);

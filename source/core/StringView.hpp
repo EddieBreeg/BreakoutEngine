@@ -22,6 +22,8 @@ namespace brk {
 		constexpr BasicStringView(const BasicStringView&) = default;
 		constexpr BasicStringView& operator=(const BasicStringView&) = default;
 
+		static constexpr uint32 NPos = uint32(-1);
+
 		/**
 		 * Deletes the first characters of the view
 		 * \param n: The number of characters to trim. If n >= GetLen(), the internal
@@ -33,6 +35,9 @@ namespace brk {
 
 		[[nodiscard]] constexpr const Char* GetPtr() const noexcept { return m_Ptr; }
 		[[nodiscard]] constexpr uint32 GetLen() const noexcept { return m_Len; }
+
+		[[nodiscard]] constexpr uint32 Find(Char c) const noexcept;
+		[[nodiscard]] constexpr uint32 Find(BasicStringView sub) const noexcept;
 
 		[[nodiscard]] constexpr const Char* begin() const noexcept { return m_Ptr; }
 		[[nodiscard]] constexpr const Char* end() const noexcept { return m_Ptr + m_Len; }
