@@ -3,6 +3,7 @@ file(GLOB CORE_HEADERS *.hpp)
 add_library(BRK_CORE STATIC
 	Assert.cpp
 	DebugBreak.cpp
+	InputFile.cpp
 	LogManager.cpp
 	Resource.cpp
 	RNG.cpp

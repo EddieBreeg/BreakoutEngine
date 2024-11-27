@@ -20,6 +20,25 @@ constexpr brk::BasicStringView<Char>::BasicStringView(const std::string& str)
 {}
 
 template <class Char>
+inline constexpr bool brk::BasicStringView<Char>::operator==(const BasicStringView& other)
+{
+	if (m_Len != other.m_Len)
+		return false;
+	for (uint32 i = 0; i < m_Len; i++)
+	{
+		if (m_Ptr[i] != other.m_Ptr[i])
+			return false;
+	}
+	return true;
+}
+
+template <class Char>
+inline constexpr bool brk::BasicStringView<Char>::operator!=(const BasicStringView& other)
+{
+	return !(*this == other);
+}
+
+template <class Char>
 constexpr void brk::BasicStringView<Char>::TrimLeft(const uint32 n) noexcept
 {
 	if (n >= m_Len)

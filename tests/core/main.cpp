@@ -26,6 +26,10 @@ namespace brk::enums::ut {
 	void Tests();
 } // namespace brk::enums::ut
 
+namespace brk::io::ut {
+	void InputFileTests();
+} // namespace brk::io::ut
+
 int main(int argc, char const* argv[])
 {
 	brk::core::ut::EventTests();
@@ -35,5 +39,6 @@ int main(int argc, char const* argv[])
 	brk::signal::ut::Tests();
 	brk::retain_ptr::ut::Tests();
 	brk::enums::ut::Tests();
+	brk::io::ut::InputFileTests();
 	return 0;
 }

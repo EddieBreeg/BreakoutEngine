@@ -22,6 +22,9 @@ namespace brk {
 		constexpr BasicStringView(const BasicStringView&) = default;
 		constexpr BasicStringView& operator=(const BasicStringView&) = default;
 
+		[[nodiscard]] constexpr bool operator==(const BasicStringView& other);
+		[[nodiscard]] constexpr bool operator!=(const BasicStringView& other);
+
 		static constexpr uint32 NPos = uint32(-1);
 
 		/**
