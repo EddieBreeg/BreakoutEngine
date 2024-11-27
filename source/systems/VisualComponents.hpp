@@ -13,7 +13,7 @@ namespace brk {
 
 	struct MeshComponent
 	{
-		ResourceRef<rdr::Material> m_MaterialRef;
+		ResourceRef<rdr::MaterialInstance> m_MaterialRef;
 		ResourceRef<rdr::Mesh> m_MeshRef;
 	};
 

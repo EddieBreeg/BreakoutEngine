@@ -370,10 +370,8 @@ ID3D11SamplerState* brk::rdr::RendererData::CreateSamplerState(
 	const D3D11_SAMPLER_DESC& desc)
 {
 	ID3D11SamplerState* ptr = nullptr;
-	LogError(
-		m_Device->CreateSamplerState(&desc, &ptr),
-		"Failed to create sampler: {}");
-	return ptr;	
+	LogError(m_Device->CreateSamplerState(&desc, &ptr), "Failed to create sampler: {}");
+	return ptr;
 }
 
 brk::rdr::RendererData::~RendererData() = default;
@@ -449,7 +447,7 @@ void brk::rdr::Renderer::StartRender()
 #endif
 }
 
-void brk::rdr::Renderer::SetMaterial(Material& material)
+void brk::rdr::Renderer::SetMaterial(MaterialInstance& material)
 {
 	auto& pipelineState = m_Data->m_CurrentPipelineState;
 

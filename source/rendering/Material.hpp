@@ -1,70 +1,45 @@
 #pragma once
 
 #include <PCH.hpp>
-#include <core/Resource.hpp>
 #include <core/EnumFlags.hpp>
+#include <core/Resource.hpp>
+#include <core/ResourceRef.hpp>
 #include "Buffer.hpp"
 #include "Shaders.hpp"
 
 namespace brk::rdr {
-	/**
-	 * TODO: Add material options
-	 */
 
 	struct MaterialSettings
 	{
 		enum EOptions : uint8
 		{
 			None = 0,
+			// Indicates the parameter buffer in material instances should be
+			// created with the Dynamic option
 			DynamicBufferParam = BIT(0),
 			NOptions
 		};
 
+		/* Vertex shader source code. May be empty, in which case the default vertex
+		 * shader will be used (see the Shaders.hpp header)*/
 		StringView m_VertexSourceCode;
+		/* Fragment shader source code. May be empty, in which case the default fragment
+		 * shader will be used (see the Shaders.hpp header)*/
 		StringView m_FragmentSourceCode;
 		EnumFlags<EOptions> m_Options;
 	};
 
 	/**
-	 * Generic Material class. This is mostly meant to be subclassed, as it can't be
-	 * loaded from a file.
+	 * Generic Material class. The material contains all the information to define the
+	 * rendering pipeline, i.e. shaders, rasterizer settings etc...
 	 */
 	class Material : public Resource
 	{
 	public:
-		using Resource::Resource;
-
-		Material(const MaterialSettings& settings);
-
-		/**
-		 * Same thing as the first constructor, but additionally initializes the parameter
-		 * buffer with the provided object
-		 * \param parameters: The object which will be uploaded to the parameter buffer
-		 */
-		template <class P>
-		Material(P&& parameters, const MaterialSettings& settings);
-
-		[[nodiscard]] VertexShader& GetVertexShader() noexcept { return m_VertexShader; }
-		[[nodiscard]] const VertexShader& GetVertexShader() const noexcept
-		{
-			return m_VertexShader;
-		}
-
-		[[nodiscard]] FragmentShader& GetFragmentShader() noexcept
-		{
-			return m_FragmentShader;
-		}
-
-		[[nodiscard]] Buffer& GetParamBuffer() noexcept { return m_ParamBuffer; }
-		[[nodiscard]] const Buffer& GetParamBuffer() const noexcept
-		{
-			return m_ParamBuffer;
-		}
-
-		[[nodiscard]] MaterialSettings::EOptions GetOptions() const noexcept
-		{
-			return m_Options.Get();
-		}
+		Material(
+			const MaterialSettings& settings,
+			ULID id = ULID::Generate(),
+			std::string name = {});
 
 		/**
 		 * \warning This does NOT actually load anything, as this class doesn't have any
@@ -73,21 +48,78 @@ namespace brk::rdr {
 		 */
 		bool DoLoad() noexcept override { return m_VertexShader && m_FragmentShader; }
 
+		~Material() = default;
+
+	private:
+		friend class MaterialInstance;
+
+		VertexShader m_VertexShader;
+		FragmentShader m_FragmentShader;
+		EnumFlags<MaterialSettings::EOptions> m_Options;
+	};
+
+	/**
+	 * A specific instance of a material, with the associated parameters.
+	 * This is meant to be subclassed, because it is unaware of the actual type of
+	 * parameters to upload to the GPU, and therefore can't be loaded from a file
+	 */
+	class MaterialInstance : public Resource
+	{
+	public:
 		/**
-		 * Updates or create the parameter buffer with the provided object
-		 * \param parameters: This object will be directly uploaded to the GPU, and made
+		 * Initializes the material instance, without a null param buffer
+		 * \param baseMat: The material this instance is based on
+		 * \param id: The resource id (passed to the Resource constructor)
+		 * \param name: The resource name (passed to the Resource constructor)
+		 */
+		MaterialInstance(
+			ResourceRef<Material> baseMat,
+			const ULID& id = ULID::Generate(),
+			std::string name = {});
+		/**
+		 * Initializes the material instance and uploads parameters to the GPU
+		 * \param baseMat: The material this instance is based on
+		 * \param parameters: The data to upload to the param buffer
+		 * \param id: The resource id (passed to the Resource constructor)
+		 * \param name: The resource name (passed to the Resource constructor)
+		 */
+		template <class P>
+		MaterialInstance(
+			ResourceRef<Material> baseMat,
+			P&& parameters,
+			const ULID& id = ULID::Generate(),
+			std::string name = {});
+
+		[[nodiscard]] VertexShader& GetVertexShader() noexcept
+		{
+			return m_BaseMat->m_VertexShader;
+		}
+
+		[[nodiscard]] FragmentShader& GetFragmentShader() noexcept
+		{
+			return m_BaseMat->m_FragmentShader;
+		}
+
+		[[nodiscard]] Buffer& GetParamBuffer() { return m_ParamBuffer; }
+
+		[[nodiscard]] MaterialSettings::EOptions GetOptions() const
+		{
+			return m_BaseMat->m_Options.Get();
+		}
+
+		/**
+		 * Updates the parameter buffer with the provided object
+		 * \param params: This object will be directly uploaded to the GPU, and made
 		 * accessible in the shaders as a cbuffer.
 		 */
 		template <class P>
 		void SetParameters(P&& params);
 
-		~Material() = default;
-
 	private:
-		VertexShader m_VertexShader;
-		FragmentShader m_FragmentShader;
+		static EBufferOptions GetBufferOptions(MaterialSettings::EOptions matOptions);
+
+		ResourceRef<Material> m_BaseMat;
 		Buffer m_ParamBuffer;
-		EnumFlags<MaterialSettings::EOptions> m_Options;
 	};
 } // namespace brk::rdr
 

@@ -10,6 +10,7 @@ namespace brk {
 
 namespace brk::rdr {
 	class Material;
+	class MaterialInstance;
 	class Mesh;
 	class Texture2d;
 } // namespace brk::rdr
@@ -27,7 +28,8 @@ namespace brk::sandbox {
 
 	private:
 		rdr::Mesh& m_Mesh;
-		rdr::Material& m_Material;
+		rdr::Material& m_BaseMat;
+		rdr::MaterialInstance& m_MatInstance;
 		rdr::Texture2d& m_Texture;
 	};
 } // namespace brk::sandbox

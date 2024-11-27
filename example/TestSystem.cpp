@@ -28,11 +28,6 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 }
 )hlsl";
 
-	struct FragmentParams
-	{
-		float4 m_DiffuseColor;
-	};
-
 	constexpr brk::rdr::MaterialSettings s_MatSettings = {
 		{},
 		s_ShaderSource,
@@ -46,22 +41,27 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 		brk::rdr::ETextureOptions::RenderTarget |
 			brk::rdr::ETextureOptions::ShaderResource
 	};
+
+	struct FragmentParams
+	{
+		float4 m_DiffuseColor;
+	};
 } // namespace
 
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
 	entt::registry& entityWorld)
 	: m_Mesh{ resManager.AddResource<rdr::Mesh>(s_Vertices, s_Indices) }
-	, m_Material{ resManager.AddResource<rdr::Material>(
-		  float4{ 1, 0, 0, 0 },
-		  s_MatSettings) }
+	, m_BaseMat{ resManager.AddResource<rdr::Material>(s_MatSettings) }
+	, m_MatInstance{ resManager.AddResource<rdr::MaterialInstance>(
+		  ResourceRef<rdr::Material>{ &m_BaseMat }) }
 	, m_Texture{ resManager.AddResource<rdr::Texture2d>(s_TexSettings) }
 {
 	const auto e = entityWorld.create();
 	entityWorld.emplace<VisualComponent>(e);
 	entityWorld.emplace<MeshComponent>(
 		e,
-		ResourceRef<rdr::Material>{ &m_Material },
+		ResourceRef<rdr::MaterialInstance>{ &m_MatInstance },
 		ResourceRef<rdr::Mesh>{ &m_Mesh });
 }
 
@@ -76,5 +76,5 @@ void brk::sandbox::TestSystem::Update(World&, const TimeInfo& time)
 		.5f * std::sinf(t * 3.0f + .6667f * math::Pi) + .5f,
 		1,
 	} };
-	m_Material.SetParameters(params);
+	m_MatInstance.SetParameters(params);
 }

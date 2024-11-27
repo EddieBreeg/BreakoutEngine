@@ -6,7 +6,7 @@ struct SDL_Window;
 
 namespace brk::rdr {
 	class Buffer;
-	class Material;
+	class MaterialInstance;
 
 	struct RendererData;
 
@@ -25,11 +25,13 @@ namespace brk::rdr {
 
 		void ResizeFrameBuffers(uint32 width, uint32 height);
 
-		/* Should be called before rendering anything, to setup the render targets
-		 * properly*/
+		/*
+		 * Should be called before rendering anything, to setup the render targets
+		 * properly
+		 */
 		void StartRender();
 
-		void SetMaterial(Material& material);
+		void SetMaterial(MaterialInstance& material);
 
 		void DrawIndexed(Buffer& vertexBuffer, Buffer& indexBuffer, uint32 numIndices);
 

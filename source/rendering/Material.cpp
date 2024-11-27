@@ -18,10 +18,19 @@ namespace {
 } // namespace
 
 namespace brk::rdr {
-	Material::Material(const MaterialSettings& settings)
-		: Resource(ULID::Generate())
+	Material::Material(const MaterialSettings& settings, ULID id, std::string name)
+		: Resource(id, std::move(name), {})
 		, m_VertexShader{ InitShader<VertexShader>(settings.m_VertexSourceCode) }
 		, m_FragmentShader{ InitShader<FragmentShader>(settings.m_FragmentSourceCode) }
 		, m_Options{ settings.m_Options }
 	{}
+
+	MaterialInstance::MaterialInstance(
+		ResourceRef<Material> baseMat,
+		const ULID& id,
+		std::string name)
+		: Resource(id, std::move(name), {})
+		, m_BaseMat{ baseMat }
+	{}
+
 } // namespace brk::rdr
