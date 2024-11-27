@@ -120,8 +120,15 @@ void brk::editor::Editor::LoadProject()
 	BRK_LOG_TRACE("Loading project '{}'", m_ProjectFilePath);
 	Project proj;
 	proj.m_ProjectDir = std::filesystem::path(m_ProjectFilePath).parent_path();
+	if (proj.m_ProjectDir.empty())
+	{
+		proj.m_ProjectDir = ".";
+	}
+	else
+	{
+		std::filesystem::current_path(proj.m_ProjectDir);
+	}
 
-	std::filesystem::current_path(proj.m_ProjectDir);
 	nlohmann::json desc;
 	try
 	{
