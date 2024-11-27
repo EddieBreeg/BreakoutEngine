@@ -67,6 +67,13 @@ namespace brk::rdr {
 		}
 
 		/**
+		 * \warning This does NOT actually load anything, as this class doesn't have any
+		 * concrete notion of what parameters should be passed to the shaders.
+		 * It simply returns true if all shaders are valid, false otherwise
+		 */
+		bool DoLoad() noexcept override { return m_VertexShader && m_FragmentShader; }
+
+		/**
 		 * Updates or create the parameter buffer with the provided object
 		 * \param parameters: This object will be directly uploaded to the GPU, and made
 		 * accessible in the shaders as a cbuffer.

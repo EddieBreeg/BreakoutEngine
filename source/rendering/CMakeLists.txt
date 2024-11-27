@@ -3,6 +3,7 @@ file(GLOB RENDERING_HEADERS *.h *.hpp)
 add_library(BRK_RENDERING STATIC
 	${RENDERING_HEADERS}
 	Material.cpp
+	Mesh.cpp
 	Renderer.cpp
 )
 

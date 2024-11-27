@@ -2,8 +2,8 @@
 
 #include <PCH.hpp>
 #include <ecs/World.hpp>
-#include <rendering/Buffer.hpp>
 #include <rendering/Material.hpp>
+#include <rendering/Mesh.hpp>
 
 namespace brk {
 	class TimeInfo;
@@ -21,7 +21,7 @@ namespace brk::sandbox {
 		~TestSystem();
 
 	private:
-		rdr::Buffer m_Vbo, m_Ibo;
+		rdr::Mesh m_Mesh;
 		rdr::Material m_Material;
 	};
 } // namespace brk::sandbox

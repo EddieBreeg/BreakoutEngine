@@ -27,7 +27,7 @@ namespace brk::rdr {
 			NumTypes
 		};
 
-		static constexpr EnumFlags s_DefaultOptions{ EBufferOptions::CpuWrite };
+		static constexpr EnumFlags s_DefaultOptions{ EBufferOptions::None };
 
 		using BasicResource<Buffer>::BasicResource;
 

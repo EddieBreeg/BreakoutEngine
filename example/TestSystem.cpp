@@ -34,8 +34,7 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 } // namespace
 
 brk::sandbox::TestSystem::TestSystem()
-	: m_Vbo{ rdr::Buffer::VertexBuffer, s_Vertices }
-	, m_Ibo{ rdr::Buffer::IndexBuffer, s_Indices }
+	: m_Mesh{ s_Vertices, s_Indices }
 	, m_Material{
 		float4{ 1, 0, 0, 0 },
 		rdr::MaterialSettings{
@@ -46,8 +45,8 @@ brk::sandbox::TestSystem::TestSystem()
 	}
 {
 	auto& pipelineState = rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState;
-	pipelineState.m_VertexBuffer = m_Vbo.GetHandle(),
-	pipelineState.m_IndexBuffer = m_Ibo.GetHandle(),
+	pipelineState.m_VertexBuffer = m_Mesh.GetVertexBuffer().GetHandle();
+	pipelineState.m_IndexBuffer = m_Mesh.GetIndexBuffer().GetHandle();
 
 	rdr::Renderer::s_Instance.SetMaterial(m_Material);
 }
