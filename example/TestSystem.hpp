@@ -2,12 +2,16 @@
 
 #include <PCH.hpp>
 #include <ecs/World.hpp>
-#include <rendering/Material.hpp>
-#include <rendering/Mesh.hpp>
 
 namespace brk {
+	class ResourceManager;
 	class TimeInfo;
-}
+} // namespace brk
+
+namespace brk::rdr {
+	class Material;
+	class Mesh;
+} // namespace brk::rdr
 
 namespace brk::sandbox {
 	class TestSystem
@@ -15,13 +19,13 @@ namespace brk::sandbox {
 	public:
 		using World = ecs::WorldView<>;
 
-		TestSystem();
+		TestSystem(ResourceManager& resourceManager, entt::registry& entityWorld);
 		void Update(World&, const TimeInfo&);
 
 		~TestSystem();
 
 	private:
-		rdr::Mesh m_Mesh;
-		rdr::Material m_Material;
+		rdr::Mesh& m_Mesh;
+		rdr::Material& m_Material;
 	};
 } // namespace brk::sandbox

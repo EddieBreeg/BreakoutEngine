@@ -1,24 +1,11 @@
 #pragma once
 #include <PCH.hpp>
-#include <core/Resource.hpp>
-#include <core/RetainPtr.hpp>
+#include <core/ResourceRef.hpp>
 #include <core/Singleton.hpp>
 #include <entt/entity/fwd.hpp>
 #include <unordered_map>
 
 namespace brk {
-	template<>
-	struct RetainTraits<Resource>
-	{
-		static constexpr Retain_t DefaultAction = {};
-		static void Increment(Resource* res);
-		static void Decrement(Resource* res);
-		static uint32 GetCount(const Resource* res);
-	};
-
-	template <class Res>
-	using ResourceRef = RetainPtr<Res, RetainTraits<Resource>>;
-
 	class ResourceManager : public Singleton<ResourceManager>
 	{
 	public:

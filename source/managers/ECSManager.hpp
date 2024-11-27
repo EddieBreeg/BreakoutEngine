@@ -31,6 +31,10 @@ namespace brk::ecs {
 		void Update(const TimeInfo& timeInfo);
 		[[nodiscard]] entt::registry& GetWorld() noexcept { return m_EntityWorld; }
 
+		void Clear();
+
+		~Manager();
+
 	private:
 		friend class Singleton<Manager>;
 		Manager();
@@ -38,8 +42,8 @@ namespace brk::ecs {
 		template <class T>
 		static inline uint32 s_SysIndex = -1;
 
-		std::vector<SystemInstance> m_Systems;
 		entt::registry m_EntityWorld;
+		std::vector<SystemInstance> m_Systems;
 	};
 } // namespace brk::ecs
 

@@ -33,9 +33,6 @@ namespace brk::rdr {
 
 		struct PipelineState
 		{
-			ID3D11Buffer* m_VertexBuffer = nullptr;
-			ID3D11Buffer* m_IndexBuffer = nullptr;
-
 			ID3D11Buffer* m_ParamBuffer = nullptr;
 			ID3D11Buffer* m_FrameData = nullptr;
 			ID3D11Buffer* m_TransformData = nullptr;

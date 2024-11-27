@@ -14,11 +14,11 @@ target_link_libraries(BRK_SYSTEMS PUBLIC
 
 target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Core
-	Breakout::Rendering
 	Breakout::App
 	Breakout::Debug
-	Breakout::Managers
 	Breakout::Editor
+	Breakout::Managers
+	Breakout::Rendering
 	ImGui::ImGui
 	SDL3::SDL3
 )

@@ -1,4 +1,6 @@
 #include "VisualSystem.hpp"
+
+#include "VisualComponents.hpp"
 #ifdef BRK_DEV
 #include <debug/DebugOverlay.hpp>
 #include <editor/Editor.hpp>
@@ -14,7 +16,18 @@ namespace brk {
 		auto& renderer = rdr::Renderer::s_Instance;
 
 		renderer.StartRender();
-		renderer.DrawIndexed(3); // #hack, for testing purposes
+
+		auto meshes = world.Query<ecs::query::Include<MeshComponent>>();
+		for (entt::entity m : meshes)
+		{
+			MeshComponent& comp = meshes.Get<MeshComponent>(m);
+			renderer.SetMaterial(*comp.m_MaterialRef);
+			renderer.DrawIndexed(
+				comp.m_MeshRef->GetVertexBuffer(),
+				comp.m_MeshRef->GetIndexBuffer(),
+				comp.m_MeshRef->GetNumIndices());
+		}
+
 		renderer.RenderUI();
 
 #ifdef BRK_DEV

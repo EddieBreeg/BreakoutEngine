@@ -17,10 +17,12 @@ namespace brk::rdr {
 			const uint32* indices,
 			const uint32 nIndices);
 
-		template <uint32 N>
-		Mesh(const Vertex3d (&vertices)[N], const uint32 (&indices)[N])
-			: m_VertexBuffer{ Buffer::VertexBuffer, vertices }
+		template <uint32 N1, uint32 N2>
+		Mesh(const Vertex3d (&vertices)[N1], const uint32 (&indices)[N2])
+			: Resource(ULID::Generate())
+			, m_VertexBuffer{ Buffer::VertexBuffer, vertices }
 			, m_IndexBuffer{ Buffer::IndexBuffer, indices }
+			, m_NumIndices{ N2 }
 		{}
 
 		[[nodiscard]] Buffer& GetVertexBuffer() noexcept { return m_VertexBuffer; }
@@ -34,9 +36,12 @@ namespace brk::rdr {
 			return m_IndexBuffer;
 		}
 
+		[[nodiscard]] uint32 GetNumIndices() const noexcept { return m_NumIndices; }
+
 		~Mesh() = default;
 
 	private:
 		Buffer m_VertexBuffer, m_IndexBuffer;
+		uint32 m_NumIndices = 0;
 	};
 } // namespace brk::rdr

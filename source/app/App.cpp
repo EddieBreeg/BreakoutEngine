@@ -109,12 +109,15 @@ namespace brk {
 
 	void App::Cleanup()
 	{
+		ecs::Manager::GetInstance().Clear();
+
 		DestroySingletons<
 #ifdef BRK_EDITOR
 			editor::Editor,
 #endif
-			ecs::Manager,
+			ResourceManager,
 			SceneManager,
-			ResourceManager>();
+			ecs::Manager>(); // ensure the ecs manager is destroyed LAST, other managers
+							 // might still need the entity world!
 	}
 } // namespace brk

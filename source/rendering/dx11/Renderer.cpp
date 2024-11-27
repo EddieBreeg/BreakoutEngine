@@ -448,18 +448,15 @@ void brk::rdr::Renderer::SetMaterial(Material& material)
 	UpdateShaderStages(m_Data->m_DeviceContext, pipelineState);
 }
 
-void brk::rdr::Renderer::DrawIndexed(uint32 nIndices)
+void brk::rdr::Renderer::DrawIndexed(Buffer& vBuf, Buffer& iBuf, uint32 nIndices)
 {
+	ID3D11Buffer* vBufPtr = vBuf.GetHandle();
 	constexpr uint32 stride = sizeof(brk::rdr::Vertex3d);
 	const uint32 offset = 0;
 	auto& pipelineState = m_Data->m_CurrentPipelineState;
 
-	m_Data->m_DeviceContext
-		->IASetVertexBuffers(0, 1, &pipelineState.m_VertexBuffer, &stride, &offset);
-	m_Data->m_DeviceContext->IASetIndexBuffer(
-		pipelineState.m_IndexBuffer,
-		DXGI_FORMAT_R32_UINT,
-		0);
+	m_Data->m_DeviceContext->IASetVertexBuffers(0, 1, &vBufPtr, &stride, &offset);
+	m_Data->m_DeviceContext->IASetIndexBuffer(iBuf.GetHandle(), DXGI_FORMAT_R32_UINT, 0);
 	m_Data->m_DeviceContext->DrawIndexed(nIndices, 0, 0);
 }
 

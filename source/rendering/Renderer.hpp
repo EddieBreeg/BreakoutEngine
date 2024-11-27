@@ -5,6 +5,7 @@
 struct SDL_Window;
 
 namespace brk::rdr {
+	class Buffer;
 	class Material;
 
 	struct RendererData;
@@ -30,7 +31,7 @@ namespace brk::rdr {
 
 		void SetMaterial(Material& material);
 
-		void DrawIndexed(uint32 nIndices);
+		void DrawIndexed(Buffer& vertexBuffer, Buffer& indexBuffer, uint32 numIndices);
 
 		void RenderUI();
 

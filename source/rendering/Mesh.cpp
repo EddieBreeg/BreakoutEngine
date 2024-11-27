@@ -5,6 +5,8 @@ brk::rdr::Mesh::Mesh(
 	const uint32 nVertices,
 	const uint32* indices,
 	const uint32 nIndices)
-	: m_VertexBuffer{ Buffer::VertexBuffer, vertices, nVertices }
+	: Resource(ULID::Generate())
+	, m_VertexBuffer{ Buffer::VertexBuffer, vertices, nVertices }
 	, m_IndexBuffer{ Buffer::IndexBuffer, indices, nIndices }
+	, m_NumIndices{ nIndices }
 {}

@@ -1,11 +1,11 @@
 #include "TestSystem.hpp"
 #include <core/TimeInfo.hpp>
+#include <managers/ResourceManager.hpp>
 #include <math/Constants.hpp>
 #include <rendering/Renderer.hpp>
-#include <rendering/dx11/Renderer.hpp>
 #include <rendering/Shaders.hpp>
 #include <rendering/Vertex.hpp>
-#include "d3d11.h"
+#include <systems/VisualComponents.hpp>
 
 namespace {
 	static constexpr uint32 s_Indices[] = { 0, 1, 2 };
@@ -31,24 +31,28 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 	{
 		float4 m_DiffuseColor;
 	};
+
+	constexpr brk::rdr::MaterialSettings s_MatSettings = {
+		{},
+		s_ShaderSource,
+		brk::rdr::MaterialSettings::DynamicBufferParam,
+	};
 } // namespace
 
-brk::sandbox::TestSystem::TestSystem()
-	: m_Mesh{ s_Vertices, s_Indices }
+brk::sandbox::TestSystem::TestSystem(
+	ResourceManager& resManager,
+	entt::registry& entityWorld)
+	: m_Mesh{ resManager.AddResource<rdr::Mesh>(s_Vertices, s_Indices) }
 	, m_Material{
-		float4{ 1, 0, 0, 0 },
-		rdr::MaterialSettings{
-			{},
-			s_ShaderSource,
-			rdr::MaterialSettings::DynamicBufferParam,
-		},
+		resManager.AddResource<rdr::Material>(float4{ 1, 0, 0, 0 }, s_MatSettings)
 	}
 {
-	auto& pipelineState = rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState;
-	pipelineState.m_VertexBuffer = m_Mesh.GetVertexBuffer().GetHandle();
-	pipelineState.m_IndexBuffer = m_Mesh.GetIndexBuffer().GetHandle();
-
-	rdr::Renderer::s_Instance.SetMaterial(m_Material);
+	const auto e = entityWorld.create();
+	entityWorld.emplace<VisualComponent>(e);
+	entityWorld.emplace<MeshComponent>(
+		e,
+		ResourceRef<rdr::Material>{ &m_Material },
+		ResourceRef<rdr::Mesh>{ &m_Mesh });
 }
 
 brk::sandbox::TestSystem::~TestSystem() = default;
@@ -56,11 +60,11 @@ brk::sandbox::TestSystem::~TestSystem() = default;
 void brk::sandbox::TestSystem::Update(World&, const TimeInfo& time)
 {
 	float t = time.GetElapsed().count() * 3;
-	float4 color{
+	const FragmentParams params{ {
 		.5f * std::sinf(t * 3.0f) + .5f,
 		.5f * std::sinf(t * 3.0f + .33f * math::Pi) + .5f,
 		.5f * std::sinf(t * 3.0f + .6667f * math::Pi) + .5f,
 		1,
-	};
-	m_Material.SetParameters(color);
+	} };
+	m_Material.SetParameters(params);
 }
