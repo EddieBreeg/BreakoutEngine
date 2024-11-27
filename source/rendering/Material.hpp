@@ -10,9 +10,19 @@ namespace brk::rdr {
 	/**
 	 * TODO: Add material options
 	 */
-	enum class EMaterialOptions : uint8
+
+	struct MaterialSettings
 	{
-		None = 0,
+		enum EOptions : uint8
+		{
+			None = 0,
+			DynamicBufferParam = BIT(0),
+			NOptions
+		};
+
+		StringView m_VertexSourceCode;
+		StringView m_FragmentSourceCode;
+		EnumFlags<EOptions> m_Options;
 	};
 
 	/**
@@ -23,37 +33,16 @@ namespace brk::rdr {
 	{
 	public:
 		using Resource::Resource;
-		/**
-		 * Creates a material from shader sources
-		 * \param vShaderCode: Vertex shader source. May be empty
-		 * \param fShaderCode: Fragment shader source. May be empty
-		 * \param options: See EMaterialOptions
-		 * \details If the provided source code is empty, a default implementation will be
-		 * provided by the renderer. The default code can be found in
-		 * [Shaders.hpp](Shaders.hpp)
-		 */
-		Material(
-			StringView vShaderCode = {},
-			StringView fShaderCode = {},
-			EMaterialOptions options = EMaterialOptions::None);
+
+		Material(const MaterialSettings& settings);
 
 		/**
-		 * Same thing as the first constructor, except for the fact the parameter buffer
-		 * is also initialized with the provided object
-		 * \param parameters: This object will be directly uploaded to the GPU, and made
-		 * accessible in the shaders as a cbuffer.
-		 * \param vShaderCode: Vertex shader source. May be empty
-		 * \param fShaderCode: Fragment shader source. May be empty
-		 * \param options: See EMaterialOptions
-		 * \details The parameter buffer, if valid, is made accessible in both the vertex
-		 * and fragment shaders through a cbuffer. Said cbuffer is bound to register 0
+		 * Same thing as the first constructor, but additionally initializes the parameter
+		 * buffer with the provided object
+		 * \param parameters: The object which will be uploaded to the parameter buffer
 		 */
 		template <class P>
-		Material(
-			const P& parameters,
-			StringView vShaderCode = {},
-			StringView fShaderCode = {},
-			EMaterialOptions options = EMaterialOptions::None);
+		Material(P&& parameters, const MaterialSettings& settings);
 
 		[[nodiscard]] VertexShader& GetVertexShader() noexcept { return m_VertexShader; }
 		[[nodiscard]] const VertexShader& GetVertexShader() const noexcept
@@ -72,9 +61,9 @@ namespace brk::rdr {
 			return m_ParamBuffer;
 		}
 
-		[[nodiscard]] EnumFlags<EMaterialOptions> GetOptions() const noexcept
+		[[nodiscard]] MaterialSettings::EOptions GetOptions() const noexcept
 		{
-			return m_Options;
+			return m_Options.Get();
 		}
 
 		/**
@@ -91,7 +80,7 @@ namespace brk::rdr {
 		VertexShader m_VertexShader;
 		FragmentShader m_FragmentShader;
 		Buffer m_ParamBuffer;
-		EnumFlags<EMaterialOptions> m_Options;
+		EnumFlags<MaterialSettings::EOptions> m_Options;
 	};
 } // namespace brk::rdr
 

@@ -22,7 +22,7 @@ namespace brk {
 		static_assert(std::is_enum_v<E>, "E must be an enum type");
 
 		constexpr EnumFlags() = default;
-		explicit constexpr EnumFlags(E flags)
+		constexpr EnumFlags(E flags)
 			: m_Flags{ ToInt(flags) }
 		{}
 

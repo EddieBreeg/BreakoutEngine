@@ -19,6 +19,7 @@ namespace brk {
 		/** Sets the LastUpdate point, and computes the time delta since the last call to
 		 * this function */
 		Duration Update();
+		Duration GetElapsed() const noexcept { return m_LastUpdate - m_StartPoint; }
 		~TimeInfo();
 
 	private:

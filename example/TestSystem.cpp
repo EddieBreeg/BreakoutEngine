@@ -1,4 +1,6 @@
 #include "TestSystem.hpp"
+#include <core/TimeInfo.hpp>
+#include <math/Constants.hpp>
 #include <rendering/Renderer.hpp>
 #include <rendering/dx11/Renderer.hpp>
 #include <rendering/Shaders.hpp>
@@ -34,7 +36,14 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 brk::sandbox::TestSystem::TestSystem()
 	: m_Vbo{ rdr::Buffer::VertexBuffer, s_Vertices }
 	, m_Ibo{ rdr::Buffer::IndexBuffer, s_Indices }
-	, m_Material{ float4{ 1, 0, 0, 0 }, {}, s_ShaderSource }
+	, m_Material{
+		float4{ 1, 0, 0, 0 },
+		rdr::MaterialSettings{
+			{},
+			s_ShaderSource,
+			rdr::MaterialSettings::DynamicBufferParam,
+		},
+	}
 {
 	auto& pipelineState = rdr::Renderer::s_Instance.GetData()->m_CurrentPipelineState;
 	pipelineState.m_VertexBuffer = m_Vbo.GetHandle(),
@@ -45,4 +54,14 @@ brk::sandbox::TestSystem::TestSystem()
 
 brk::sandbox::TestSystem::~TestSystem() = default;
 
-void brk::sandbox::TestSystem::Update(World&, const TimeInfo&) {}
+void brk::sandbox::TestSystem::Update(World&, const TimeInfo& time)
+{
+	float t = time.GetElapsed().count() * 3;
+	float4 color{
+		.5f * std::sinf(t * 3.0f) + .5f,
+		.5f * std::sinf(t * 3.0f + .33f * math::Pi) + .5f,
+		.5f * std::sinf(t * 3.0f + .6667f * math::Pi) + .5f,
+		1,
+	};
+	m_Material.SetParameters(color);
+}

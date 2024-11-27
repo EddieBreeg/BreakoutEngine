@@ -18,13 +18,10 @@ namespace {
 } // namespace
 
 namespace brk::rdr {
-	Material::Material(
-		StringView vShaderCode,
-		StringView fShaderCode,
-		EMaterialOptions options)
+	Material::Material(const MaterialSettings& settings)
 		: Resource(ULID::Generate())
-		, m_VertexShader{ InitShader<VertexShader>(vShaderCode) }
-		, m_FragmentShader{ InitShader<FragmentShader>(fShaderCode) }
-		, m_Options{ options }
+		, m_VertexShader{ InitShader<VertexShader>(settings.m_VertexSourceCode) }
+		, m_FragmentShader{ InitShader<FragmentShader>(settings.m_FragmentSourceCode) }
+		, m_Options{ settings.m_Options }
 	{}
 } // namespace brk::rdr

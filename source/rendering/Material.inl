@@ -1,16 +1,14 @@
 namespace brk::rdr {
 	template <class P>
-	inline Material::Material(
-		const P& parameters,
-		StringView vShaderCode,
-		StringView fShaderCode,
-		EMaterialOptions options)
-		: Material(vShaderCode, fShaderCode, options)
+	inline Material::Material(P&& parameters, const MaterialSettings& settings)
+		: Material(settings)
 	{
 		m_ParamBuffer = Buffer{
 			Buffer::ParamBuffer,
 			parameters,
-			EnumFlags{ EBufferOptions::Dynamic },
+			settings.m_Options.HasAny(MaterialSettings::DynamicBufferParam)
+				? EBufferOptions::Dynamic
+				: EBufferOptions::None,
 		};
 	}
 
@@ -26,7 +24,11 @@ namespace brk::rdr {
 			m_ParamBuffer = Buffer{
 				Buffer::ParamBuffer,
 				params,
-				EnumFlags{ EBufferOptions::Dynamic },
+				EnumFlags<EBufferOptions>{
+					m_Options.HasAny(MaterialSettings::DynamicBufferParam)
+						? EBufferOptions::Dynamic
+						: EBufferOptions::None,
+				},
 			};
 		}
 	}
