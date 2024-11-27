@@ -10,12 +10,6 @@ namespace brk {
 		return static_cast<std::underlying_type_t<E>>(val);
 	}
 
-	template <class E, std::enable_if_t<std::is_enum_v<E>>* = nullptr>
-	constexpr E operator|(E a, E b) noexcept
-	{
-		return static_cast<E>(ToUnderlying(a) | ToUnderlying(b));
-	}
-
 	template <class E>
 	struct EnumFlags
 	{
@@ -52,5 +46,11 @@ namespace brk {
 		ValueType m_Flags = 0;
 	};
 } // namespace brk
+
+template <class E, std::enable_if_t<std::is_enum_v<E>>* = nullptr>
+constexpr E operator|(E a, E b) noexcept
+{
+	return static_cast<E>(brk::ToUnderlying(a) | brk::ToUnderlying(b));
+}
 
 #include "EnumFlags.inl"

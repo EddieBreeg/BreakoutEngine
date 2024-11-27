@@ -30,6 +30,18 @@ namespace brk::rdr {
 		ID3D11Buffer* CreateBuffer(
 			const D3D11_BUFFER_DESC& desc,
 			const void* data = nullptr);
+		ID3D11Texture2D* CreateTexture2d(
+			const D3D11_TEXTURE2D_DESC& desc,
+			const void* data = nullptr,
+			uint32 pitch = 0);
+
+		ID3D11ShaderResourceView* CreateShaderResourceView(
+			ID3D11Resource& res,
+			const D3D11_SHADER_RESOURCE_VIEW_DESC& desc);
+		ID3D11RenderTargetView* CreateRenderTargetView(
+			ID3D11Resource& res,
+			const D3D11_RENDER_TARGET_VIEW_DESC& desc);
+		ID3D11SamplerState* CreateSamplerState(const D3D11_SAMPLER_DESC& desc);
 
 		struct PipelineState
 		{

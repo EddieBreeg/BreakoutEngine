@@ -9,6 +9,7 @@ namespace brk::rdr {
 	class Buffer;
 	class FragmentShader;
 	class VertexShader;
+	class Texture2d;
 
 	template <>
 	struct ResourceHandle<Buffer>
@@ -26,13 +27,24 @@ namespace brk::rdr {
 	{
 		using Type = ID3D11PixelShader*;
 	};
+	template <>
+	struct ResourceHandle<Texture2d>
+	{
+		struct Type
+		{
+			ID3D11Texture2D* m_Tex = nullptr;
+			ID3D11ShaderResourceView* m_ShaderResource = nullptr;
+			ID3D11RenderTargetView* m_RenderTarget = nullptr;
+			ID3D11SamplerState* m_Sampler = nullptr;
+		};
+	};
 
 	template <class T>
 	struct ResourceDeleter;
 
 #define DELETER_DECL(Type)                                                               \
 	template <>                                                                          \
-	struct ResourceDeleter<Type*>                                                         \
+	struct ResourceDeleter<Type*>                                                        \
 	{                                                                                    \
 		void operator()(Type* handle) noexcept;                                          \
 	}
@@ -45,6 +57,7 @@ namespace brk::rdr {
 	DELETER_DECL(ID3D11PixelShader);
 	DELETER_DECL(ID3D11RasterizerState);
 	DELETER_DECL(ID3D11RenderTargetView);
+	DELETER_DECL(ID3D11ShaderResourceView);
 	DELETER_DECL(ID3D11Texture2D);
 	DELETER_DECL(ID3D11VertexShader);
 	DELETER_DECL(IDXGISwapChain);

@@ -117,31 +117,6 @@ namespace {
 		return ptr;
 	}
 
-	ID3D11Texture2D* CreateTexture2d(
-		ID3D11Device* dev,
-		uint32 width,
-		uint32 height,
-		DXGI_FORMAT format,
-		D3D11_USAGE usage,
-		D3D11_BIND_FLAG bindFlags,
-		D3D11_CPU_ACCESS_FLAG cpuAccess)
-	{
-		D3D11_TEXTURE2D_DESC desc = {};
-		desc.Width = width;
-		desc.Height = height;
-		desc.MipLevels = 1;
-		desc.ArraySize = 1;
-		desc.Format = format;
-		desc.Usage = usage;
-		desc.BindFlags = bindFlags;
-		desc.CPUAccessFlags = cpuAccess;
-		desc.SampleDesc = { 1, 0 };
-		ID3D11Texture2D* ptr = nullptr;
-		const HRESULT err = dev->CreateTexture2D(&desc, nullptr, &ptr);
-		LogError(err, "Couldn't create 2D texture: {}");
-		return ptr;
-	}
-
 	ID3D11InputLayout* CreateInputLayout(ID3D11Device* device, ID3DBlob* vShaderCode)
 	{
 		constexpr D3D11_INPUT_ELEMENT_DESC elements[] = {
@@ -260,14 +235,15 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	}
 
 	m_FrameBufferView.m_Handle = CreateFrameBufferView(m_Device, m_SwapChain);
-	m_DepthStencilBuffer.m_Handle = CreateTexture2d(
-		m_Device,
-		width,
-		height,
+	m_DepthStencilBuffer.m_Handle = CreateTexture2d(CD3D11_TEXTURE2D_DESC{
 		DXGI_FORMAT_D24_UNORM_S8_UINT,
+		uint32(width),
+		uint32(height),
+		1,
+		0,
+		D3D11_BIND_DEPTH_STENCIL,
 		D3D11_USAGE_DEFAULT,
-		D3D11_BIND_FLAG(D3D11_BIND_DEPTH_STENCIL),
-		D3D11_CPU_ACCESS_FLAG(0));
+	});
 
 	DEBUG_CHECK(m_FrameBufferView && m_DepthStencilBuffer)
 	{
@@ -355,6 +331,51 @@ ID3D11Buffer* brk::rdr::RendererData::CreateBuffer(
 	return ptr;
 }
 
+ID3D11Texture2D* brk::rdr::RendererData::CreateTexture2d(
+	const D3D11_TEXTURE2D_DESC& desc,
+	const void* data,
+	uint32 pitch)
+{
+	ID3D11Texture2D* res = nullptr;
+	const D3D11_SUBRESOURCE_DATA dataDesc{ data, pitch };
+	LogError(
+		m_Device->CreateTexture2D(&desc, data ? &dataDesc : nullptr, &res),
+		"Failed to create Texture2d: {}");
+	return res;
+}
+
+ID3D11ShaderResourceView* brk::rdr::RendererData::CreateShaderResourceView(
+	ID3D11Resource& res,
+	const D3D11_SHADER_RESOURCE_VIEW_DESC& desc)
+{
+	ID3D11ShaderResourceView* ptr = nullptr;
+	LogError(
+		m_Device->CreateShaderResourceView(&res, &desc, &ptr),
+		"Failed to create shader resource view: {}");
+	return ptr;
+}
+
+ID3D11RenderTargetView* brk::rdr::RendererData::CreateRenderTargetView(
+	ID3D11Resource& res,
+	const D3D11_RENDER_TARGET_VIEW_DESC& desc)
+{
+	ID3D11RenderTargetView* ptr = nullptr;
+	LogError(
+		m_Device->CreateRenderTargetView(&res, &desc, &ptr),
+		"Failed to create render target view: {}");
+	return ptr;
+}
+
+ID3D11SamplerState* brk::rdr::RendererData::CreateSamplerState(
+	const D3D11_SAMPLER_DESC& desc)
+{
+	ID3D11SamplerState* ptr = nullptr;
+	LogError(
+		m_Device->CreateSamplerState(&desc, &ptr),
+		"Failed to create sampler: {}");
+	return ptr;	
+}
+
 brk::rdr::RendererData::~RendererData() = default;
 
 void brk::rdr::Renderer::Init(SDL_Window* window)
@@ -381,14 +402,15 @@ void brk::rdr::Renderer::ResizeFrameBuffers(uint32 width, uint32 height)
 
 	m_Data->m_SwapChain->ResizeBuffers(0, width, height, DXGI_FORMAT_UNKNOWN, 0);
 
-	m_Data->m_DepthStencilBuffer.Reset(CreateTexture2d(
-		m_Data->m_Device,
+	m_Data->m_DepthStencilBuffer.Reset(m_Data->CreateTexture2d(CD3D11_TEXTURE2D_DESC{
+		DXGI_FORMAT_D24_UNORM_S8_UINT,
 		width,
 		height,
-		DXGI_FORMAT_D24_UNORM_S8_UINT,
-		D3D11_USAGE_DEFAULT,
+		1,
+		0,
 		D3D11_BIND_DEPTH_STENCIL,
-		D3D11_CPU_ACCESS_FLAG(0)));
+		D3D11_USAGE_DEFAULT,
+	}));
 
 	m_Data->m_FrameBufferView.Reset(
 		CreateFrameBufferView(m_Data->m_Device, m_Data->m_SwapChain));

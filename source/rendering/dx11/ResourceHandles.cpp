@@ -16,6 +16,7 @@ namespace brk::rdr {
 	DELETER_DEF(ID3D11PixelShader);
 	DELETER_DEF(ID3D11RasterizerState);
 	DELETER_DEF(ID3D11RenderTargetView);
+	DELETER_DEF(ID3D11ShaderResourceView);
 	DELETER_DEF(ID3D11Texture2D);
 	DELETER_DEF(ID3D11VertexShader);
 	DELETER_DEF(IDXGISwapChain);

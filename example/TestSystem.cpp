@@ -5,6 +5,7 @@
 #include <rendering/Renderer.hpp>
 #include <rendering/Shaders.hpp>
 #include <rendering/Vertex.hpp>
+#include <rendering/Texture.hpp>
 #include <systems/VisualComponents.hpp>
 
 namespace {
@@ -37,15 +38,24 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 		s_ShaderSource,
 		brk::rdr::MaterialSettings::DynamicBufferParam,
 	};
+
+	constexpr brk::rdr::Texture2dSettings s_TexSettings = {
+		brk::rdr::EPixelFormat::Grayscale,
+		128,
+		128,
+		brk::rdr::ETextureOptions::RenderTarget |
+			brk::rdr::ETextureOptions::ShaderResource
+	};
 } // namespace
 
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
 	entt::registry& entityWorld)
 	: m_Mesh{ resManager.AddResource<rdr::Mesh>(s_Vertices, s_Indices) }
-	, m_Material{
-		resManager.AddResource<rdr::Material>(float4{ 1, 0, 0, 0 }, s_MatSettings)
-	}
+	, m_Material{ resManager.AddResource<rdr::Material>(
+		  float4{ 1, 0, 0, 0 },
+		  s_MatSettings) }
+	, m_Texture{ resManager.AddResource<rdr::Texture2d>(s_TexSettings) }
 {
 	const auto e = entityWorld.create();
 	entityWorld.emplace<VisualComponent>(e);
