@@ -2,7 +2,7 @@
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
 #include <entt/entity/registry.hpp>
-#include <systems/ResourceLoadingComponents.hpp>
+#include <systems/ResourceLoadingSystem.hpp>
 #include <cassert>
 
 namespace brk::resource_ref::ut {
@@ -70,23 +70,14 @@ namespace brk::resource_ref::ut {
 			assert(ref);
 			assert(ref->GetLoadingState() == Resource::Loading);
 
-			{
-				auto view = helper.m_EntityWorld.view<ResourceLoadRequestComponent>();
-				int reqCount = 0;
-				for (const entt::entity req : view)
-					++reqCount;
-				assert(reqCount == 1);
-			}
+			assert(ResourceLoadingRequests::s_Instance.m_LoadRequests.size() == 1);
+
 			ref->DoLoad();
 			auto* rawPtr = ref.Get();
 			ref.Reset();
 			assert(rawPtr->GetLoadingState() == Resource::Unloading);
 			{
-				auto view = helper.m_EntityWorld.view<ResourceUnloadRequestComponent>();
-				int reqCount = 0;
-				for (const entt::entity req : view)
-					++reqCount;
-				assert(reqCount == 1);
+				assert(ResourceLoadingRequests::s_Instance.m_UnloadRequests.size() == 1);
 			}
 		}
 #endif

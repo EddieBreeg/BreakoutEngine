@@ -3,7 +3,6 @@
 #include <core/LogManager.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <entt/entity/registry.hpp>
-#include <systems/ResourceLoadingComponents.hpp>
 #include <systems/ResourceLoadingSystem.hpp>
 
 void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
@@ -86,7 +85,7 @@ void brk::ResourceManager::LoadDeferred(Resource* res)
 		res->m_LoadingState == Resource::Loaded)
 		return;
 	res->m_LoadingState = Resource::Loading;
-	m_World.emplace<ResourceLoadRequestComponent>(m_World.create(), res);
+	ResourceLoadingRequests::s_Instance.m_LoadRequests.emplace_back(res);
 }
 
 void brk::ResourceManager::UnloadDeferred(Resource* res)
@@ -96,7 +95,7 @@ void brk::ResourceManager::UnloadDeferred(Resource* res)
 		return;
 
 	res->m_LoadingState = Resource::Unloading;
-	m_World.emplace<ResourceUnloadRequestComponent>(m_World.create(), res);
+	ResourceLoadingRequests::s_Instance.m_UnloadRequests.emplace_back(res);
 }
 
 brk::ResourceManager::ResourceManager(entt::registry& world) noexcept

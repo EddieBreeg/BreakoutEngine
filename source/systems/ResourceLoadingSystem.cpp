@@ -1,31 +1,28 @@
 #include "ResourceLoadingSystem.hpp"
-#include "ResourceLoadingComponents.hpp"
 #include <core/Resource.hpp>
+
+brk::ResourceLoadingRequests brk::ResourceLoadingRequests::s_Instance;
 
 void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 {
-	auto loadRequestsWorld =
-		world.Query<ecs::query::Include<const ResourceLoadRequestComponent>>();
-	for (const entt::entity e : loadRequestsWorld)
+	ResourceLoadingRequests& requests = ResourceLoadingRequests::s_Instance;
+
+	for (Resource* res : requests.m_LoadRequests)
 	{
-		const auto& req = loadRequestsWorld.Get<const ResourceLoadRequestComponent>(e);
-		if (req.m_Res->GetLoadingState() != Resource::Loading)
+		if (res->GetLoadingState() != Resource::Loading)
 			continue;
-		if (req.m_Res->DoLoad())
-			req.m_Res->m_LoadingState = Resource::Loaded;
-		world.DestroyEntity(e);
+		if (res->DoLoad())
+			res->m_LoadingState = Resource::Loaded;
 	}
 
-	auto unloadRequestsWorld =
-		world.Query<ecs::query::Include<const ResourceUnloadRequestComponent>>();
-	for (const entt::entity e : unloadRequestsWorld)
+	for (Resource* res : requests.m_UnloadRequests)
 	{
-		const auto& req =
-			unloadRequestsWorld.Get<const ResourceUnloadRequestComponent>(e);
-		if (req.m_Res->GetLoadingState() != Resource::Unloading)
+		if (res->GetLoadingState() != Resource::Unloading)
 			continue;
-		req.m_Res->DoUnload();
-		req.m_Res->m_LoadingState = Resource::Unloaded;
-		world.DestroyEntity(e);
+		res->DoUnload();
+		res->m_LoadingState = Resource::Unloaded;
 	}
+
+	requests.m_LoadRequests.clear();
+	requests.m_UnloadRequests.clear();
 }
