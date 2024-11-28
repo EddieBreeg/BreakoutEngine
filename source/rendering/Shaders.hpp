@@ -52,6 +52,8 @@ float4 fs_main(Fragment frag): SV_TARGET
 	public:
 		/* Constructs the default vertex shader (compile from s_DefaultShaderCode)*/
 		VertexShader();
+		/* Constructs a null shader */
+		VertexShader(std::nullptr_t) {}
 		VertexShader(StringView source, const char* entryPoint = "vs_main");
 		~VertexShader();
 		VertexShader(VertexShader&& other)
@@ -79,6 +81,8 @@ float4 fs_main(Fragment frag): SV_TARGET
 	public:
 		/* Constructs the default fragment shader (compile from s_DefaultShaderCode)*/
 		FragmentShader();
+		/* Constructs a null shader */
+		FragmentShader(std::nullptr_t) {}
 		FragmentShader(StringView source, const char* entryPoint = "fs_main");
 		~FragmentShader();
 

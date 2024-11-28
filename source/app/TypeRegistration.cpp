@@ -6,7 +6,11 @@
 
 #include <managers/ResourceManager.hpp>
 
+#include <entt/entity/registry.hpp>
+
 #include <editor/ui/ComponentWidgets.hpp>
+
+#include <rendering/Material.hpp>
 
 #include <systems/TransformComponent.hpp>
 #include "App.hpp"
@@ -22,5 +26,6 @@ void brk::App::RegisterComponents()
 void brk::App::RegisterResources()
 {
 	auto& manager = ResourceManager::GetInstance();
+	manager.RegisterResourceType<rdr::Material>();
 	RegisterGameResources(manager);
 }

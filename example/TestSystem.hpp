@@ -28,7 +28,6 @@ namespace brk::sandbox {
 
 	private:
 		rdr::Mesh& m_Mesh;
-		rdr::Material& m_BaseMat;
 		rdr::MaterialInstance& m_MatInstance;
 		rdr::Texture2d& m_Texture;
 	};

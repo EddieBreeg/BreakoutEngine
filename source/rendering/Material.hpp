@@ -2,13 +2,13 @@
 
 #include <PCH.hpp>
 #include <core/EnumFlags.hpp>
+#include <core/LoadersFwd.hpp>
 #include <core/Resource.hpp>
 #include <core/ResourceRef.hpp>
 #include "Buffer.hpp"
 #include "Shaders.hpp"
 
 namespace brk::rdr {
-
 	struct MaterialSettings
 	{
 		enum EOptions : uint8
@@ -36,26 +36,28 @@ namespace brk::rdr {
 	class Material : public Resource
 	{
 	public:
+		Material(const ULID& id);
 		Material(
 			const MaterialSettings& settings,
-			ULID id = ULID::Generate(),
+			const ULID& id = ULID::Generate(),
 			std::string name = {});
 
-		/**
-		 * \warning This does NOT actually load anything, as this class doesn't have any
-		 * concrete notion of what parameters should be passed to the shaders.
-		 * It simply returns true if all shaders are valid, false otherwise
-		 */
-		bool DoLoad() noexcept override { return m_VertexShader && m_FragmentShader; }
+		bool DoLoad() noexcept override;
+
+		static constexpr StringView Name = "material";
 
 		~Material() = default;
 
 	private:
 		friend class MaterialInstance;
+		friend struct brk::JsonLoader<Material, void>;
 
 		VertexShader m_VertexShader;
 		FragmentShader m_FragmentShader;
 		EnumFlags<MaterialSettings::EOptions> m_Options;
+		/** Only used when loading the material */
+		bool m_UseDefaultVertexShader : 1;
+		bool m_UseDefaultFragmentShader : 1;
 	};
 
 	/**
@@ -89,6 +91,9 @@ namespace brk::rdr {
 			P&& parameters,
 			const ULID& id = ULID::Generate(),
 			std::string name = {});
+		~MaterialInstance();
+
+		bool DoLoad() override;
 
 		[[nodiscard]] VertexShader& GetVertexShader() noexcept
 		{
@@ -122,5 +127,14 @@ namespace brk::rdr {
 		Buffer m_ParamBuffer;
 	};
 } // namespace brk::rdr
+
+namespace brk {
+	template <>
+	struct JsonLoader<rdr::Material, void>
+	{
+		static bool Load(rdr::Material& out_mat, const nlohmann::json& json);
+		static void Save(const rdr::Material& mat, nlohmann::json& out_json);
+	};
+} // namespace brk
 
 #include "Material.inl"

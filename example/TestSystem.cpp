@@ -7,6 +7,7 @@
 #include <rendering/Vertex.hpp>
 #include <rendering/Texture.hpp>
 #include <systems/VisualComponents.hpp>
+#include "Static.hpp"
 
 namespace {
 	static constexpr uint32 s_Indices[] = { 0, 1, 2 };
@@ -14,24 +15,6 @@ namespace {
 		{ { -.5f, -.5f, 0 }, { 0, 0, 1 }, { 0, 0 } },
 		{ { .5f, -.5f, 0 }, { 0, 0, 1 }, { 1, 0 } },
 		{ { 0, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
-	};
-
-	constexpr const char* s_ShaderSource = R"hlsl(
-cbuffer Params: register(b0)
-{
-	float4 DiffuseColor;
-}
-
-float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
-{
-	return DiffuseColor;
-}
-)hlsl";
-
-	constexpr brk::rdr::MaterialSettings s_MatSettings = {
-		{},
-		s_ShaderSource,
-		brk::rdr::MaterialSettings::DynamicBufferParam,
 	};
 
 	constexpr brk::rdr::Texture2dSettings s_TexSettings = {
@@ -51,10 +34,15 @@ float4 fs_main(float4 fragPos: SV_POSITION): SV_TARGET
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
 	entt::registry& entityWorld)
-	: m_Mesh{ resManager.AddResource<rdr::Mesh>(s_Vertices, s_Indices) }
-	, m_BaseMat{ resManager.AddResource<rdr::Material>(s_MatSettings) }
+	: m_Mesh{ resManager.AddResource<rdr::Mesh>(
+		  s_Vertices,
+		  s_Indices,
+		  ULID::Generate(),
+		  "mesh1") }
 	, m_MatInstance{ resManager.AddResource<rdr::MaterialInstance>(
-		  ResourceRef<rdr::Material>{ &m_BaseMat }) }
+		  resManager.GetRef<rdr::Material>(s_MaterialId),
+		  ULID::Generate(),
+		  "mat_instance") }
 	, m_Texture{ resManager.AddResource<rdr::Texture2d>(s_TexSettings) }
 {
 	const auto e = entityWorld.create();

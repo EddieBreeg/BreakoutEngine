@@ -15,11 +15,17 @@ namespace brk::rdr {
 			const Vertex3d* vertices,
 			const uint32 nVertices,
 			const uint32* indices,
-			const uint32 nIndices);
+			const uint32 nIndices,
+			const ULID& id = ULID::Generate(),
+			std::string name = "");
 
 		template <uint32 N1, uint32 N2>
-		Mesh(const Vertex3d (&vertices)[N1], const uint32 (&indices)[N2])
-			: Resource(ULID::Generate())
+		Mesh(
+			const Vertex3d (&vertices)[N1],
+			const uint32 (&indices)[N2],
+			const ULID& id = ULID::Generate(),
+			std::string name = "")
+			: Resource(id, std::move(name), {})
 			, m_VertexBuffer{ Buffer::VertexBuffer, vertices }
 			, m_IndexBuffer{ Buffer::IndexBuffer, indices }
 			, m_NumIndices{ N2 }
@@ -37,6 +43,8 @@ namespace brk::rdr {
 		}
 
 		[[nodiscard]] uint32 GetNumIndices() const noexcept { return m_NumIndices; }
+
+		bool DoLoad() override;
 
 		~Mesh() = default;
 

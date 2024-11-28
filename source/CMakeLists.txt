@@ -25,6 +25,7 @@ target_compile_definitions(BRK_INCLUDES INTERFACE
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
+	BRK_INCLUDES
 	Breakout::Core
 	Breakout::ECS
 	Breakout::Managers
