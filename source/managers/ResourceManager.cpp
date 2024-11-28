@@ -7,17 +7,21 @@
 
 void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 {
-	if (++res->m_RefCount == 1)
+	if (++res->m_RefCount == 1 && res->m_LoadingState != Resource::Loading &&
+		res->m_LoadingState != Resource::Loaded)
 	{
-		ResourceManager::GetInstance().LoadDeferred(res);
+		res->m_LoadingState = Resource::Loading;
+		ResourceLoadingRequests::s_Instance.m_LoadRequests.emplace_back(res);
 	}
 }
 
 void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 {
-	if (!--res->m_RefCount)
+	if (!--res->m_RefCount && res->m_LoadingState != Resource::Unloaded &&
+		res->m_LoadingState != Resource::Unloading)
 	{
-		ResourceManager::GetInstance().UnloadDeferred(res);
+		res->m_LoadingState = Resource::Unloading;
+		ResourceLoadingRequests::s_Instance.m_UnloadRequests.emplace_back(res);
 	}
 }
 
@@ -28,8 +32,19 @@ uint32 brk::RetainTraits<brk::Resource>::GetCount(const Resource* res)
 
 brk::ResourceManager::~ResourceManager()
 {
-	for (auto&& [id, res] : m_Resources)
-		delete res;
+	while (!m_Resources.empty())
+	{
+		for (auto it = m_Resources.begin(); it != m_Resources.end();)
+		{
+			if (it->second->GetRefCount())
+			{
+				++it;
+				continue;
+			}
+			delete it->second;
+			it = m_Resources.erase(it);
+		}
+	}
 }
 
 #ifdef BRK_EDITOR
@@ -79,25 +94,6 @@ void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& li
 	}
 }
 #endif
-
-void brk::ResourceManager::LoadDeferred(Resource* res)
-{
-	if (res->m_LoadingState == Resource::Loading ||
-		res->m_LoadingState == Resource::Loaded)
-		return;
-	res->m_LoadingState = Resource::Loading;
-	ResourceLoadingRequests::s_Instance.m_LoadRequests.emplace_back(res);
-}
-
-void brk::ResourceManager::UnloadDeferred(Resource* res)
-{
-	if (res->m_LoadingState == Resource::Unloaded ||
-		res->m_LoadingState == Resource::Unloading)
-		return;
-
-	res->m_LoadingState = Resource::Unloading;
-	ResourceLoadingRequests::s_Instance.m_UnloadRequests.emplace_back(res);
-}
 
 brk::ResourceManager::ResourceManager(entt::registry& world) noexcept
 	: m_World{ world }

@@ -23,10 +23,7 @@ bool brk::JsonLoader<brk::Resource>::Load(Resource& out_res, const nlohmann::jso
 	return result;
 }
 
-brk::Resource::~Resource()
-{
-	DoUnload();
-}
+brk::Resource::~Resource() = default;
 
 brk::InputByteStream brk::Resource::LoadFileContents()
 {

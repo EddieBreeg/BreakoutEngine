@@ -3,11 +3,10 @@
 #include <core/Singleton.hpp>
 #include <core/TimeInfo.hpp>
 
-#include <managers/ECSManager.hpp>
-
-#include <entt/entity/registry.hpp>
-
-#include <vector>
+namespace brk::ecs
+{
+	class Manager;
+}
 
 namespace brk {
 	/**

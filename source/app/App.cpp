@@ -2,6 +2,7 @@
 
 #include <core/LogManager.hpp>
 #include <ecs/ComponentRegistry.hpp>
+#include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
 
@@ -23,6 +24,17 @@
 #include "App.hpp"
 
 namespace {
+	void InitWindowSystem(brk::ecs::Manager& manager)
+	{
+		brk::WindowSystemSettings settings;
+#ifdef BRK_DEV
+		settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+#else
+		settings.m_Flags = SDL_WINDOW_FULLSCREEN;
+#endif
+		manager.AddSystem<brk::WindowSystem>(settings);
+	}
+
 	template <class... S>
 	void DestroySingletons()
 	{
@@ -37,13 +49,6 @@ namespace brk {
 	void App::InitSystems()
 	{
 		{
-			WindowSystemSettings settings;
-#ifdef BRK_DEV
-			settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
-#else
-			settings.m_Flags = SDL_WINDOW_FULLSCREEN;
-#endif
-			m_ECSManager.AddSystem<WindowSystem>(settings);
 			m_ECSManager.AddSystem<ResourceLoadingSystem>();
 
 			RegisterGameSystems(m_ECSManager);
@@ -79,8 +84,13 @@ namespace brk {
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 		InitManagers();
-		InitSystems();
+		// the window system needs to be initialized on his own, because it's responsible
+		// for creating the renderer, which we may need to preload resources
+		InitWindowSystem(m_ECSManager);
+
 		RegisterResources();
+
+		InitSystems();
 		RegisterComponents();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(

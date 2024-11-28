@@ -49,6 +49,7 @@ namespace brk {
 		[[nodiscard]] const ULID GetId() const noexcept { return m_Id; }
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
+		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
 
 	protected:
 		[[nodiscard]] InputByteStream LoadFileContents();

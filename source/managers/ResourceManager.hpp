@@ -57,9 +57,6 @@ namespace brk {
 
 		friend struct RetainTraits<Resource>;
 
-		void LoadDeferred(Resource* res);
-		void UnloadDeferred(Resource* res);
-
 		ResourceManager(entt::registry& world) noexcept;
 
 		TULIDMap<Resource*> m_Resources;
