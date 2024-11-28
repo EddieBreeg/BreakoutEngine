@@ -37,6 +37,7 @@ namespace brk {
 		void InitSystems();
 		void InitManagers();
 		void RegisterComponents();
+		void RegisterResources();
 		bool Update();
 
 		void Cleanup();

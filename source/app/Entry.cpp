@@ -1,3 +1,4 @@
+#include "App.hpp"
 #include "Entry.hpp"
 
 int main(int argc, const char* argv[])

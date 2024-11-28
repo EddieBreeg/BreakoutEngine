@@ -80,6 +80,7 @@ namespace brk {
 #endif
 		InitManagers();
 		InitSystems();
+		RegisterResources();
 		RegisterComponents();
 #ifdef BRK_EDITOR
 		editor::Editor::Init(

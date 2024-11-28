@@ -1,7 +1,7 @@
 add_library(BRK_APP STATIC 
 	App.cpp 
 	Entry.cpp 
-	RegisterComponents.cpp
+	TypeRegistration.cpp
 	App.hpp 
 	Entry.hpp)
 
