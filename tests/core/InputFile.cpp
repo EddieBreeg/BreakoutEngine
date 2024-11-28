@@ -31,6 +31,10 @@ namespace brk::io::ut {
 			assert(streamBuf.sgetc() == InputByteBuf::traits_type::eof());
 		}
 		{
+			InputByteStream inStream;
+			assert(inStream.GetSize() == 0);
+		}
+		{
 			InputByteStream inStream{ { s_Str1.begin(), s_Str1.end() } };
 			char out[s_Str1.GetLen()] = {};
 			assert(inStream.readsome(out, sizeof(out)) == sizeof(out));

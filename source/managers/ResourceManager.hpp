@@ -57,8 +57,6 @@ namespace brk {
 
 		friend struct RetainTraits<Resource>;
 
-		Resource* CreateResource(const StringView type, const ULID id) const;
-
 		void LoadDeferred(Resource* res);
 		void UnloadDeferred(Resource* res);
 
@@ -66,8 +64,13 @@ namespace brk {
 
 		TULIDMap<Resource*> m_Resources;
 
-		using TTypeMap =
-			std::unordered_map<uint32, Resource* (*)(const ULID), Hash<uint32>>;
+		struct ResourceTypeInfo
+		{
+			Resource* (*m_Constructor)(const ULID) = nullptr;
+			bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
+		};
+
+		using TTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
 		TTypeMap m_TypeMap;
 		entt::registry& m_World;
 	};

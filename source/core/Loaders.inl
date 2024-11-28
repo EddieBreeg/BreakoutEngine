@@ -185,7 +185,7 @@ namespace brk {
 	}
 
 	template <class K, class V>
-	bool Visit(K&& key, const nlohmann::json& json, V& out_value)
+	inline bool Visit(K&& key, const nlohmann::json& json, V& out_value)
 	{
 		const auto it = json.find(std::forward<K>(key));
 		if (it == json.end())

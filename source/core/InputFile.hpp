@@ -20,6 +20,10 @@ namespace brk {
 		InputByteBuf(InputByteBuf&&) = default;
 		InputByteBuf& operator=(const InputByteBuf&) = delete;
 		InputByteBuf& operator=(InputByteBuf&&) = default;
+		[[nodiscard]] const std::vector<char>& GetContents() const noexcept
+		{
+			return m_Buf;
+		};
 
 	protected:
 		pos_type seekoff(
@@ -40,10 +44,17 @@ namespace brk {
 	class InputByteStream : public std::istream
 	{
 	public:
+		InputByteStream()
+			: std::istream(&m_Buf)
+		{}
 		InputByteStream(std::vector<char> data)
 			: std::istream(&m_Buf)
 			, m_Buf{ std::move(data) }
 		{}
+		[[nodiscard]] uint32 GetSize() const noexcept
+		{
+			return m_Buf.GetContents().size();
+		}
 
 	private:
 		InputByteBuf m_Buf;

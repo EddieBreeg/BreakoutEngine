@@ -2,6 +2,7 @@
 
 #include <PCH.hpp>
 #include "FieldList.hpp"
+#include "InputFile.hpp"
 #include "LoadersFwd.hpp"
 #include "ULID.hpp"
 
@@ -50,6 +51,8 @@ namespace brk {
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
 
 	protected:
+		[[nodiscard]] InputByteStream LoadFileContents();
+
 		ULID m_Id;
 		std::string m_Name;
 		std::string m_FilePath;

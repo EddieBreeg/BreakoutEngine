@@ -9,12 +9,20 @@ void brk::ResourceManager::RegisterResourceType()
 		"Invalid resource type");
 
 	constexpr uint32 h = Hash<StringView>{}(R::Name);
-	m_TypeMap.emplace(
-		h,
+	ResourceTypeInfo info{
 		[](const ULID id) -> Resource*
 		{
 			return static_cast<Resource*>(new R{ id });
-		});
+		},
+	};
+	if constexpr (meta::IsComplete<JsonLoader<R>>)
+	{
+		info.m_Load = [](Resource& out_res, const nlohmann::json& json) -> bool
+		{
+			return JsonLoader<R>::Load(static_cast<R&>(out_res), json);
+		};
+	}
+	m_TypeMap.emplace(h, info);
 }
 
 template <class R, class... Args>

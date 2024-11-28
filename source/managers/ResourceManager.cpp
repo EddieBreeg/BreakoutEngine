@@ -54,9 +54,22 @@ void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& li
 			BRK_LOG_WARNING("Resource '{}' doesn't have a type", resId);
 			continue;
 		}
+		auto it = m_TypeMap.find(Hash<StringView>{}(resType));
+		BRK_ASSERT(
+			it != m_TypeMap.end(),
+			"Attempted to load resource of unregistered type {}",
+			resType);
+		const ResourceTypeInfo& info = it->second;
 
-		Resource* res = CreateResource(resType, resId);
+		Resource* res = info.m_Constructor(resId);
+
 		if (!JsonLoader<Resource>::Load(*res, desc))
+		{
+			BRK_LOG_WARNING("Loading resource '{}' failed", res->GetId());
+			delete res;
+			continue;
+		}
+		if (info.m_Load && !info.m_Load(*res, desc))
 		{
 			BRK_LOG_WARNING("Loading resource '{}' failed", res->GetId());
 			delete res;
@@ -66,18 +79,6 @@ void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& li
 	}
 }
 #endif
-
-brk::Resource* brk::ResourceManager::CreateResource(const StringView type, const ULID id)
-	const
-{
-	const uint32 h = Hash<StringView>{}(type);
-	const auto it = m_TypeMap.find(h);
-	BRK_ASSERT(
-		it != m_TypeMap.end(),
-		"Failed to create resource: type '{}' hasn't been registed",
-		type);
-	return (it->second)(id);
-}
 
 void brk::ResourceManager::LoadDeferred(Resource* res)
 {
