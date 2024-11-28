@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PCH.hpp>
+#include "StringView.hpp"
 #include <iostream>
 #include <streambuf>
 #include <vector>
@@ -34,5 +35,17 @@ namespace brk {
 	private:
 		std::vector<char> m_Buf;
 		uint32 m_Pos = 0;
+	};
+
+	class InputByteStream : public std::istream
+	{
+	public:
+		InputByteStream(std::vector<char> data)
+			: std::istream(&m_Buf)
+			, m_Buf{ std::move(data) }
+		{}
+
+	private:
+		InputByteBuf m_Buf;
 	};
 } // namespace brk
