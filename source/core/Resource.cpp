@@ -29,7 +29,8 @@ brk::InputByteStream brk::Resource::LoadFileContents()
 {
 	BRK_ASSERT(
 		m_FilePath.length(),
-		"Called LoadFileContents on resource ({}) with empty file path",
+		"Called LoadFileContents on resource {} ({}) with empty file path",
+		m_Name,
 		m_Id);
 	std::ifstream file{ m_FilePath, std::ios_base::binary | std::ios_base::ate };
 	DEBUG_CHECK(file.is_open())
