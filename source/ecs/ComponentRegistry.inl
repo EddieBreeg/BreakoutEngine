@@ -36,8 +36,15 @@ brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C
 		[](const nlohmann::json& json, entt::registry& world, const entt::entity entity)
 		{
 			C comp{};
-			JsonLoader<C>::Load(comp, json);
-			world.emplace<C>(entity, std::move(comp));
+			if (JsonLoader<C>::Load(comp, json))
+			{
+				world.emplace<C>(entity, std::move(comp));
+				return;
+			}
+			BRK_LOG_WARNING(
+				"Failed to load component {} for entity {}",
+				C::Name,
+				entt::id_type(entity));
 		},
 	};
 #ifdef BRK_DEV

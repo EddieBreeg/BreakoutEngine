@@ -17,6 +17,9 @@ namespace brk::resource_ref::ut {
 			m_RefCount = 1;
 		}
 
+		// IMPORTANT: if the refcount isn't 0, the resource can't be deleted
+		void ResetRefCount() { m_RefCount = 0; }
+
 		static constexpr StringView Name = "Res1";
 		bool DoLoad()
 		{
@@ -144,6 +147,7 @@ namespace brk::resource_ref::ut {
 			assert(res.GetName() == s_ResName1);
 			assert(res.GetFile() == s_ResPath1);
 			assert(RetainTraits<Resource>::GetCount(&res) == 1);
+			res.ResetRefCount();
 		}
 	}
 } // namespace brk::resource_ref::ut

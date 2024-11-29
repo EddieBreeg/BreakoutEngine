@@ -10,6 +10,24 @@
 					"y": 2
 				}
 			}
+		},
+		{
+			"id": "01JDWW4FT9SA2XT2EVV936SN0A",
+			"name": "TestObject1",
+			"components": {
+				"C2": {
+					"resId": "01JDWW0RSFRTBPNEK2X0TEETNB"
+				}
+			}
+		},
+		{
+			"id": "01JDWXT1HXZAG7T3H9AD7MAVN1",
+			"name": "TestObject3",
+			"components": {
+				"C2": {
+					"resId": null
+				}
+			}
 		}
 	]
 }

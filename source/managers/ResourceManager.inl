@@ -53,3 +53,21 @@ brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id)
 	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->GetId());
 	return TRef{ static_cast<R*>(ptr) };
 }
+
+template <class R>
+inline bool brk::JsonLoader<brk::ResourceRef<R>>::Load(
+	ResourceRef<R>& out_ref,
+	const nlohmann::json& json)
+{
+	ULID id;
+	json.get_to(id);
+	DEBUG_CHECK(id)
+	{
+		BRK_LOG_ERROR(
+			"Failed to load resource ref: invalid ULID ({})",
+			nlohmann::to_string(json));
+		return false;
+	}
+	out_ref = ResourceManager::GetInstance().GetRef<R>(id);
+	return (bool)out_ref;
+}

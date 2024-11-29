@@ -1,5 +1,6 @@
 #pragma once
 #include <PCH.hpp>
+#include <core/Loaders.hpp>
 #include <core/ResourceRef.hpp>
 #include <core/Singleton.hpp>
 #include <entt/entity/fwd.hpp>
@@ -70,6 +71,12 @@ namespace brk {
 		using TTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
 		TTypeMap m_TypeMap;
 		entt::registry& m_World;
+	};
+
+	template <class R>
+	struct JsonLoader<ResourceRef<R>>
+	{
+		static bool Load(ResourceRef<R>& out_ref, const nlohmann::json& json);
 	};
 } // namespace brk
 

@@ -1,4 +1,6 @@
 #include "ULID.hpp"
+#include "Assert.hpp"
+#include "LogManager.hpp"
 #include "RNG.hpp"
 #include <nlohmann/json.hpp>
 #include <ctime>
@@ -18,6 +20,12 @@ brk::ULID brk::ULID::Generate()
 void brk::from_json(const nlohmann::json& json, ULID& id)
 {
 	StringView str;
+	DEBUG_CHECK(json.is_string())
+	{
+		BRK_LOG_WARNING("Failed to convert JSON to ULID (type is {})", json.type_name());
+		id = {};
+		return;
+	}
 	json.get_to<StringView>(str);
 	id = ULID::FromString(str);
 }
