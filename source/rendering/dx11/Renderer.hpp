@@ -54,6 +54,11 @@ namespace brk::rdr {
 
 			ID3D11ShaderResourceView* m_ShaderResources[8] = { nullptr };
 			ID3D11SamplerState* m_Samplers[8] = { nullptr };
+
+			[[nodiscard]] operator bool() const noexcept
+			{
+				return m_VertexShader && m_PixelShader && m_FrameData && m_TransformData;
+			}
 		} m_CurrentPipelineState;
 
 		HWND m_NativeWindow = nullptr;

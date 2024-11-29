@@ -517,7 +517,10 @@ void brk::rdr::Renderer::DrawIndexed(
 	ID3D11Buffer* vBufPtr = vBuf.GetHandle();
 	constexpr uint32 stride = sizeof(brk::rdr::Vertex3d);
 	const uint32 offset = 0;
-	auto& pipelineState = m_Data->m_CurrentPipelineState;
+	DEBUG_CHECK(m_Data->m_CurrentPipelineState)
+	{
+		return;
+	}
 
 	m_Data->m_DeviceContext->IASetVertexBuffers(0, 1, &vBufPtr, &stride, &offset);
 	m_Data->m_DeviceContext->IASetIndexBuffer(iBuf.GetHandle(), DXGI_FORMAT_R32_UINT, 0);
