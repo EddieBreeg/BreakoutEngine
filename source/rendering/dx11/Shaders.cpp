@@ -105,6 +105,20 @@ brk::rdr::VertexShader::~VertexShader()
 		static_cast<ID3DBlob*>(m_ByteCode)->Release();
 }
 
+void brk::rdr::VertexShader::Reset()
+{
+	if (m_ByteCode)
+	{
+		static_cast<ID3DBlob*>(m_ByteCode)->Release();
+		m_ByteCode = nullptr;
+	}
+	if (m_Handle)
+	{
+		m_Handle->Release();
+		m_Handle = nullptr;
+	}
+}
+
 brk::rdr::FragmentShader::FragmentShader()
 {
 	RendererData& data = *Renderer::s_Instance.GetData();
@@ -119,6 +133,20 @@ brk::rdr::FragmentShader::FragmentShader(StringView source, const char* entryPoi
 	ID3D11Device* device = Renderer::s_Instance.GetData()->m_Device;
 	m_Handle =
 		CreateShader<ID3D11PixelShader>(device, static_cast<ID3DBlob*>(m_ByteCode));
+}
+
+void brk::rdr::FragmentShader::Reset()
+{
+	if (m_ByteCode)
+	{
+		static_cast<ID3DBlob*>(m_ByteCode)->Release();
+		m_ByteCode = nullptr;
+	}
+	if (m_Handle)
+	{
+		m_Handle->Release();
+		m_Handle = nullptr;
+	}
 }
 
 brk::rdr::FragmentShader::~FragmentShader()

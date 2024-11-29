@@ -63,6 +63,8 @@ float4 fs_main(Fragment frag): SV_TARGET
 			other.m_ByteCode = nullptr;
 		}
 
+		void Reset();
+
 		VertexShader& operator=(VertexShader&& other)
 		{
 			std::swap(m_Handle, other.m_Handle);
@@ -92,6 +94,8 @@ float4 fs_main(Fragment frag): SV_TARGET
 		{
 			other.m_ByteCode = nullptr;
 		}
+
+		void Reset();
 
 		FragmentShader& operator=(FragmentShader&& other)
 		{

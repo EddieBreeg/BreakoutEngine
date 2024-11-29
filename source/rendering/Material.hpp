@@ -39,12 +39,25 @@ namespace brk::rdr {
 	{
 	public:
 		Material(const ULID& id);
+		/**
+		 * Manually creates a shader
+		 * \param settings: The material's settings. If source code is provided, the
+		 * constructor will attempt to compile it. Otherwise, the default implementations
+		 * will be used (see Shaders.hpp)
+		 * \param id: The specific ULID to use
+		 * \param name: The resource's name
+		 * \param file: An optional hlsl file to load source code from. This will only get
+		 * used if shader compilation fails, or if the material gets unloaded and reloaded
+		 * at a later point.
+		 */
 		Material(
 			const MaterialSettings& settings,
 			const ULID& id = ULID::Generate(),
-			std::string name = {});
+			std::string name = {},
+			std::string filePath = {});
 
 		bool DoLoad() noexcept override;
+		void DoUnload() noexcept override;
 
 		static constexpr StringView Name = "material";
 

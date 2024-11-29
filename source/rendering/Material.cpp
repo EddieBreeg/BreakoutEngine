@@ -29,8 +29,12 @@ namespace brk::rdr {
 		, m_UseDefaultFragmentShader{ false }
 	{}
 
-	Material::Material(const MaterialSettings& settings, const ULID& id, std::string name)
-		: Resource(id, std::move(name), {})
+	Material::Material(
+		const MaterialSettings& settings,
+		const ULID& id,
+		std::string name,
+		std::string path)
+		: Resource(id, std::move(name), std::move(path))
 		, m_VertexShader{ InitShader<VertexShader>(settings.m_VertexSourceCode) }
 		, m_FragmentShader{ InitShader<FragmentShader>(settings.m_FragmentSourceCode) }
 		, m_Options{ settings.m_Options }
@@ -69,6 +73,18 @@ namespace brk::rdr {
 		m_VertexShader = VertexShader{ source };
 		m_FragmentShader = FragmentShader{ source };
 		return m_VertexShader && m_FragmentShader;
+	}
+
+	void Material::DoUnload() noexcept
+	{
+		/** If the material wasn't loaded from a file, do not actually unload anything,
+		 * as we won't be able to load it later if we need to
+		 */
+		if (m_FilePath.empty())
+			return;
+
+		m_VertexShader.Reset();
+		m_FragmentShader.Reset();
 	}
 
 	MaterialInstance::MaterialInstance(
