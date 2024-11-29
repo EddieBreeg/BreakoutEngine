@@ -46,12 +46,13 @@ namespace brk {
 
 	App::~App() {}
 
-	void App::InitSystems()
+	void App::InitSystems(const EntryPoint& entryPoint)
 	{
 		{
 			m_ECSManager.AddSystem<ResourceLoadingSystem>();
 
-			RegisterGameSystems(m_ECSManager);
+			if (entryPoint.RegisterGameSystems)
+				entryPoint.RegisterGameSystems(m_ECSManager);
 
 			m_ECSManager.AddSystem<VisualSystem>();
 		}
@@ -83,15 +84,17 @@ namespace brk {
 #ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
+		const EntryPoint entry = CreateEntryPoint();
+
 		InitManagers();
 		// the window system needs to be initialized on his own, because it's responsible
 		// for creating the renderer, which we may need to preload resources
 		InitWindowSystem(m_ECSManager);
 
-		RegisterResources();
+		RegisterResources(entry);
 
-		InitSystems();
-		RegisterComponents();
+		InitSystems(entry);
+		RegisterComponents(entry);
 #ifdef BRK_EDITOR
 		editor::Editor::Init(
 			ecs::Manager::GetInstance(),

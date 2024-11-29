@@ -3,12 +3,13 @@
 #include <core/Singleton.hpp>
 #include <core/TimeInfo.hpp>
 
-namespace brk::ecs
-{
+namespace brk::ecs {
 	class Manager;
 }
 
 namespace brk {
+	struct EntryPoint;
+
 	/**
 	 * Application class, which represents the game/editor program
 	 */
@@ -33,10 +34,10 @@ namespace brk {
 		friend class Singleton<App>;
 		App(const int argc, const char** argv);
 
-		void InitSystems();
+		void InitSystems(const EntryPoint& entryPoint);
 		void InitManagers();
-		void RegisterComponents();
-		void RegisterResources();
+		void RegisterComponents(const EntryPoint& entryPoint);
+		void RegisterResources(const EntryPoint& entryPoint);
 		bool Update();
 
 		void Cleanup();

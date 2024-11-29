@@ -15,17 +15,19 @@
 #include <systems/TransformComponent.hpp>
 #include "App.hpp"
 
-void brk::App::RegisterComponents()
+void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 {
 	auto& registry = ecs::ComponentRegistry::GetInstance();
 
 	registry.Register<TransformComponent>(&editor::TransformWidget);
-	RegisterGameComponents(registry);
+	if (entryPoint.RegisterGameComponents)
+		entryPoint.RegisterGameComponents(registry);
 }
 
-void brk::App::RegisterResources()
+void brk::App::RegisterResources(const EntryPoint& entryPoint)
 {
 	auto& manager = ResourceManager::GetInstance();
 	manager.RegisterResourceType<rdr::Material>();
-	RegisterGameResources(manager);
+	if (entryPoint.RegisterGameResources)
+		entryPoint.RegisterGameResources(manager);
 }
