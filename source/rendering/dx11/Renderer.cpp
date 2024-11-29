@@ -460,10 +460,27 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 	auto& pipelineState = m_Data->m_CurrentPipelineState;
 
 	pipelineState.m_VertexShader = material.GetVertexShader().GetHandle();
-	BRK_ASSERT(
-		pipelineState.m_VertexShader,
-		"Tried to bind material {} to the pipeline, which has an invalid vertex shader",
-		material.GetName());
+	DEBUG_CHECK(pipelineState.m_VertexShader)
+	{
+		BRK_LOG_ERROR(
+			"Tried to bind material {} ({}) to the pipeline, which has an invalid vertex "
+			"shader",
+			material.GetName(),
+			material.GetId());
+		return;
+	}
+	pipelineState.m_PixelShader = material.GetFragmentShader().GetHandle();
+	DEBUG_CHECK(pipelineState.m_PixelShader)
+	{
+		BRK_LOG_ERROR(
+			"Tried to bind material {} ({}) to the pipeline, which has an invalid "
+			"fragment "
+			"shader",
+			material.GetName(),
+			material.GetId());
+		return;
+	}
+
 	const auto* textures = material.GetTextures();
 	for (uint32 i = 0; i < MaterialInstance::s_MaxTextureCount; i++)
 	{
@@ -474,21 +491,18 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 			continue;
 		}
 		const auto& handle = textures[i]->GetHandle();
-		BRK_ASSERT(
-			handle.m_ShaderResource && handle.m_Sampler,
-			"Tried to bind texture {} ({}) to render pipeline, but texture isn't a "
-			"shader resource",
-			textures[i]->GetName(),
-			textures[i]->GetId());
+		DEBUG_CHECK(handle.m_ShaderResource && handle.m_Sampler)
+		{
+			BRK_LOG_ERROR(
+				"Tried to bind texture {} ({}) to render pipeline, but texture isn't a "
+				"shader resource",
+				textures[i]->GetName(),
+				textures[i]->GetId());
+			continue;
+		}
 		pipelineState.m_Samplers[i] = handle.m_Sampler;
 		pipelineState.m_ShaderResources[i] = handle.m_ShaderResource;
 	}
-
-	pipelineState.m_PixelShader = material.GetFragmentShader().GetHandle();
-	BRK_ASSERT(
-		pipelineState.m_PixelShader,
-		"Tried to bind material {} to the pipeline, which has an invalid fragment shader",
-		material.GetName());
 
 	pipelineState.m_ParamBuffer = material.GetParamBuffer().GetHandle();
 
