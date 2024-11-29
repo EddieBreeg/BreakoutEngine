@@ -36,7 +36,11 @@ namespace brk::rdr {
 		, m_Options{ settings.m_Options }
 		, m_UseDefaultVertexShader{ false }
 		, m_UseDefaultFragmentShader{ false }
-	{}
+	{
+		// if all shaders were created successfully, no further loading is required
+		if (m_VertexShader && m_FragmentShader)
+			m_LoadingState = ELoadingState::Loaded;
+	}
 
 	bool Material::DoLoad() noexcept
 	{
@@ -46,8 +50,13 @@ namespace brk::rdr {
 		if (m_UseDefaultFragmentShader)
 			m_FragmentShader = FragmentShader{};
 
-		if (m_VertexShader && m_FragmentShader)
+		if ((m_VertexShader && m_FragmentShader))
 			return true;
+
+		/* If we don't have a file path, something went wrong, most likely a shader failed
+		 * to compile*/
+		if (m_FilePath.empty())
+			return false;
 
 		InputByteStream stream = LoadFileContents();
 		const std::vector<char>& contents =
