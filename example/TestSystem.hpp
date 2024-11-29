@@ -2,6 +2,7 @@
 
 #include <PCH.hpp>
 #include <ecs/World.hpp>
+#include <core/ResourceRef.hpp>
 
 namespace brk {
 	class ResourceManager;
@@ -29,6 +30,6 @@ namespace brk::sandbox {
 	private:
 		rdr::Mesh& m_Mesh;
 		rdr::MaterialInstance& m_MatInstance;
-		rdr::Texture2d& m_Texture;
+		ResourceRef<rdr::Texture2d> m_Texture;
 	};
 } // namespace brk::sandbox

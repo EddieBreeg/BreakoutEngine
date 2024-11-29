@@ -5,6 +5,7 @@ add_library(BRK_RENDERING STATIC
 	Material.cpp
 	Mesh.cpp
 	Renderer.cpp
+	Texture.cpp
 )
 
 if(${BRK_RENDER_BACKEND} STREQUAL "SDL2")
@@ -35,6 +36,7 @@ target_link_libraries(BRK_RENDERING PRIVATE
 	Breakout::Core
 	ImGui::ImGui
 	SDL3::SDL3
+	STB::Image
 )
 
 add_library(Breakout::Rendering ALIAS BRK_RENDERING)

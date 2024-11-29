@@ -28,7 +28,7 @@ namespace brk::rdr {
 		All
 	};
 
-	enum class EFilterMode: int8
+	enum class EFilterMode : int8
 	{
 		Invalid = -1,
 		Nearest,
@@ -36,7 +36,7 @@ namespace brk::rdr {
 		NumModes,
 	};
 
-	enum class EAddressMode: int8
+	enum class EAddressMode : int8
 	{
 		Invalid = -1,
 		Clamp,
@@ -60,15 +60,39 @@ namespace brk::rdr {
 	{
 	public:
 		using Resource::Resource;
+		/**
+		 * Creates a new texture resource
+		 * \param settings The texture's settings
+		 * \param data: [optional] If no nullptr, the texture will be created with the
+		 * provided image data
+		 */
 		Texture2d(const Texture2dSettings& settings, const void* data = nullptr);
 
+		/** This initializes the texture's properties, without allocating anything on the
+		 * GPU. Use this if you want to pre-add the texture to the resource manager, and
+		 * the texture needs to be loaded from a file later
+		 * \param settings: The texture's settings
+		 * \param id: The resource id
+		 * \param name: Texture's name
+		 * \param imagePath: Path to the file which will be loaded
+		 */
+		Texture2d(
+			const Texture2dSettings& settings,
+			const ULID& id,
+			std::string name,
+			std::string imagePath);
+
 		using HandleType = ResourceHandle<Texture2d>::Type;
+
+		bool DoLoad() override;
 
 		[[nodiscard]] HandleType GetHandle() const noexcept { return m_Handle; }
 
 		~Texture2d();
 
 	private:
+		void Init(const void* data = nullptr);
+
 		friend class Renderer;
 		HandleType m_Handle = {};
 		Texture2dSettings m_Settings = {};

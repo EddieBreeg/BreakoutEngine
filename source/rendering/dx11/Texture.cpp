@@ -27,44 +27,42 @@ namespace {
 	};
 } // namespace
 
-brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* data)
-	: Resource(ULID::Generate())
-	, m_Settings{ settings }
+void brk::rdr::Texture2d::Init(const void* data)
 {
 	RendererData& rendererData = *Renderer::s_Instance.GetData();
 	BRK_ASSERT(
-		settings.m_Format > EPixelFormat::Invalid &&
-			settings.m_Format < EPixelFormat::NumFormats,
+		m_Settings.m_Format > EPixelFormat::Invalid &&
+			m_Settings.m_Format < EPixelFormat::NumFormats,
 		"Invalid pixel format: {}",
-		int32(settings.m_Format));
+		int32(m_Settings.m_Format));
 
 	uint32 bindFlags = 0;
 	BRK_ASSERT(
-		settings.m_Options.HasAny(
+		m_Settings.m_Options.HasAny(
 			ETextureOptions::RenderTarget | ETextureOptions::ShaderResource),
 		"Texture must specify at least the RenderTarget or ShaderResource options");
 
 	uint32 cpuAccess = 0;
-	if (settings.m_Options.HasAny(ETextureOptions::ShaderResource))
+	if (m_Settings.m_Options.HasAny(ETextureOptions::ShaderResource))
 	{
 		bindFlags |= D3D11_BIND_SHADER_RESOURCE;
 		cpuAccess |= D3D11_CPU_ACCESS_WRITE;
 	}
-	if (settings.m_Options.HasAny(ETextureOptions::RenderTarget))
+	if (m_Settings.m_Options.HasAny(ETextureOptions::RenderTarget))
 	{
 		bindFlags |= D3D11_BIND_RENDER_TARGET;
 		cpuAccess |= D3D11_CPU_ACCESS_READ;
 	}
 
-	const D3D11_USAGE usage = settings.m_Options.HasAny(ETextureOptions::Dynamic)
+	const D3D11_USAGE usage = m_Settings.m_Options.HasAny(ETextureOptions::Dynamic)
 								  ? D3D11_USAGE_DYNAMIC
 								  : D3D11_USAGE_DEFAULT;
 	const CD3D11_TEXTURE2D_DESC desc{
-		s_Formats[ToUnderlying(settings.m_Format)],
-		settings.m_Width,
-		settings.m_Height,
+		s_Formats[ToUnderlying(m_Settings.m_Format)],
+		m_Settings.m_Width,
+		m_Settings.m_Height,
 		1,
-		0,
+		1,
 		bindFlags,
 		usage,
 		cpuAccess,
@@ -72,14 +70,14 @@ brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* da
 	m_Handle.m_Tex = rendererData.CreateTexture2d(
 		desc,
 		data,
-		s_PixelSizes[ToUnderlying(settings.m_Format)] * settings.m_Width);
+		s_PixelSizes[ToUnderlying(m_Settings.m_Format)] * m_Settings.m_Width);
 
 	DEBUG_CHECK(m_Handle.m_Tex)
 	{
 		return;
 	}
 
-	if (settings.m_Options.HasAny(ETextureOptions::ShaderResource))
+	if (m_Settings.m_Options.HasAny(ETextureOptions::ShaderResource))
 	{
 		D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc = {};
 		viewDesc.Format = desc.Format;
@@ -89,20 +87,20 @@ brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* da
 			rendererData.CreateShaderResourceView(*m_Handle.m_Tex, viewDesc);
 
 		BRK_ASSERT(
-			settings.m_FilterMode > EFilterMode::Invalid &&
-				settings.m_FilterMode < EFilterMode::NumModes,
+			m_Settings.m_FilterMode > EFilterMode::Invalid &&
+				m_Settings.m_FilterMode < EFilterMode::NumModes,
 			"Invalid filter mode: {}",
-			int32(settings.m_FilterMode));
+			int32(m_Settings.m_FilterMode));
 		BRK_ASSERT(
-			settings.m_UvAddressMode > EAddressMode::Invalid &&
-				settings.m_UvAddressMode < EAddressMode::NumModes,
+			m_Settings.m_UvAddressMode > EAddressMode::Invalid &&
+				m_Settings.m_UvAddressMode < EAddressMode::NumModes,
 			"Invalid UV address mode: {}",
-			int32(settings.m_UvAddressMode));
+			int32(m_Settings.m_UvAddressMode));
 
 		CD3D11_SAMPLER_DESC samplerDesc{ D3D11_DEFAULT };
-		samplerDesc.Filter = s_Filters[ToUnderlying(settings.m_FilterMode)];
-		samplerDesc.AddressU = s_AddressModes[ToUnderlying(settings.m_UvAddressMode)];
-		samplerDesc.AddressV = s_AddressModes[ToUnderlying(settings.m_UvAddressMode)];
+		samplerDesc.Filter = s_Filters[ToUnderlying(m_Settings.m_FilterMode)];
+		samplerDesc.AddressU = s_AddressModes[ToUnderlying(m_Settings.m_UvAddressMode)];
+		samplerDesc.AddressV = s_AddressModes[ToUnderlying(m_Settings.m_UvAddressMode)];
 		m_Handle.m_Sampler = rendererData.CreateSamplerState(samplerDesc);
 		DEBUG_CHECK(m_Handle.m_Sampler)
 		{
@@ -110,7 +108,7 @@ brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* da
 		}
 	}
 
-	if (settings.m_Options.HasAny(ETextureOptions::RenderTarget))
+	if (m_Settings.m_Options.HasAny(ETextureOptions::RenderTarget))
 	{
 		D3D11_RENDER_TARGET_VIEW_DESC viewDesc = {};
 		viewDesc.Format = desc.Format;
@@ -132,5 +130,6 @@ brk::rdr::Texture2d::~Texture2d()
 		m_Handle.m_Sampler->Release();
 	}
 	if (m_Handle.m_RenderTarget)
+
 		m_Handle.m_RenderTarget->Release();
 }

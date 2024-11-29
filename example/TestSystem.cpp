@@ -17,14 +17,6 @@ namespace {
 		{ { 0, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
 	};
 
-	constexpr brk::rdr::Texture2dSettings s_TexSettings = {
-		brk::rdr::EPixelFormat::Grayscale,
-		128,
-		128,
-		brk::rdr::ETextureOptions::RenderTarget |
-			brk::rdr::ETextureOptions::ShaderResource
-	};
-
 	struct FragmentParams
 	{
 		float4 m_DiffuseColor;
@@ -43,7 +35,7 @@ brk::sandbox::TestSystem::TestSystem(
 		  resManager.GetRef<rdr::Material>(s_MaterialId),
 		  ULID::Generate(),
 		  "mat_instance") }
-	, m_Texture{ resManager.AddResource<rdr::Texture2d>(s_TexSettings) }
+	, m_Texture{ resManager.GetRef<rdr::Texture2d>(s_TextureId) }
 {
 	const auto e = entityWorld.create();
 	entityWorld.emplace<VisualComponent>(e);
