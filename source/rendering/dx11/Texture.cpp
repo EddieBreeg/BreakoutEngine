@@ -6,8 +6,8 @@
 
 namespace {
 	constexpr DXGI_FORMAT s_Formats[] = {
-		DXGI_FORMAT_R8_UINT,
-		DXGI_FORMAT_R8G8B8A8_UINT,
+		DXGI_FORMAT_R8_UNORM,
+		DXGI_FORMAT_R8G8B8A8_UNORM,
 	};
 
 	constexpr uint32 s_PixelSizes[] = {

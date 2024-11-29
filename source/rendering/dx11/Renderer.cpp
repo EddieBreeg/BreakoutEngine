@@ -3,6 +3,7 @@
 #include <rendering/Material.hpp>
 #include <rendering/Renderer.hpp>
 #include <rendering/Shaders.hpp>
+#include <rendering/Texture.hpp>
 #include <rendering/Vertex.hpp>
 #include "Renderer.hpp" // private api
 #include "Shaders.hpp"
@@ -10,6 +11,7 @@
 #include <core/Assert.hpp>
 #include <core/LogManager.hpp>
 #include <core/DebugBreak.hpp>
+#include <core/ULIDFormatter.hpp>
 
 #include <imgui.h>
 #include <backends/imgui_impl_dx11.h>
@@ -175,11 +177,17 @@ namespace {
 		ID3D11DeviceContext* context,
 		const brk::rdr::RendererData::PipelineState& state)
 	{
+		constexpr uint32 numTex = std::extent_v<decltype(state.m_ShaderResources)>;
+
 		context->VSSetShader(state.m_VertexShader, nullptr, 0);
 		context->VSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
+		context->VSSetShaderResources(0, numTex, state.m_ShaderResources);
+		context->VSSetSamplers(0, numTex, state.m_Samplers);
 
 		context->PSSetShader(state.m_PixelShader, nullptr, 0);
 		context->PSSetConstantBuffers(0, 3, &state.m_ParamBuffer);
+		context->PSSetShaderResources(0, numTex, state.m_ShaderResources);
+		context->PSSetSamplers(0, numTex, state.m_Samplers);
 	}
 
 	constexpr std::array s_Dx11FeatureLevels = {
@@ -337,7 +345,7 @@ ID3D11Texture2D* brk::rdr::RendererData::CreateTexture2d(
 	uint32 pitch)
 {
 	ID3D11Texture2D* res = nullptr;
-	const D3D11_SUBRESOURCE_DATA dataDesc{ data, pitch };
+	const D3D11_SUBRESOURCE_DATA dataDesc{ data, pitch, pitch * desc.Height };
 	LogError(
 		m_Device->CreateTexture2D(&desc, data ? &dataDesc : nullptr, &res),
 		"Failed to create Texture2d: {}");
@@ -456,6 +464,25 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 		pipelineState.m_VertexShader,
 		"Tried to bind material {} to the pipeline, which has an invalid vertex shader",
 		material.GetName());
+	const auto* textures = material.GetTextures();
+	for (uint32 i = 0; i < MaterialInstance::s_MaxTextureCount; i++)
+	{
+		if (!textures[i])
+		{
+			pipelineState.m_Samplers[i] = nullptr;
+			pipelineState.m_ShaderResources[i] = nullptr;
+			continue;
+		}
+		const auto& handle = textures[i]->GetHandle();
+		BRK_ASSERT(
+			handle.m_ShaderResource && handle.m_Sampler,
+			"Tried to bind texture {} ({}) to render pipeline, but texture isn't a "
+			"shader resource",
+			textures[i]->GetName(),
+			textures[i]->GetId());
+		pipelineState.m_Samplers[i] = handle.m_Sampler;
+		pipelineState.m_ShaderResources[i] = handle.m_ShaderResource;
+	}
 
 	pipelineState.m_PixelShader = material.GetFragmentShader().GetHandle();
 	BRK_ASSERT(
@@ -468,7 +495,10 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 	UpdateShaderStages(m_Data->m_DeviceContext, pipelineState);
 }
 
-void brk::rdr::Renderer::DrawIndexed(const Buffer& vBuf, const Buffer& iBuf, uint32 nIndices)
+void brk::rdr::Renderer::DrawIndexed(
+	const Buffer& vBuf,
+	const Buffer& iBuf,
+	uint32 nIndices)
 {
 	ID3D11Buffer* vBufPtr = vBuf.GetHandle();
 	constexpr uint32 stride = sizeof(brk::rdr::Vertex3d);

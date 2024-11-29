@@ -3,6 +3,7 @@
 #include <core/InputFile.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <rendering/Texture.hpp>
 #include <fstream>
 #include <vector>
 
@@ -70,6 +71,37 @@ namespace brk::rdr {
 	{}
 
 	MaterialInstance::~MaterialInstance() {}
+
+	void MaterialInstance::SetTexture(uint32 slot, ResourceRef<Texture2d> texture)
+	{
+		BRK_ASSERT(
+			slot < s_MaxTextureCount,
+			"Tried to bind texture to slot {}, valid indices range from 0 to {}",
+			slot,
+			s_MaxTextureCount - 1);
+		m_Textures[slot] = std::move(texture);
+	}
+
+	void MaterialInstance::SetTextures(
+		const ResourceRef<Texture2d>* textures,
+		uint32 numTextures,
+		uint32 startSlot)
+	{
+		DEBUG_CHECK((numTextures + startSlot) <= s_MaxTextureCount)
+		{
+			numTextures = s_MaxTextureCount - startSlot;
+			BRK_LOG_WARNING(
+				"Called MaterialInstance::SetTextures with {} textures starting at slot "
+				"{}, but max is {}",
+				numTextures,
+				startSlot,
+				s_MaxTextureCount);
+		}
+		for (uint32 i = 0; i < numTextures; i++)
+		{
+			m_Textures[startSlot + i] = textures[i];
+		}
+	}
 
 	bool MaterialInstance::DoLoad()
 	{

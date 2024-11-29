@@ -30,6 +30,5 @@ namespace brk::sandbox {
 	private:
 		rdr::Mesh& m_Mesh;
 		rdr::MaterialInstance& m_MatInstance;
-		ResourceRef<rdr::Texture2d> m_Texture;
 	};
 } // namespace brk::sandbox

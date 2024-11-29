@@ -51,6 +51,9 @@ namespace brk::rdr {
 
 			ID3D11VertexShader* m_VertexShader = nullptr;
 			ID3D11PixelShader* m_PixelShader = nullptr;
+
+			ID3D11ShaderResourceView* m_ShaderResources[8] = { nullptr };
+			ID3D11SamplerState* m_Samplers[8] = { nullptr };
 		} m_CurrentPipelineState;
 
 		HWND m_NativeWindow = nullptr;

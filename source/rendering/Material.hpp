@@ -9,6 +9,8 @@
 #include "Shaders.hpp"
 
 namespace brk::rdr {
+	class Texture2d;
+
 	struct MaterialSettings
 	{
 		enum EOptions : uint8
@@ -91,7 +93,28 @@ namespace brk::rdr {
 			P&& parameters,
 			const ULID& id = ULID::Generate(),
 			std::string name = {});
+
 		~MaterialInstance();
+
+		static constexpr uint32 s_MaxTextureCount = 8;
+
+		void SetTexture(uint32 slot, ResourceRef<Texture2d> texture);
+		void SetTextures(
+			const ResourceRef<Texture2d>* textures,
+			uint32 numTextures,
+			uint32 startSlot = 0);
+		template <uint32 N>
+		void SetTextures(
+			const ResourceRef<Texture2d> (&textures)[N],
+			uint32 startSlot = 0)
+		{
+			SetTextures(textures, N, startSlot);
+		}
+
+		[[nodiscard]] const ResourceRef<Texture2d>* GetTextures() const noexcept
+		{
+			return m_Textures;
+		}
 
 		bool DoLoad() override;
 
@@ -128,6 +151,7 @@ namespace brk::rdr {
 
 		ResourceRef<Material> m_BaseMat;
 		Buffer m_ParamBuffer;
+		ResourceRef<Texture2d> m_Textures[s_MaxTextureCount];
 	};
 } // namespace brk::rdr
 

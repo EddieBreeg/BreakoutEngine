@@ -2,6 +2,7 @@
 #include <core/TimeInfo.hpp>
 #include <managers/ResourceManager.hpp>
 #include <math/Constants.hpp>
+#include <rendering/Material.hpp>
 #include <rendering/Renderer.hpp>
 #include <rendering/Shaders.hpp>
 #include <rendering/Vertex.hpp>
@@ -10,11 +11,12 @@
 #include "Static.hpp"
 
 namespace {
-	static constexpr uint32 s_Indices[] = { 0, 1, 2 };
+	static constexpr uint32 s_Indices[] = { 0, 1, 2, 2, 3, 0 };
 	static constexpr brk::rdr::Vertex3d s_Vertices[] = {
 		{ { -.5f, -.5f, 0 }, { 0, 0, 1 }, { 0, 0 } },
 		{ { .5f, -.5f, 0 }, { 0, 0, 1 }, { 1, 0 } },
-		{ { 0, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
+		{ { .5f, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
+		{ { -.5f, .5f, 0 }, { 0, 0, 1 }, { 0, 1 } },
 	};
 
 	struct FragmentParams
@@ -35,8 +37,8 @@ brk::sandbox::TestSystem::TestSystem(
 		  resManager.GetRef<rdr::Material>(s_MaterialId),
 		  ULID::Generate(),
 		  "mat_instance") }
-	, m_Texture{ resManager.GetRef<rdr::Texture2d>(s_TextureId) }
 {
+	m_MatInstance.SetTexture(0, resManager.GetRef<rdr::Texture2d>(s_TextureId));
 	const auto e = entityWorld.create();
 	entityWorld.emplace<VisualComponent>(e);
 	entityWorld.emplace<MeshComponent>(
