@@ -33,18 +33,19 @@ template <class C>
 brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C&))
 {
 	ComponentInfo info{
-		[](const nlohmann::json& json, entt::registry& world, const entt::entity entity)
+		[](const nlohmann::json& json, entt::registry& world, const entt::entity entity) -> bool
 		{
 			C comp{};
 			if (JsonLoader<C>::Load(comp, json))
 			{
 				world.emplace<C>(entity, std::move(comp));
-				return;
+				return true;
 			}
 			BRK_LOG_WARNING(
 				"Failed to load component {} for entity {}",
 				C::Name,
 				entt::id_type(entity));
+			return false;
 		},
 	};
 #ifdef BRK_DEV

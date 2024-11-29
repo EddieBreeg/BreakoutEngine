@@ -22,7 +22,7 @@ namespace brk::ecs {
 		/**
 		 * This is called when loading a component from a scene file in the editor
 		 */
-		void (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
+		bool (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
 			nullptr;
 #ifdef BRK_DEV
 		/**

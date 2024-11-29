@@ -43,8 +43,8 @@ namespace {
 		for (auto& comp : it->items())
 		{
 			const brk::ecs::ComponentInfo& info = registry.GetInfo(comp.key());
-			object.m_Components.emplace_back(&info);
-			info.m_LoadJson(comp.value(), world, object.m_Entity);
+			if (info.m_LoadJson(comp.value(), world, object.m_Entity))
+				object.m_Components.emplace_back(&info);
 		}
 		return object;
 	}
