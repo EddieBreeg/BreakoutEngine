@@ -17,10 +17,10 @@ namespace brk {
 
 		renderer.StartRender();
 
-		auto meshes = world.Query<ecs::query::Include<MeshComponent>>();
+		auto meshes = world.Query<ecs::query::Include<const MeshComponent>>();
 		for (entt::entity m : meshes)
 		{
-			MeshComponent& comp = meshes.Get<MeshComponent>(m);
+			const MeshComponent& comp = meshes.Get<const MeshComponent>(m);
 			renderer.SetMaterial(*comp.m_MaterialRef);
 			renderer.DrawIndexed(
 				comp.m_MeshRef->GetVertexBuffer(),

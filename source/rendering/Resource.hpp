@@ -57,7 +57,7 @@ namespace brk::rdr {
 
 		void Swap(BasicResource& other) { std::swap(m_Handle, other.m_Handle); }
 
-		[[nodiscard]] HandleType GetHandle() noexcept { return m_Handle; }
+		[[nodiscard]] HandleType GetHandle() const noexcept { return m_Handle; }
 
 	protected:
 		HandleType m_Handle = Unassigned<HandleType>;

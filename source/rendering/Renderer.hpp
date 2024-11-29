@@ -31,9 +31,9 @@ namespace brk::rdr {
 		 */
 		void StartRender();
 
-		void SetMaterial(MaterialInstance& material);
+		void SetMaterial(const MaterialInstance& material);
 
-		void DrawIndexed(Buffer& vertexBuffer, Buffer& indexBuffer, uint32 numIndices);
+		void DrawIndexed(const Buffer& vertexBuffer, const Buffer& indexBuffer, uint32 numIndices);
 
 		void RenderUI();
 

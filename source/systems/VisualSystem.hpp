@@ -21,7 +21,7 @@ namespace brk {
 
 		void Terminate();
 
-		using World = ecs::WorldView<MeshComponent, const VisualComponent>;
+		using World = ecs::WorldView<const MeshComponent, const VisualComponent>;
 
 		void Update(World& world, const TimeInfo& timeInfo);
 

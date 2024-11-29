@@ -95,17 +95,20 @@ namespace brk::rdr {
 
 		bool DoLoad() override;
 
-		[[nodiscard]] VertexShader& GetVertexShader() noexcept
+		[[nodiscard]] const VertexShader& GetVertexShader() const
 		{
 			return m_BaseMat->m_VertexShader;
 		}
 
-		[[nodiscard]] FragmentShader& GetFragmentShader() noexcept
+		[[nodiscard]] const FragmentShader& GetFragmentShader() const
 		{
 			return m_BaseMat->m_FragmentShader;
 		}
 
-		[[nodiscard]] Buffer& GetParamBuffer() { return m_ParamBuffer; }
+		[[nodiscard]] const Buffer& GetParamBuffer() const noexcept
+		{
+			return m_ParamBuffer;
+		}
 
 		[[nodiscard]] MaterialSettings::EOptions GetOptions() const
 		{

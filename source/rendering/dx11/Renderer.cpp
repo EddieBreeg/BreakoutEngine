@@ -447,7 +447,7 @@ void brk::rdr::Renderer::StartRender()
 #endif
 }
 
-void brk::rdr::Renderer::SetMaterial(MaterialInstance& material)
+void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 {
 	auto& pipelineState = m_Data->m_CurrentPipelineState;
 
@@ -468,7 +468,7 @@ void brk::rdr::Renderer::SetMaterial(MaterialInstance& material)
 	UpdateShaderStages(m_Data->m_DeviceContext, pipelineState);
 }
 
-void brk::rdr::Renderer::DrawIndexed(Buffer& vBuf, Buffer& iBuf, uint32 nIndices)
+void brk::rdr::Renderer::DrawIndexed(const Buffer& vBuf, const Buffer& iBuf, uint32 nIndices)
 {
 	ID3D11Buffer* vBufPtr = vBuf.GetHandle();
 	constexpr uint32 stride = sizeof(brk::rdr::Vertex3d);
