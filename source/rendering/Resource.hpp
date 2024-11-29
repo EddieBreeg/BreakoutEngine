@@ -49,11 +49,16 @@ namespace brk::rdr {
 			return m_Handle != Unassigned<HandleType>;
 		}
 
-		~BasicResource()
+		void Reset()
 		{
 			if (m_Handle != Unassigned<HandleType>)
+			{
 				ResourceDeleter<HandleType>{}(m_Handle);
+				m_Handle = Unassigned<HandleType>;
+			}
 		}
+
+		~BasicResource() { Reset(); }
 
 		void Swap(BasicResource& other) { std::swap(m_Handle, other.m_Handle); }
 

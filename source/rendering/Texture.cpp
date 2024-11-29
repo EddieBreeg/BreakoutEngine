@@ -77,3 +77,9 @@ bool brk::rdr::Texture2d::DoLoad()
 
 	return true;
 }
+
+void brk::rdr::Texture2d::DoUnload()
+{
+	if (!m_FilePath.empty())
+		Reset();
+}

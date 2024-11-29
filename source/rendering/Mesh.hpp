@@ -45,6 +45,7 @@ namespace brk::rdr {
 		[[nodiscard]] uint32 GetNumIndices() const noexcept { return m_NumIndices; }
 
 		bool DoLoad() override;
+		void DoUnload() override;
 
 		~Mesh() = default;
 

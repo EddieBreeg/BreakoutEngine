@@ -85,8 +85,11 @@ namespace brk::rdr {
 		using HandleType = ResourceHandle<Texture2d>::Type;
 
 		bool DoLoad() override;
-
+		void DoUnload() override;
+		
 		[[nodiscard]] HandleType GetHandle() const noexcept { return m_Handle; }
+
+		void Reset();
 
 		~Texture2d();
 

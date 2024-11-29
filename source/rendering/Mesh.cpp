@@ -17,3 +17,13 @@ bool brk::rdr::Mesh::DoLoad()
 {
 	return m_VertexBuffer && m_IndexBuffer;
 }
+
+void brk::rdr::Mesh::DoUnload()
+{
+	if (!m_FilePath.empty())
+	{
+		m_VertexBuffer.Reset();
+		m_IndexBuffer.Reset();
+		m_NumIndices = 0;
+	}
+}

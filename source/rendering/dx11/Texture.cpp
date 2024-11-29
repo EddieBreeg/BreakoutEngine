@@ -119,7 +119,7 @@ void brk::rdr::Texture2d::Init(const void* data)
 	}
 }
 
-brk::rdr::Texture2d::~Texture2d()
+void brk::rdr::Texture2d::Reset()
 {
 	if (!m_Handle.m_Tex)
 		return;
@@ -130,6 +130,11 @@ brk::rdr::Texture2d::~Texture2d()
 		m_Handle.m_Sampler->Release();
 	}
 	if (m_Handle.m_RenderTarget)
-
 		m_Handle.m_RenderTarget->Release();
+	m_Handle = {};
+}
+
+brk::rdr::Texture2d::~Texture2d()
+{
+	Reset();
 }
