@@ -29,4 +29,6 @@ float4 fs_main(Fragment frag): SV_TARGET
 
 	constexpr ULID s_MaterialId = ULID::FromString("01JDS6Q072ERV1WXSSCFKRS8CY");
 	constexpr ULID s_TextureId = ULID::FromString("01JDW4CZM6YB7J6ZJNPMC60THK");
+	constexpr ULID s_MaterialInstanceId = ULID::FromString("01JDYK0J865THQCRFGKFVY81XJ");
+	constexpr ULID s_MeshId = ULID::FromString("01JDYJJNF0R14DEZ74XR2YEK5G");
 } // namespace brk::sandbox

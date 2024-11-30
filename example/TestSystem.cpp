@@ -28,24 +28,8 @@ namespace {
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
 	entt::registry& entityWorld)
-	: m_Mesh{ resManager.AddResource<rdr::Mesh>(
-		  s_Vertices,
-		  s_Indices,
-		  ULID::Generate(),
-		  "mesh1") }
-	, m_MatInstance{ resManager.AddResource<rdr::MaterialInstance>(
-		  resManager.GetRef<rdr::Material>(s_MaterialId),
-		  ULID::Generate(),
-		  "mat_instance") }
-{
-	m_MatInstance.SetTexture(0, resManager.GetRef<rdr::Texture2d>(s_TextureId));
-	const auto e = entityWorld.create();
-	entityWorld.emplace<VisualComponent>(e);
-	entityWorld.emplace<MeshComponent>(
-		e,
-		ResourceRef<rdr::MaterialInstance>{ &m_MatInstance },
-		ResourceRef<rdr::Mesh>{ &m_Mesh });
-}
+	: m_MatInstance{ *resManager.GetRef<rdr::MaterialInstance>(s_MaterialInstanceId) }
+{}
 
 brk::sandbox::TestSystem::~TestSystem() = default;
 

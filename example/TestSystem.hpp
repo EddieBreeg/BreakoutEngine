@@ -28,7 +28,6 @@ namespace brk::sandbox {
 		~TestSystem();
 
 	private:
-		rdr::Mesh& m_Mesh;
 		rdr::MaterialInstance& m_MatInstance;
 	};
 } // namespace brk::sandbox

@@ -3,10 +3,19 @@
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Material.hpp>
+#include <rendering/Mesh.hpp>
 #include <rendering/Texture.hpp>
 #include "Static.hpp"
 
 namespace {
+	static constexpr brk::rdr::Vertex3d s_PlaneVertices[] = {
+		{ { -.5f, -.5f, 0 }, { 0, 0, 1 }, { 0, 0 } },
+		{ { .5f, -.5f, 0 }, { 0, 0, 1 }, { 1, 0 } },
+		{ { .5f, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
+		{ { -.5f, .5f, 0 }, { 0, 0, 1 }, { 0, 1 } },
+	};
+	static constexpr uint32 s_PlaneIndices[] = { 0, 1, 2, 2, 3, 0 };
+
 	void RegisterGameSystems(brk::ecs::Manager& ecsManager)
 	{
 		using namespace brk;
@@ -29,12 +38,26 @@ namespace {
 			rdr::EPixelFormat::RGBA8,
 		};
 
-		manager.AddResource<rdr::Material>(settings, sandbox::s_MaterialId, "material1");
-		manager.AddResource<rdr::Texture2d>(
+		auto& baseMaterial = manager.AddResource<rdr::Material>(
+			settings,
+			sandbox::s_MaterialId,
+			"material1");
+		auto& texture = manager.AddResource<rdr::Texture2d>(
 			texSettings,
 			sandbox::s_TextureId,
 			"texture1",
 			"Data/Textures/breakout.png");
+		manager.AddResource<rdr::Mesh>(
+			s_PlaneVertices,
+			s_PlaneIndices,
+			brk::sandbox::s_MeshId,
+			"plane");
+		auto& matInstance = manager.AddResource<rdr::MaterialInstance>(
+			ResourceRef<rdr::Material>{ &baseMaterial },
+			float4{ 1, 1, 1, 1 },
+			sandbox::s_MaterialInstanceId,
+			"mat_instance");
+		matInstance.SetTexture(0, ResourceRef<rdr::Texture2d>{ &texture });
 	}
 } // namespace
 

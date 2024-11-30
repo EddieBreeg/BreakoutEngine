@@ -25,7 +25,7 @@ namespace brk::rdr {
 		, m_ParamBuffer{
 			Buffer::ParamBuffer,
 			std::forward<P>(params),
-			GetBufferOptions(baseMat->m_Options.Get()),
+			GetBufferOptions(m_BaseMat->m_Options.Get()),
 		}
 	{}
 

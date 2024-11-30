@@ -23,6 +23,10 @@
 						"y": 0,
 						"z": 0
 					}
+				},
+				"mesh": {
+					"materialId": "01JDYK0J865THQCRFGKFVY81XJ",
+					"meshId": "01JDYJJNF0R14DEZ74XR2YEK5G"
 				}
 			}
 		}

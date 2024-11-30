@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PCH.hpp>
+#include <core/FieldList.hpp>
 #include <core/ResourceRef.hpp>
 #include <rendering/Material.hpp>
 #include <rendering/Mesh.hpp>
@@ -15,6 +16,14 @@ namespace brk {
 	{
 		ResourceRef<rdr::MaterialInstance> m_MaterialRef;
 		ResourceRef<rdr::Mesh> m_MeshRef;
-	};
 
+		static constexpr meta::
+			FieldList<&MeshComponent::m_MaterialRef, &MeshComponent::m_MeshRef>
+				Fields = {
+					"materialId",
+					"meshId",
+				};
+
+		static constexpr StringView Name = "mesh";
+	};
 } // namespace brk
