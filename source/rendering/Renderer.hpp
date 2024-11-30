@@ -1,6 +1,7 @@
 #pragma
 
 #include <PCH.hpp>
+#include <math/Matrix.hpp>
 
 struct SDL_Window;
 
@@ -31,6 +32,7 @@ namespace brk::rdr {
 		 */
 		void StartRender();
 
+		void SetModelMatrix(const float4x4& transform);
 		void SetMaterial(const MaterialInstance& material);
 
 		void DrawIndexed(const Buffer& vertexBuffer, const Buffer& indexBuffer, uint32 numIndices);

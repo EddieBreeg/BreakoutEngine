@@ -13,6 +13,8 @@ namespace brk {
 		float3 m_Scale = { 1, 1, 1 };
 		math::Quaternion m_Rotation = glm::identity<math::Quaternion>();
 
+		[[nodiscard]] float4x4 GetMatrix() const;
+
 		static constexpr StringView Name = "transform";
 		static constexpr meta::FieldList<
 			&TransformComponent::m_Translate,

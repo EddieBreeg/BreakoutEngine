@@ -1,5 +1,6 @@
 #include "VisualSystem.hpp"
 
+#include "TransformComponent.hpp"
 #include "VisualComponents.hpp"
 #ifdef BRK_DEV
 #include <debug/DebugOverlay.hpp>
@@ -17,10 +18,13 @@ namespace brk {
 
 		renderer.StartRender();
 
-		auto meshes = world.Query<ecs::query::Include<const MeshComponent>>();
+		auto meshes = world.Query<
+			ecs::query::Include<const MeshComponent, const TransformComponent>>();
 		for (entt::entity m : meshes)
 		{
-			const MeshComponent& comp = meshes.Get<const MeshComponent>(m);
+			const auto& transform = meshes.Get<const TransformComponent>(m);
+			renderer.SetModelMatrix(transform.GetMatrix());
+			const auto& comp = meshes.Get<const MeshComponent>(m);
 			renderer.SetMaterial(*comp.m_MaterialRef);
 			renderer.DrawIndexed(
 				comp.m_MeshRef->GetVertexBuffer(),

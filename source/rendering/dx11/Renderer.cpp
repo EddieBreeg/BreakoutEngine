@@ -382,6 +382,24 @@ ID3D11SamplerState* brk::rdr::RendererData::CreateSamplerState(
 	return ptr;
 }
 
+void brk::rdr::RendererData::UpdateDynamicResource(
+	ID3D11Resource& res,
+	uint32 subRes,
+	const void* data,
+	uint32 dataSize)
+{
+	D3D11_MAPPED_SUBRESOURCE map = {};
+	const HRESULT err =
+		m_DeviceContext->Map(&res, subRes, D3D11_MAP_WRITE_DISCARD, 0, &map);
+	DEBUG_CHECK(err == S_OK)
+	{
+		BRK_LOG_ERROR("Failed to map resource: {}", _com_error(err).ErrorMessage());
+		return;
+	}
+	std::memcpy(map.pData, data, dataSize);
+	m_DeviceContext->Unmap(&res, subRes);
+}
+
 brk::rdr::RendererData::~RendererData() = default;
 
 void brk::rdr::Renderer::Init(SDL_Window* window)
@@ -453,6 +471,15 @@ void brk::rdr::Renderer::StartRender()
 #ifdef BRK_DEV
 	ImGui::Render();
 #endif
+}
+
+void brk::rdr::Renderer::SetModelMatrix(const float4x4& transform)
+{
+	m_Data->UpdateDynamicResource(
+		*m_Data->m_CurrentPipelineState.m_TransformData,
+		0,
+		&transform,
+		sizeof(transform));
 }
 
 void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)

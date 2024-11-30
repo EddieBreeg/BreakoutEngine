@@ -6,6 +6,7 @@ namespace brk {
 	class TimeInfo;
 
 	struct MeshComponent;
+	struct TransformComponent;
 	struct VisualComponent;
 } // namespace brk
 
@@ -21,7 +22,7 @@ namespace brk {
 
 		void Terminate();
 
-		using World = ecs::WorldView<const MeshComponent, const VisualComponent>;
+		using World = ecs::WorldView<const MeshComponent, const TransformComponent>;
 
 		void Update(World& world, const TimeInfo& timeInfo);
 

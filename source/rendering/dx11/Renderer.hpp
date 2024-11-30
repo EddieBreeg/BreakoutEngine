@@ -43,6 +43,12 @@ namespace brk::rdr {
 			const D3D11_RENDER_TARGET_VIEW_DESC& desc);
 		ID3D11SamplerState* CreateSamplerState(const D3D11_SAMPLER_DESC& desc);
 
+		void UpdateDynamicResource(
+			ID3D11Resource& res,
+			uint32 subRes,
+			const void* data,
+			uint32 dataSize);
+
 		struct PipelineState
 		{
 			ID3D11Buffer* m_ParamBuffer = nullptr;
