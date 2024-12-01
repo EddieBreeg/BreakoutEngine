@@ -1,0 +1,11 @@
+{
+	"name": "project1",
+	"resources": [
+		{
+			"type": "Res1",
+			"name": "test_res",
+			"id": "01JE1M440F9TN7EHDCQARXTXT1",
+			"value": 666
+		}
+	]
+}

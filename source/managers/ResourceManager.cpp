@@ -48,10 +48,14 @@ brk::ResourceManager::~ResourceManager()
 }
 
 #ifdef BRK_EDITOR
-void brk::ResourceManager::CreateResources(const std::vector<nlohmann::json>& list)
+void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 {
 	ULID resId;
 	StringView resType;
+	BRK_ASSERT(
+		list.is_array(),
+		"CreateResources called with a non array type ({})",
+		list.type_name());
 
 	for (const nlohmann::json& desc : list)
 	{

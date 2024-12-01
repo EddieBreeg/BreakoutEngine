@@ -113,7 +113,7 @@ namespace brk::resource_ref::ut {
 		{
 			RAIIHelper helper;
 			helper.m_Manager.RegisterResourceType<Res2>();
-			const std::vector<nlohmann::json> desc{
+			const nlohmann::json desc = {
 				{
 					// should fail, we didn't specify value key
 					{ "type", Res2::Name },

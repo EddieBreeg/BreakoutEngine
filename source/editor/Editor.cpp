@@ -13,6 +13,7 @@
 #include <core/ULIDFormatter.hpp>
 
 #include <managers/ECSManager.hpp>
+#include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
 
 #include <cerrno>
@@ -143,10 +144,15 @@ void brk::editor::Editor::LoadProject()
 	JsonLoader<Project>::Load(proj, desc);
 	m_Project = std::move(proj);
 
-	const auto it = desc.find("scenes");
+	auto it = desc.find("scenes");
 	if (it != desc.end())
 	{
 		SceneManager::GetInstance().LoadSceneDescriptions(*it);
+	}
+	it = desc.find("resources");
+	if (it != desc.end())
+	{
+		ResourceManager::GetInstance().CreateResources(*it);
 	}
 
 	BRK_LOG_TRACE("Finished loading project");

@@ -1,5 +1,6 @@
 add_executable(LoadingTests main.cpp
 	ComponentInfoTests.cpp
+	ProjectLoadingTests.cpp
 	SceneLoadingTests.cpp
 )
 target_compile_definitions(LoadingTests PRIVATE

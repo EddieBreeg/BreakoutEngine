@@ -29,7 +29,7 @@ namespace brk {
 		 * RegisterResourceType before calling this function. Will assert if this
 		 * condition isn't met.
 		 */
-		void CreateResources(const std::vector<nlohmann::json>& list);
+		void CreateResources(const nlohmann::json& list);
 #endif
 
 		/**
