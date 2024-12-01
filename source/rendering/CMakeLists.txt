@@ -8,10 +8,7 @@ add_library(BRK_RENDERING STATIC
 	Texture.cpp
 )
 
-if(${BRK_RENDER_BACKEND} STREQUAL "SDL2")
-	set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/sdl2)
-	target_compile_definitions(BRK_RENDERING PUBLIC BRK_SDL2=1)
-elseif(${BRK_RENDER_BACKEND} STREQUAL "DX11")
+if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dx11)
 	target_compile_definitions(BRK_RENDERING PUBLIC BRK_DX11=1)
 	target_link_libraries(BRK_RENDERING PRIVATE d3d11 dxgi)
