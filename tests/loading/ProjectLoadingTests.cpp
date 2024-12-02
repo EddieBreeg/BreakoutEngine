@@ -3,6 +3,7 @@
 #include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
 #include <nlohmann/json.hpp>
+#include <imgui.h>
 
 namespace brk::project_loading::ut {
 	static constexpr ULID s_ResId1 = ULID::FromString("01JE1M440F9TN7EHDCQARXTXT1");
@@ -24,7 +25,12 @@ namespace brk::project_loading::ut {
 			: m_ECSManager{ ecs::Manager::Init() }
 			, m_ResManager{ ResourceManager::Init(m_ECSManager.GetWorld()) }
 			, m_SceneManager{ SceneManager::Init() }
-			, m_Editor{ editor::Editor::Init(m_ECSManager, m_SceneManager, 0, nullptr) }
+			, m_Editor{ editor::Editor::Init(
+				  *ImGui::CreateContext(),
+				  m_ECSManager,
+				  m_SceneManager,
+				  0,
+				  nullptr) }
 		{
 			m_ResManager.RegisterResourceType<Res1>();
 		}
@@ -40,6 +46,7 @@ namespace brk::project_loading::ut {
 			m_ECSManager.Reset();
 			m_SceneManager.Reset();
 			m_ResManager.Reset();
+			ImGui::DestroyContext();
 		}
 	};
 

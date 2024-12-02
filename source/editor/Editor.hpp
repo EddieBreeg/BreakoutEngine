@@ -8,8 +8,9 @@
 #include "Project.hpp"
 #include <optional>
 
+struct ImGuiContext;
+
 namespace brk {
-	class App;
 	class SceneManager;
 } // namespace brk
 
@@ -32,7 +33,7 @@ namespace brk::editor {
 		friend class Singleton<Editor>;
 		static std::unique_ptr<Editor> s_Instance;
 		Editor(
-			App& app,
+			ImGuiContext& imguICtx,
 			ecs::Manager& ecsManager,
 			SceneManager& sceneManager,
 			int argc,

@@ -10,6 +10,9 @@ target_compile_definitions(LoadingTests PRIVATE
 target_link_libraries(LoadingTests PRIVATE
 	Breakout::Core
 	Breakout::ECS
+	Breakout::Editor
+	Breakout::Managers
 	Breakout::Systems
+	ImGui::ImGui
 )
 add_test(NAME LoadingTests COMMAND LoadingTests)

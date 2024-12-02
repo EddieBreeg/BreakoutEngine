@@ -100,7 +100,7 @@ namespace brk {
 		RegisterComponents(entry);
 #ifdef BRK_EDITOR
 		editor::Editor::Init(
-			*this,
+			*m_ImGuiContext,
 			ecs::Manager::GetInstance(),
 			SceneManager::GetInstance(),
 			m_Argc,

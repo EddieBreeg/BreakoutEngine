@@ -28,7 +28,7 @@
 std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
 
 brk::editor::Editor::Editor(
-	App& app,
+	ImGuiContext& ctx,
 	ecs::Manager& ecsManager,
 	SceneManager& sceneManager,
 	int argc,
@@ -36,7 +36,7 @@ brk::editor::Editor::Editor(
 	: m_ECSManager{ ecsManager }
 	, m_SceneManager{ sceneManager }
 {
-	ImGui::SetCurrentContext(&app.GetImGuiContext());
+	ImGui::SetCurrentContext(&ctx);
 	if (argc < 2)
 		return;
 	LoadProjectDeferred(argv[1]);
