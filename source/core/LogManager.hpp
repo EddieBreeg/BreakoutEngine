@@ -12,7 +12,7 @@ namespace brk {
 		const uint32 m_Line;
 	};
 
-	class LogManager
+	class BRK_CORE_API LogManager
 	{
 	public:
 		/** Log Level, which acts as a filter mechanism for log messages */

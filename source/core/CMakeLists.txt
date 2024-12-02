@@ -1,11 +1,12 @@
 file(GLOB CORE_HEADERS *.hpp)
 
-add_library(BRK_CORE STATIC
+add_library(BRK_CORE ${BRK_LIBTYPE}
 	Assert.cpp
 	DebugBreak.cpp
 	InputFile.cpp
 	LogManager.cpp
 	Resource.cpp
+	ResourceRef.cpp
 	RNG.cpp
 	Scene.cpp
 	StringView.cpp
@@ -16,6 +17,10 @@ add_library(BRK_CORE STATIC
 	ULIDFormatter.cpp
 	${CORE_HEADERS}
 )
+generate_export_header(BRK_CORE
+	EXPORT_MACRO_NAME BRK_CORE_API
+)
+target_compile_definitions(BRK_CORE PRIVATE BRK_CORE_EXPORTS=1)
 
 if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_DX11)

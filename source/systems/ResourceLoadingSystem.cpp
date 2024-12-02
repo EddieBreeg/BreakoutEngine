@@ -3,8 +3,6 @@
 #include <core/LogManager.hpp>
 #include <core/ULIDFormatter.hpp>
 
-brk::ResourceLoadingRequests brk::ResourceLoadingRequests::s_Instance;
-
 void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 {
 	ResourceLoadingRequests& requests = ResourceLoadingRequests::s_Instance;

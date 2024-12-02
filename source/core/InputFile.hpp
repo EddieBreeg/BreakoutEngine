@@ -7,7 +7,7 @@
 #include <vector>
 
 namespace brk {
-	class InputByteBuf : public std::streambuf
+	class BRK_CORE_API InputByteBuf : public std::streambuf
 	{
 	public:
 		InputByteBuf() = default;
@@ -41,7 +41,7 @@ namespace brk {
 		uint32 m_Pos = 0;
 	};
 
-	class InputByteStream : public std::istream
+	class BRK_CORE_API InputByteStream : public std::istream
 	{
 	public:
 		InputByteStream()

@@ -1,3 +1,7 @@
+include(GenerateExportHeader)
+set(CMAKE_CXX_VISIBILITY_PRESET hidden)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
+
 add_subdirectory(math)
 add_subdirectory(rendering)
 add_subdirectory(core)
@@ -16,6 +20,7 @@ set(CMAKE_FOLDER "Engine")
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE
 	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
 )
 target_compile_definitions(BRK_INCLUDES INTERFACE
 	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>

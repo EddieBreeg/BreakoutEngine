@@ -49,3 +49,5 @@ using uint64 = uint64_t;
 #ifndef BIT
 #define BIT(n) (1ull << (n))
 #endif
+
+#include <core/brk_core_export.h>

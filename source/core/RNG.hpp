@@ -11,7 +11,7 @@ namespace brk {
 	 * defined, the seed will be generated at random using available hardware random
 	 * generation features
 	 */
-	class RNG
+	class BRK_CORE_API RNG
 	{
 	public:
 		using result_type = uint64;

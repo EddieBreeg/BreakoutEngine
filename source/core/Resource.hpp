@@ -18,7 +18,7 @@ namespace brk {
 	 * A subclass should meet the following criteria:
 	 * - Be constructible from a ULID object
 	 */
-	class Resource
+	class BRK_CORE_API Resource
 	{
 	public:
 		enum ELoadingState
@@ -70,8 +70,20 @@ namespace brk {
 	};
 
 	template <>
-	struct JsonLoader<Resource>
+	struct BRK_CORE_API JsonLoader<Resource>
 	{
 		static bool Load(Resource& out_res, const nlohmann::json& json);
+	};
+
+	struct BRK_CORE_API ResourceLoadingRequests
+	{
+		std::vector<Resource*> m_LoadRequests;
+		std::vector<Resource*> m_UnloadRequests;
+
+		static ResourceLoadingRequests s_Instance;
+
+	private:
+		ResourceLoadingRequests() = default;
+		ResourceLoadingRequests(const ResourceLoadingRequests&) = delete;
 	};
 } // namespace brk

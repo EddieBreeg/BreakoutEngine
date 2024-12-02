@@ -5,7 +5,7 @@
 
 namespace brk {
 	template <>
-	struct RetainTraits<Resource>
+	struct BRK_CORE_API RetainTraits<Resource>
 	{
 		static constexpr Retain_t DefaultAction = {};
 		static void Increment(Resource* res);

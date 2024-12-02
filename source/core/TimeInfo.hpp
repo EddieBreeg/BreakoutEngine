@@ -7,7 +7,7 @@ namespace brk {
 	/**
 	 * A utility used to track time
 	 */
-	class TimeInfo
+	class BRK_CORE_API TimeInfo
 	{
 	public:
 		using Duration = std::chrono::duration<float>;

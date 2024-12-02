@@ -64,8 +64,8 @@ namespace brk {
 		[[nodiscard]] constexpr uint32 operator()(const StringView str) const noexcept;
 	};
 
-	void from_json(const nlohmann::json& json, StringView& str);
-	void to_json(nlohmann::json& json, const StringView& str);
+	BRK_CORE_API void from_json(const nlohmann::json& json, StringView& str);
+	BRK_CORE_API void to_json(nlohmann::json& json, const StringView& str);
 } // namespace brk
 
 #include "StringView.inl"

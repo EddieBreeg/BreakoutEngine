@@ -11,7 +11,7 @@ namespace brk {
 	struct JsonLoader;
 
 	/** Contains essential info about a scene, such as its ID, name, file etc */
-	class SceneDescription
+	class BRK_CORE_API SceneDescription
 	{
 	public:
 		SceneDescription() = default;

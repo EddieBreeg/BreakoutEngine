@@ -27,7 +27,7 @@ namespace brk {
 	 * Unique lexographically sortable identifier. The spec for this format can
 	 * be found here: https://github.com/ulid/spec
 	 */
-	class ULID
+	class BRK_CORE_API ULID
 	{
 	public:
 		/**
@@ -83,8 +83,8 @@ namespace brk {
 		friend struct Hash<ULID>;
 	};
 
-	void from_json(const nlohmann::json& json, ULID& out_id);
-	void to_json(nlohmann::json& out_json, const ULID& id);
+	BRK_CORE_API void from_json(const nlohmann::json& json, ULID& out_id);
+	BRK_CORE_API void to_json(nlohmann::json& out_json, const ULID& id);
 
 	template <>
 	struct Hash<ULID>

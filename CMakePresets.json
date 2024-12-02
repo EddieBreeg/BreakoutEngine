@@ -19,7 +19,16 @@
 			"binaryDir": "build/${presetName}"
 		},
 		{
-			"name": "win64",
+			"name": "win64_shared",
+			"inherits": "Default",
+			"generator": "Visual Studio 17 2022",
+			"cacheVariables": {
+				"BRK_RENDER_BACKEND": "DX11",
+				"BRK_BUILD_SHARED": "ON"
+			}
+		},
+		{
+			"name": "win64_static",
 			"inherits": "Default",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
@@ -39,12 +48,12 @@
 		{
 			"name": "win64_dev",
 			"configuration": "Debug",
-			"configurePreset": "win64"
+			"configurePreset": "win64_shared"
 		},
 		{
 			"name": "win64_devopt",
 			"configuration": "RelWithDebInfo",
-			"configurePreset": "win64"
+			"configurePreset": "win64_shared"
 		}
 	]
 }

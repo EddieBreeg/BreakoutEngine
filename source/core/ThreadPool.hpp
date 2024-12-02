@@ -13,7 +13,7 @@ namespace brk {
 	/**
 	 * Pool of threads capable of running jobs concurrently
 	 */
-	class ThreadPool
+	class BRK_CORE_API ThreadPool
 	{
 	public:
 		explicit ThreadPool(const uint32 threadCount);
