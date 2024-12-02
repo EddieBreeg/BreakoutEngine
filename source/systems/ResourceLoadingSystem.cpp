@@ -7,8 +7,9 @@ void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 {
 	ResourceLoadingRequests& requests = ResourceLoadingRequests::s_Instance;
 
-	for (Resource* res : requests.m_LoadRequests)
+	for (uint32 i = 0; i < requests.m_LoadRequests.size(); ++i)
 	{
+		Resource* res = requests.m_LoadRequests[i];
 		if (res->GetLoadingState() != Resource::Loading)
 			continue;
 		if (res->DoLoad())
@@ -24,8 +25,9 @@ void brk::ResourceLoadingSystem::Update(World& world, const TimeInfo&)
 		}
 	}
 
-	for (Resource* res : requests.m_UnloadRequests)
+	for (uint32 i = 0; i < requests.m_UnloadRequests.size(); ++i)
 	{
+		Resource* res = requests.m_UnloadRequests[i];
 		if (res->GetLoadingState() != Resource::Unloading)
 			continue;
 		res->DoUnload();

@@ -3,6 +3,7 @@
 #include <core/InputFile.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <managers/ResourceManager.hpp>
 #include <rendering/Texture.hpp>
 #include <fstream>
 #include <vector>
@@ -93,7 +94,9 @@ namespace brk::rdr {
 		std::string name)
 		: Resource(id, std::move(name), {})
 		, m_BaseMat{ std::move(baseMat) }
-	{}
+	{
+		m_ResourceIds[0] = m_BaseMat->GetId();
+	}
 
 	MaterialInstance::~MaterialInstance() {}
 
@@ -104,6 +107,7 @@ namespace brk::rdr {
 			"Tried to bind texture to slot {}, valid indices range from 0 to {}",
 			slot,
 			s_MaxTextureCount - 1);
+		m_ResourceIds[slot + 1] = texture->GetId();
 		m_Textures[slot] = std::move(texture);
 	}
 
@@ -124,13 +128,35 @@ namespace brk::rdr {
 		}
 		for (uint32 i = 0; i < numTextures; i++)
 		{
+			m_ResourceIds[1 + startSlot + i] = textures[i]->GetId();
 			m_Textures[startSlot + i] = textures[i];
 		}
 	}
 
 	bool MaterialInstance::DoLoad()
 	{
+		if (m_BaseMat)
+			return true;
+
+		ResourceManager& resourceManager = ResourceManager::GetInstance();
+		m_BaseMat = resourceManager.GetRef<Material>(m_ResourceIds[0]);
+		for (uint32 i = 0; i < s_MaxTextureCount; i++)
+		{
+			if (!m_ResourceIds[1 + i])
+				continue;
+			m_Textures[i] = resourceManager.GetRef<Texture2d>(m_ResourceIds[1 + i]);
+		}
+
 		return m_BaseMat;
+	}
+
+	void MaterialInstance::DoUnload()
+	{
+		if (!m_BaseMat)
+			return;
+		m_BaseMat.Reset();
+		for (auto& texture : m_Textures)
+			texture.Reset();
 	}
 } // namespace brk::rdr
 

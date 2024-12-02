@@ -27,7 +27,9 @@ namespace brk::rdr {
 			std::forward<P>(params),
 			GetBufferOptions(m_BaseMat->m_Options.Get()),
 		}
-	{}
+	{
+		m_ResourceIds[0] = m_BaseMat->GetId();
+	}
 
 	inline EBufferOptions MaterialInstance::GetBufferOptions(
 		MaterialSettings::EOptions matOptions)

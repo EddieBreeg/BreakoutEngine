@@ -130,6 +130,7 @@ namespace brk::rdr {
 		}
 
 		bool DoLoad() override;
+		void DoUnload() override;
 
 		[[nodiscard]] const VertexShader& GetVertexShader() const
 		{
@@ -165,6 +166,7 @@ namespace brk::rdr {
 		ResourceRef<Material> m_BaseMat;
 		Buffer m_ParamBuffer;
 		ResourceRef<Texture2d> m_Textures[s_MaxTextureCount];
+		ULID m_ResourceIds[1 + s_MaxTextureCount] = {};
 	};
 } // namespace brk::rdr
 
