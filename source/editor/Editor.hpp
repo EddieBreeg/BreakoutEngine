@@ -29,6 +29,7 @@ namespace brk::editor {
 
 	private:
 		friend class Singleton<Editor>;
+		static std::unique_ptr<Editor> s_Instance;
 		Editor(
 			ecs::Manager& ecsManager,
 			SceneManager& sceneManager,

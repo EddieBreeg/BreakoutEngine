@@ -54,6 +54,7 @@ namespace brk {
 		ResourceRef<R> GetRef(const ULID id);
 
 	private:
+		static std::unique_ptr<ResourceManager> s_Instance;
 		friend class Singleton<ResourceManager>;
 
 		friend struct RetainTraits<Resource>;

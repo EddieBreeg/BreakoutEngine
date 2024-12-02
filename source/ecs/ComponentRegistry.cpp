@@ -3,6 +3,8 @@
 #include <core/StringViewFormatter.hpp>
 #endif
 
+std::unique_ptr<brk::ecs::ComponentRegistry> brk::ecs::ComponentRegistry::s_Instance;
+
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo(
 	const StringView name) const
 {

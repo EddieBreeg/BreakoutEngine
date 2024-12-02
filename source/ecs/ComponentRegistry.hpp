@@ -69,10 +69,11 @@ namespace brk::ecs {
 		 * \return A reference to the component's info object. Asserts if the object
 		 * wasn't found in the map
 		 */
-		const ComponentInfo& GetInfo(const StringView name) const;
+		BRK_ECS_API const ComponentInfo& GetInfo(const StringView name) const;
 
 	private:
 		friend class Singleton<ComponentRegistry>;
+		BRK_ECS_API static std::unique_ptr<ComponentRegistry> s_Instance;
 		ComponentRegistry() = default;
 
 		template <class C>

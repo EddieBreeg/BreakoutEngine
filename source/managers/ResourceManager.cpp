@@ -4,6 +4,8 @@
 #include <core/ULIDFormatter.hpp>
 #include <entt/entity/registry.hpp>
 
+std::unique_ptr<brk::ResourceManager> brk::ResourceManager::s_Instance;
+
 brk::ResourceManager::~ResourceManager()
 {
 	while (!m_Resources.empty())

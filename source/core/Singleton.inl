@@ -2,31 +2,28 @@
 
 namespace brk {
 	template <class T>
-	std::unique_ptr<T> Singleton<T>::s_Instance = nullptr;
-
-	template <class T>
 	template <class... Args>
 	inline T& Singleton<T>::Init(Args&&... args)
 	{
-		if (s_Instance)
-			return *s_Instance;
-		s_Instance.reset(new T{ std::forward<Args>(args)... });
-		return *s_Instance;
+		if (T::s_Instance)
+			return *T::s_Instance;
+		T::s_Instance.reset(new T{ std::forward<Args>(args)... });
+		return *T::s_Instance;
 	}
 
 	template <class T>
 	inline T& brk::Singleton<T>::GetInstance()
 	{
-		BRK_ASSERT(s_Instance,
+		BRK_ASSERT(T::s_Instance,
 						"Called GetInstance on a uninitialized singleton");
-		return *s_Instance;
+		return *T::s_Instance;
 	}
 
 	template <class T>
 	inline void Singleton<T>::Reset()
 	{
-		if (!s_Instance)
+		if (!T::s_Instance)
 			return;
-		s_Instance.reset();
+		T::s_Instance.reset();
 	}
 } // namespace brk

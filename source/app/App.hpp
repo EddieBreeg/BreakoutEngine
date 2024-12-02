@@ -32,6 +32,7 @@ namespace brk {
 		 * Initializes the application with the provided command line arguments
 		 */
 		friend class Singleton<App>;
+		static std::unique_ptr<App> s_Instance;
 		App(const int argc, const char** argv);
 
 		void InitSystems(const EntryPoint& entryPoint);

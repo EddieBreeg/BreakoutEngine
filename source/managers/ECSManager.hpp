@@ -36,6 +36,7 @@ namespace brk::ecs {
 		~Manager();
 
 	private:
+		static std::unique_ptr<Manager> s_Instance;
 		friend class Singleton<Manager>;
 		Manager();
 

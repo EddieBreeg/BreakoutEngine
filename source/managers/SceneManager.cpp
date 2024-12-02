@@ -50,6 +50,8 @@ namespace {
 	}
 } // namespace
 
+std::unique_ptr<brk::SceneManager> brk::SceneManager::s_Instance;
+
 void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions)
 {
 	BRK_ASSERT(

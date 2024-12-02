@@ -34,8 +34,6 @@ namespace brk {
 
 	protected:
 		Singleton() = default;
-
-		static std::unique_ptr<T> s_Instance;
 	};
 
 } // namespace brk

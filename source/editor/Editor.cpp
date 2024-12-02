@@ -21,6 +21,8 @@
 #include <fstream>
 #include <system_error>
 
+std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
+
 brk::editor::Editor::Editor(
 	ecs::Manager& ecsManager,
 	SceneManager& sceneManager,

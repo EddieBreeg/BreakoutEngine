@@ -47,6 +47,7 @@ namespace brk {
 		}
 
 	private:
+		static std::unique_ptr<SceneManager> s_Instance;
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 
