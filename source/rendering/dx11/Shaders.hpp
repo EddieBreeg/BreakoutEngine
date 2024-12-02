@@ -3,7 +3,7 @@
 #include <core/StringView.hpp>
 
 namespace brk::rdr::d3d {
-	ID3DBlob* CompileShader(
+	BRK_RENDERING_API ID3DBlob* CompileShader(
 		StringView source,
 		const char* target,
 		const char* entryPoint);

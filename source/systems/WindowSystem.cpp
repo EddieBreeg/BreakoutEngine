@@ -31,8 +31,9 @@ namespace {
 	}
 } // namespace
 
-brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
+brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& settings)
 	: m_Settings{ settings }
+	, m_App{ app }
 {
 	const int initCode = SDL_Init(SDL_INIT_VIDEO);
 	BRK_ASSERT(initCode, "Failed to initialize SDL: {}", SDL_GetError());
@@ -45,7 +46,7 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
 
 #if defined(BRK_DEV)
-	ImGui::CreateContext();
+	ImGui::SetCurrentContext(&m_App.GetImGuiContext());
 	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 								  ImGuiConfigFlags_DockingEnable |
 								  ImGuiConfigFlags_ViewportsEnable;
@@ -56,7 +57,7 @@ brk::WindowSystem::WindowSystem(const brk::WindowSystemSettings& settings)
 	style.ScaleAllSizes(uiScale);
 #endif
 
-	rdr::Renderer::s_Instance.Init(m_WinPtr);
+	rdr::Renderer::s_Instance.Init(app, m_WinPtr);
 	rdr::Renderer::s_Instance.m_ClearColor = m_Settings.m_ClearColor;
 }
 
@@ -102,7 +103,7 @@ void brk::WindowSystem::ProcessEvents(World& world)
 		{
 		case SDL_EVENT_WINDOW_CLOSE_REQUESTED:
 			if (evt.window.windowID == mainWindowId)
-				App::GetInstance().Terminate();
+				m_App.Terminate();
 			break;
 		case SDL_EVENT_WINDOW_RESIZED:
 			if (evt.window.windowID == mainWindowId)
@@ -112,7 +113,7 @@ void brk::WindowSystem::ProcessEvents(World& world)
 					uint32(evt.window.data2));
 			}
 			break;
-		case SDL_EVENT_QUIT: App::GetInstance().Terminate(); break;
+		case SDL_EVENT_QUIT: m_App.Terminate(); break;
 		case SDL_EVENT_MOUSE_MOTION:
 		{
 			const int2 pos{ evt.motion.x, evt.motion.y };

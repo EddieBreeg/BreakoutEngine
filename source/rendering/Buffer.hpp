@@ -15,7 +15,7 @@ namespace brk::rdr {
 							 updated. Imples CpuWrite */
 	};
 
-	class Buffer : public BasicResource<Buffer>
+	class BRK_RENDERING_API Buffer : public BasicResource<Buffer>
 	{
 	public:
 		enum EType : int8

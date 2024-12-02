@@ -1,6 +1,6 @@
 file(GLOB RENDERING_HEADERS *.h *.hpp)
 
-add_library(BRK_RENDERING STATIC
+add_library(BRK_RENDERING ${BRK_LIBTYPE}
 	${RENDERING_HEADERS}
 	Material.cpp
 	Mesh.cpp
@@ -35,5 +35,7 @@ target_link_libraries(BRK_RENDERING PRIVATE
 	SDL3::SDL3
 	STB::Image
 )
+
+CreateExports(BRK_RENDERING)
 
 add_library(Breakout::Rendering ALIAS BRK_RENDERING)

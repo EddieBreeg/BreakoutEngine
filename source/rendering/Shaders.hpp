@@ -47,7 +47,7 @@ float4 fs_main(Fragment frag): SV_TARGET
 }
 )hlsl";
 
-	class VertexShader : public BasicResource<VertexShader>
+	class BRK_RENDERING_API VertexShader : public BasicResource<VertexShader>
 	{
 	public:
 		/* Constructs the default vertex shader (compile from s_DefaultShaderCode)*/

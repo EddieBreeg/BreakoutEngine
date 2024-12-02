@@ -56,7 +56,7 @@ namespace brk::rdr {
 		float4 m_BorderColor;
 	};
 
-	class Texture2d : public Resource
+	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
 		using Resource::Resource;

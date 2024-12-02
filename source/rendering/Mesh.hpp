@@ -6,7 +6,7 @@
 #include <core/Resource.hpp>
 
 namespace brk::rdr {
-	class Mesh : public Resource
+	class BRK_RENDERING_API Mesh : public Resource
 	{
 	public:
 		using Resource::Resource;

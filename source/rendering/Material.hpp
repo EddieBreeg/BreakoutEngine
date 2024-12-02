@@ -35,7 +35,7 @@ namespace brk::rdr {
 	 * Generic Material class. The material contains all the information to define the
 	 * rendering pipeline, i.e. shaders, rasterizer settings etc...
 	 */
-	class Material : public Resource
+	class BRK_RENDERING_API Material : public Resource
 	{
 	public:
 		Material(const ULID& id);
@@ -80,7 +80,7 @@ namespace brk::rdr {
 	 * This is meant to be subclassed, because it is unaware of the actual type of
 	 * parameters to upload to the GPU, and therefore can't be loaded from a file
 	 */
-	class MaterialInstance : public Resource
+	class BRK_RENDERING_API MaterialInstance : public Resource
 	{
 	public:
 		/**
@@ -170,7 +170,7 @@ namespace brk::rdr {
 
 namespace brk {
 	template <>
-	struct JsonLoader<rdr::Material, void>
+	struct BRK_RENDERING_API JsonLoader<rdr::Material, void>
 	{
 		static bool Load(rdr::Material& out_mat, const nlohmann::json& json);
 		static void Save(const rdr::Material& mat, nlohmann::json& out_json);

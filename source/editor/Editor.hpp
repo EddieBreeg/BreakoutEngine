@@ -9,6 +9,7 @@
 #include <optional>
 
 namespace brk {
+	class App;
 	class SceneManager;
 } // namespace brk
 
@@ -17,7 +18,7 @@ namespace brk::ecs {
 } // namespace brk::ecs
 
 namespace brk::editor {
-	class Editor : public Singleton<Editor>
+	class BRK_EDITOR_API Editor : public Singleton<Editor>
 	{
 	public:
 		~Editor() = default;
@@ -31,6 +32,7 @@ namespace brk::editor {
 		friend class Singleton<Editor>;
 		static std::unique_ptr<Editor> s_Instance;
 		Editor(
+			App& app,
 			ecs::Manager& ecsManager,
 			SceneManager& sceneManager,
 			int argc,

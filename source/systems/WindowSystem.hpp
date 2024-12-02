@@ -14,6 +14,7 @@
 struct SDL_Window;
 
 namespace brk {
+	class App;
 
 	struct WindowSystemSettings
 	{
@@ -40,7 +41,7 @@ namespace brk {
 		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
 		void Update(World& world, const TimeInfo& timeInfo);
 
-		WindowSystem(const WindowSystemSettings& settings = {});
+		WindowSystem(App& app, const WindowSystemSettings& settings = {});
 		~WindowSystem() { Terminate(); }
 
 		void Terminate();
@@ -50,6 +51,7 @@ namespace brk {
 
 		WindowSystemSettings m_Settings;
 		SDL_Window* m_WinPtr = nullptr;
+		App& m_App;
 	};
 
 } // namespace brk

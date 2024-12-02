@@ -8,9 +8,13 @@
 #include "ui/SceneSelection.hpp"
 #include "ui/StartupWindow.hpp"
 
+#include <app/App.hpp>
+
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
 #include <core/ULIDFormatter.hpp>
+
+#include <imgui.h>
 
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
@@ -24,6 +28,7 @@
 std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
 
 brk::editor::Editor::Editor(
+	App& app,
 	ecs::Manager& ecsManager,
 	SceneManager& sceneManager,
 	int argc,
@@ -31,6 +36,7 @@ brk::editor::Editor::Editor(
 	: m_ECSManager{ ecsManager }
 	, m_SceneManager{ sceneManager }
 {
+	ImGui::SetCurrentContext(&app.GetImGuiContext());
 	if (argc < 2)
 		return;
 	LoadProjectDeferred(argv[1]);

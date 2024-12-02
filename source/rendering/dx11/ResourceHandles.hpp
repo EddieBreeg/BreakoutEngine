@@ -1,6 +1,7 @@
 #pragma once
 
 #include "TypeDefs.hpp"
+#include <rendering/brk_rendering_export.h>
 
 namespace brk::rdr {
 	template <class T>
@@ -12,23 +13,23 @@ namespace brk::rdr {
 	class Texture2d;
 
 	template <>
-	struct ResourceHandle<Buffer>
+	struct BRK_RENDERING_API ResourceHandle<Buffer>
 	{
 		using Type = ID3D11Buffer*;
 	};
 
 	template <>
-	struct ResourceHandle<VertexShader>
+	struct BRK_RENDERING_API ResourceHandle<VertexShader>
 	{
 		using Type = ID3D11VertexShader*;
 	};
 	template <>
-	struct ResourceHandle<FragmentShader>
+	struct BRK_RENDERING_API ResourceHandle<FragmentShader>
 	{
 		using Type = ID3D11PixelShader*;
 	};
 	template <>
-	struct ResourceHandle<Texture2d>
+	struct BRK_RENDERING_API ResourceHandle<Texture2d>
 	{
 		struct Type
 		{
@@ -44,7 +45,7 @@ namespace brk::rdr {
 
 #define DELETER_DECL(Type)                                                               \
 	template <>                                                                          \
-	struct ResourceDeleter<Type*>                                                        \
+	struct BRK_RENDERING_API ResourceDeleter<Type*>                                      \
 	{                                                                                    \
 		void operator()(Type* handle) noexcept;                                          \
 	}

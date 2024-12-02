@@ -15,6 +15,9 @@
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
 #endif
+#ifdef BRK_DEV
+#include <imgui.h>
+#endif
 
 #include <SDL3/SDL_video.h>
 
@@ -24,7 +27,7 @@
 #include "App.hpp"
 
 namespace {
-	void InitWindowSystem(brk::ecs::Manager& manager)
+	void InitWindowSystem(brk::App& app, brk::ecs::Manager& manager)
 	{
 		brk::WindowSystemSettings settings;
 #ifdef BRK_DEV
@@ -32,7 +35,7 @@ namespace {
 #else
 		settings.m_Flags = SDL_WINDOW_FULLSCREEN;
 #endif
-		manager.AddSystem<brk::WindowSystem>(settings);
+		manager.AddSystem<brk::WindowSystem>(app, settings);
 	}
 
 	template <class... S>
@@ -77,6 +80,9 @@ namespace brk {
 	App::App(const EntryPoint& entry, const int argc, const char** argv)
 		: m_Argc{ argc }
 		, m_Argv{ argv }
+#ifdef BRK_DEV
+		, m_ImGuiContext{ ImGui::CreateContext() }
+#endif
 		, m_ECSManager{ ecs::Manager::Init() }
 	{
 		std::locale::global(std::locale("en_US", std::locale::all));
@@ -86,7 +92,7 @@ namespace brk {
 		InitManagers();
 		// the window system needs to be initialized on his own, because it's responsible
 		// for creating the renderer, which we may need to preload resources
-		InitWindowSystem(m_ECSManager);
+		InitWindowSystem(*this, m_ECSManager);
 
 		RegisterResources(entry);
 
@@ -94,6 +100,7 @@ namespace brk {
 		RegisterComponents(entry);
 #ifdef BRK_EDITOR
 		editor::Editor::Init(
+			*this,
 			ecs::Manager::GetInstance(),
 			SceneManager::GetInstance(),
 			m_Argc,

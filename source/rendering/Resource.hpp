@@ -38,7 +38,7 @@ namespace brk::rdr {
 		}
 
 		BasicResource& operator=(const BasicResource&) = delete;
-		BasicResource& operator=(BasicResource&)
+		BasicResource& operator=(BasicResource&& other)
 		{
 			Swap(other);
 			return *this;

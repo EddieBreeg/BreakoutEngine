@@ -5,6 +5,10 @@
 
 struct SDL_Window;
 
+namespace brk {
+	class App;
+}
+
 namespace brk::rdr {
 	class Buffer;
 	class MaterialInstance;
@@ -12,12 +16,12 @@ namespace brk::rdr {
 	struct RendererData;
 
 	/** Platform agnostic rendering api */
-	class Renderer
+	class BRK_RENDERING_API Renderer
 	{
 	public:
 		~Renderer();
 
-		void Init(SDL_Window* window);
+		void Init(App& app, SDL_Window* window);
 		void Shutdown();
 
 #ifdef BRK_DEV
@@ -35,7 +39,10 @@ namespace brk::rdr {
 		void SetModelMatrix(const float4x4& transform);
 		void SetMaterial(const MaterialInstance& material);
 
-		void DrawIndexed(const Buffer& vertexBuffer, const Buffer& indexBuffer, uint32 numIndices);
+		void DrawIndexed(
+			const Buffer& vertexBuffer,
+			const Buffer& indexBuffer,
+			uint32 numIndices);
 
 		void RenderUI();
 

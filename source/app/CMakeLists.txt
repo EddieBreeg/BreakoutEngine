@@ -11,6 +11,7 @@ target_link_libraries(BRK_APP PRIVATE
 	Breakout::ECS
 	Breakout::Managers
 	Breakout::Systems
+	ImGui::ImGui
 )
 target_link_libraries(BRK_APP PRIVATE
 	SDL3::SDL3

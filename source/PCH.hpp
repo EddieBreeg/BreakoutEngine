@@ -55,4 +55,5 @@ using uint64 = uint64_t;
 #include <ecs/brk_ecs_export.h>
 #include <editor/brk_editor_export.h>
 #include <managers/brk_managers_export.h>
+#include <rendering/brk_rendering_export.h>
 #include <systems/brk_systems_export.h>

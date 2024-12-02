@@ -9,7 +9,7 @@
 struct SDL_Window;
 
 namespace brk::rdr {
-	struct RendererData
+	struct BRK_RENDERING_API RendererData
 	{
 		RendererData(SDL_Window& window);
 
