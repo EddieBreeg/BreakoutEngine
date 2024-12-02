@@ -28,12 +28,11 @@ namespace {
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
 	entt::registry& entityWorld)
-	: m_MatInstance{ *resManager.GetRef<rdr::MaterialInstance>(s_MaterialInstanceId) }
 {}
 
 brk::sandbox::TestSystem::~TestSystem() = default;
 
-void brk::sandbox::TestSystem::Update(World&, const TimeInfo& time)
+void brk::sandbox::TestSystem::Update(World& world, const TimeInfo& time)
 {
 	float t = time.GetElapsed().count() * 3;
 	const FragmentParams params{ {
@@ -42,5 +41,12 @@ void brk::sandbox::TestSystem::Update(World&, const TimeInfo& time)
 		.5f * std::sinf(t * 3.0f + .6667f * math::Pi) + .5f,
 		1,
 	} };
-	m_MatInstance.SetParameters(params);
+	auto view = world.Query<ecs::query::Include<MeshComponent>>();
+	for (auto entity : view)
+	{
+		auto& mesh = view.Get<MeshComponent>(entity);
+		if (!mesh)
+			continue;
+		mesh.m_MaterialRef->SetParameters(params);
+	}
 }

@@ -22,10 +22,13 @@ namespace brk {
 			ecs::query::Include<const MeshComponent, const TransformComponent>>();
 		for (entt::entity m : meshes)
 		{
+			const auto& comp = meshes.Get<const MeshComponent>(m);
+			if (!comp)
+				continue;
+
+			renderer.SetMaterial(*comp.m_MaterialRef);
 			const auto& transform = meshes.Get<const TransformComponent>(m);
 			renderer.SetModelMatrix(transform.GetMatrix());
-			const auto& comp = meshes.Get<const MeshComponent>(m);
-			renderer.SetMaterial(*comp.m_MaterialRef);
 			renderer.DrawIndexed(
 				comp.m_MeshRef->GetVertexBuffer(),
 				comp.m_MeshRef->GetIndexBuffer(),

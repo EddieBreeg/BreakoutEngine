@@ -7,6 +7,8 @@
 namespace brk {
 	class ResourceManager;
 	class TimeInfo;
+
+	struct MeshComponent;
 } // namespace brk
 
 namespace brk::rdr {
@@ -20,7 +22,7 @@ namespace brk::sandbox {
 	class TestSystem
 	{
 	public:
-		using World = ecs::WorldView<>;
+		using World = ecs::WorldView<MeshComponent>;
 
 		TestSystem(ResourceManager& resourceManager, entt::registry& entityWorld);
 		void Update(World&, const TimeInfo&);
@@ -28,6 +30,5 @@ namespace brk::sandbox {
 		~TestSystem();
 
 	private:
-		rdr::MaterialInstance& m_MatInstance;
 	};
 } // namespace brk::sandbox

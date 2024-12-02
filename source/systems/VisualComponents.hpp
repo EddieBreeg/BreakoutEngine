@@ -17,6 +17,13 @@ namespace brk {
 		ResourceRef<rdr::MaterialInstance> m_MaterialRef;
 		ResourceRef<rdr::Mesh> m_MeshRef;
 
+		[[nodiscard]] operator bool() const noexcept
+		{
+			return m_MaterialRef && m_MeshRef &&
+				   m_MaterialRef->GetLoadingState() == Resource::Loaded &&
+				   m_MeshRef->GetLoadingState() == Resource::Loaded;
+		}
+
 		static constexpr meta::
 			FieldList<&MeshComponent::m_MaterialRef, &MeshComponent::m_MeshRef>
 				Fields = {
