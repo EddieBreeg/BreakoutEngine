@@ -3,6 +3,6 @@
 
 int main(int argc, const char* argv[])
 {
-	brk::App& app = brk::App::Init(argc, argv);
+	brk::App& app = brk::App::Init(brk::CreateEntryPoint(), argc, argv);
 	app.Run();
 }

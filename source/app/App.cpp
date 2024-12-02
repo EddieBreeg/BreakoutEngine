@@ -74,7 +74,7 @@ namespace brk {
 		return m_KeepRunning;
 	}
 
-	App::App(const int argc, const char** argv)
+	App::App(const EntryPoint& entry, const int argc, const char** argv)
 		: m_Argc{ argc }
 		, m_Argv{ argv }
 		, m_ECSManager{ ecs::Manager::Init() }
@@ -83,8 +83,6 @@ namespace brk {
 #ifdef BRK_DEV
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
-		const EntryPoint entry = CreateEntryPoint();
-
 		InitManagers();
 		// the window system needs to be initialized on his own, because it's responsible
 		// for creating the renderer, which we may need to preload resources
