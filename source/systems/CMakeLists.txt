@@ -8,6 +8,7 @@ add_library(BRK_SYSTEMS
 	WindowSystem.cpp
 	${SYSTEMS_H}
 )
+CreateExports(BRK_SYSTEMS)
 
 target_link_libraries(BRK_SYSTEMS PUBLIC
 	Breakout::ECS

@@ -11,7 +11,7 @@ namespace brk {
 } // namespace brk
 
 namespace brk::editor {
-	class Inspector
+	class BRK_EDITOR_API Inspector
 	{
 	public:
 		~Inspector() = default;

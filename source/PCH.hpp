@@ -51,3 +51,8 @@ using uint64 = uint64_t;
 #endif
 
 #include <core/brk_core_export.h>
+#include <debug/brk_debug_export.h>
+#include <ecs/brk_ecs_export.h>
+#include <editor/brk_editor_export.h>
+#include <managers/brk_managers_export.h>
+#include <systems/brk_systems_export.h>

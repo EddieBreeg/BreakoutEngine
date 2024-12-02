@@ -1,11 +1,13 @@
 
 file(GLOB ECS_HEADERS *.hpp)
 
-add_library(BRK_ECS 
+add_library(BRK_ECS ${BRK_LIBTYPE}
 	ComponentRegistry.cpp
 	System.cpp
 	${ECS_HEADERS}
 )
+
+CreateExports(BRK_ECS)
 
 add_library(Breakout::ECS ALIAS BRK_ECS)
 

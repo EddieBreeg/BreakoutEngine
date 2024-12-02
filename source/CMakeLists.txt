@@ -2,6 +2,14 @@ include(GenerateExportHeader)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
+function(CreateExports LIBNAME)
+	target_compile_definitions(${LIBNAME} PRIVATE ${LIBNAME}_EXPORTS=1)
+	generate_export_header(${LIBNAME}
+		EXPORT_MACRO_NAME ${LIBNAME}_API
+	)
+endfunction(CreateExports MODNAME)
+
+
 add_subdirectory(math)
 add_subdirectory(rendering)
 add_subdirectory(core)

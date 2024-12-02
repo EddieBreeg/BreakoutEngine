@@ -43,8 +43,6 @@ namespace {
 } // namespace
 
 namespace brk {
-	std::unique_ptr<App> App::s_Instance;
-
 	App::~App() {}
 
 	void App::InitSystems(const EntryPoint& entryPoint)

@@ -9,7 +9,7 @@ namespace brk {
 } // namespace brk
 
 namespace brk::editor {
-	class Outliner
+	class BRK_EDITOR_API Outliner
 	{
 	public:
 		static Outliner s_Instance;

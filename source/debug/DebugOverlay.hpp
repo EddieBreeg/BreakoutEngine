@@ -6,7 +6,7 @@
 
 namespace brk::dbg
 {
-	struct Overlay
+	struct BRK_DEBUG_API Overlay
 	{
 		bool m_Enabled = false;
 

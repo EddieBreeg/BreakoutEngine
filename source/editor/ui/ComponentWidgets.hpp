@@ -1,5 +1,7 @@
 #pragma once
 
+#include <editor/brk_editor_export.h>
+
 namespace brk
 {
 	struct MeshComponent;
@@ -8,7 +10,7 @@ namespace brk
 
 namespace brk::editor
 {
-	bool TransformWidget(TransformComponent&);
-	bool MeshComponentWidget(MeshComponent&);
+	BRK_EDITOR_API bool TransformWidget(TransformComponent&);
+	BRK_EDITOR_API bool MeshComponentWidget(MeshComponent&);
 } // namespace brk::editor
 

@@ -15,7 +15,7 @@ namespace brk {
 	/*
 	 * Manages scenes
 	 */
-	class SceneManager : public Singleton<SceneManager>
+	class BRK_MANAGERS_API SceneManager : public Singleton<SceneManager>
 	{
 	public:
 		~SceneManager() = default;

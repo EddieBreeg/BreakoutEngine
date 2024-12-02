@@ -13,7 +13,7 @@ namespace brk
 }
 
 namespace brk::editor {
-	class Project
+	class BRK_EDITOR_API Project
 	{
 	public:
 		Project() = default;

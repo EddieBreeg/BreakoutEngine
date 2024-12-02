@@ -6,21 +6,37 @@
 	},
 	"configurePresets": [
 		{
-			"name": "Default",
+			"name": "_base",
 			"hidden": true,
 			"cacheVariables": {
 				"JSON_BuildTests": "OFF",
 				"SDL_AUDIO": "OFF",
 				"SDL_DISKAUDIO": "OFF",
-				"SDL_DUMMYAUDIO": "OFF",
-				"SDL_SHARED": "OFF",
-				"SDL_STATIC": "ON"
+				"SDL_DUMMYAUDIO": "OFF"
 			},
 			"binaryDir": "build/${presetName}"
 		},
 		{
+			"name": "_base_shared",
+			"hidden": true,
+			"inherits": "_base",
+			"cacheVariables": {
+				"SDL_SHARED": "ON",
+				"SDL_STATIC": "OFF"
+			}
+		},
+		{
+			"name": "_base_static",
+			"hidden": true,
+			"inherits": "_base",
+			"cacheVariables": {
+				"SDL_SHARED": "OFF",
+				"SDL_STATIC": "ON"
+			}
+		},
+		{
 			"name": "win64_shared",
-			"inherits": "Default",
+			"inherits": "_base_shared",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
 				"BRK_RENDER_BACKEND": "DX11",
@@ -29,7 +45,7 @@
 		},
 		{
 			"name": "win64_static",
-			"inherits": "Default",
+			"inherits": "_base_static",
 			"generator": "Visual Studio 17 2022",
 			"cacheVariables": {
 				"BRK_RENDER_BACKEND": "DX11"
@@ -40,7 +56,7 @@
 		{
 			"name": "All",
 			"displayName": "All",
-			"configurePreset": "Default",
+			"configurePreset": "_base_shared",
 			"configuration": "Debug"
 		}
 	],

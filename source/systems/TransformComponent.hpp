@@ -7,7 +7,7 @@
 #include <math/Transform.hpp>
 
 namespace brk {
-	struct TransformComponent
+	struct BRK_SYSTEMS_API TransformComponent
 	{
 		float3 m_Translate = { 0, 0, 0 };
 		float3 m_Scale = { 1, 1, 1 };

@@ -13,7 +13,7 @@ namespace brk
 
 namespace brk::editor
 {
-	void SceneSelectionWindow(const TULIDMap<SceneDescription>& scenes);
+	BRK_EDITOR_API void SceneSelectionWindow(const TULIDMap<SceneDescription>& scenes);
 } // namespace brk::editor
 
 #endif

@@ -14,7 +14,7 @@ namespace brk {
 	/**
 	 * Rendering system
 	 */
-	class VisualSystem
+	class BRK_SYSTEMS_API VisualSystem
 	{
 	public:
 		VisualSystem();

@@ -7,7 +7,7 @@
 #include <unordered_map>
 
 namespace brk {
-	class ResourceManager : public Singleton<ResourceManager>
+	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
 		~ResourceManager();

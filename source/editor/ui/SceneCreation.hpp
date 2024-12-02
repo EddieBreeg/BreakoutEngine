@@ -6,7 +6,7 @@
 #include <core/PlatformMacros.hpp>
 
 namespace brk::editor {
-	class SceneCreationWindow
+	class BRK_EDITOR_API SceneCreationWindow
 	{
 	public:
 		static SceneCreationWindow s_Instance;

@@ -4,7 +4,7 @@
 
 namespace brk::editor
 {
-	void MenuBar();
+	BRK_EDITOR_API void MenuBar();
 }
 
 #endif

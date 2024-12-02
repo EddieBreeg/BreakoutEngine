@@ -9,7 +9,7 @@ namespace brk {
 	/** WIP: This system takes care of all deferred resource loading/unloading requests.
 	 * This will eventually be offloaded to a separate thread
 	 */
-	class ResourceLoadingSystem
+	class BRK_SYSTEMS_API ResourceLoadingSystem
 	{
 	public:
 		using World = ecs::WorldView<>;

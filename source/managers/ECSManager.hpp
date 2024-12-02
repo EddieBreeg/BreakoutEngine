@@ -13,7 +13,7 @@ namespace brk::ecs {
 	/**
 	 * Manages the ECS world and system instances
 	 */
-	class Manager : public brk::Singleton<Manager>
+	class BRK_MANAGERS_API Manager : public brk::Singleton<Manager>
 	{
 	public:
 		/**

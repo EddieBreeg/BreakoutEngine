@@ -11,10 +11,12 @@ add_library(BRK_EDITOR STATIC
 	ui/SceneCreation.cpp
 	ui/SceneSelection.cpp
 )
+CreateExports(BRK_EDITOR)
 
 target_link_libraries(BRK_EDITOR PRIVATE
 	Breakout::Core
 	Breakout::ECS
+	Breakout::Managers
 	ImGui::ImGui
 	TinyFileDialogs
 	BRK_INCLUDES

@@ -5,7 +5,7 @@ add_library(BRK_APP STATIC
 	App.hpp 
 	Entry.hpp)
 
-target_link_libraries(BRK_APP PUBLIC
+target_link_libraries(BRK_APP PRIVATE
 	Breakout::Core
 	Breakout::Editor
 	Breakout::ECS

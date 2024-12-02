@@ -10,7 +10,7 @@ namespace brk::ecs {
 	/**
 	 * An ECS system instance.
 	 */
-	class SystemInstance
+	class BRK_ECS_API SystemInstance
 	{
 	public:
 		SystemInstance(const SystemInstance&) = delete;

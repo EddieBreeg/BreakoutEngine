@@ -5,5 +5,5 @@
 
 namespace brk::editor
 {
-	void StartupWindow();
+	BRK_EDITOR_API void StartupWindow();
 } // namespace brk::editor

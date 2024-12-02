@@ -17,10 +17,7 @@ add_library(BRK_CORE ${BRK_LIBTYPE}
 	ULIDFormatter.cpp
 	${CORE_HEADERS}
 )
-generate_export_header(BRK_CORE
-	EXPORT_MACRO_NAME BRK_CORE_API
-)
-target_compile_definitions(BRK_CORE PRIVATE BRK_CORE_EXPORTS=1)
+CreateExports(BRK_CORE)
 
 if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_DX11)

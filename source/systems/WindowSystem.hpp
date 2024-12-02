@@ -34,7 +34,7 @@ namespace brk {
 	/**
 	 * Handles user input and all things window related
 	 */
-	class WindowSystem
+	class BRK_SYSTEMS_API WindowSystem
 	{
 	public:
 		using World = ecs::WorldView<inputs::EventOneFrameComponent>;
