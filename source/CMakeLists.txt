@@ -45,6 +45,7 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::Systems
 	Breakout::Math
 	Breakout::Editor
+	Breakout::Rendering
 	Breakout::App
 )
 
