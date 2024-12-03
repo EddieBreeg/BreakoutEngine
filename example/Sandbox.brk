@@ -9,6 +9,15 @@
 	],
 	"resources": [
 		{
+			"type": "texture2d",
+			"id": "01JDW4CZM6YB7J6ZJNPMC60THK",
+			"name": "texture1",
+			"file": "Data\\Textures\\breakout.png",
+			"format": 1,
+			"filterMode": 1,
+			"isShaderResource": true
+		},
+		{
 			"type": "material",
 			"id": "01JDS6Q072ERV1WXSSCFKRS8CY",
 			"name": "material1",

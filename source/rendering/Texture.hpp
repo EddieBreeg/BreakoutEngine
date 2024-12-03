@@ -3,6 +3,7 @@
 #include <PCH.hpp>
 #include <core/EnumFlags.hpp>
 #include <core/Resource.hpp>
+#include <core/LoadersFwd.hpp>
 
 #ifdef BRK_DX11
 #include "dx11/ResourceHandles.hpp"
@@ -59,6 +60,7 @@ namespace brk::rdr {
 	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
+		static constexpr StringView Name = "texture2d";
 		using Resource::Resource;
 		/**
 		 * Creates a new texture resource
@@ -86,7 +88,7 @@ namespace brk::rdr {
 
 		bool DoLoad() override;
 		void DoUnload() override;
-		
+
 		[[nodiscard]] HandleType GetHandle() const noexcept { return m_Handle; }
 
 		void Reset();
@@ -94,6 +96,8 @@ namespace brk::rdr {
 		~Texture2d();
 
 	private:
+		friend struct JsonLoader<Texture2d>;
+
 		void Init(const void* data = nullptr);
 
 		friend class Renderer;
@@ -101,3 +105,9 @@ namespace brk::rdr {
 		Texture2dSettings m_Settings = {};
 	};
 } // namespace brk::rdr
+
+template <>
+struct BRK_RENDERING_API brk::JsonLoader<brk::rdr::Texture2d>
+{
+	static bool Load(rdr::Texture2d& out_tex, const nlohmann::json& json);
+};

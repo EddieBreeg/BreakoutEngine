@@ -11,6 +11,7 @@
 #include <editor/ui/ComponentWidgets.hpp>
 
 #include <rendering/Material.hpp>
+#include <rendering/Texture.hpp>
 
 #include <systems/TransformComponent.hpp>
 #include <systems/VisualComponents.hpp>
@@ -32,6 +33,7 @@ void brk::App::RegisterResources(const EntryPoint& entryPoint)
 	auto& manager = ResourceManager::GetInstance();
 	manager.RegisterResourceType<rdr::Material>();
 	manager.RegisterResourceType<rdr::MaterialInstance>();
+	manager.RegisterResourceType<rdr::Texture2d>();
 	if (entryPoint.RegisterGameResources)
 		entryPoint.RegisterGameResources(manager);
 }
