@@ -83,6 +83,9 @@ namespace brk::rdr {
 	class BRK_RENDERING_API MaterialInstance : public Resource
 	{
 	public:
+		static constexpr StringView Name = "materialInstance";
+
+		MaterialInstance(const ULID& id, std::string name = {});
 		/**
 		 * Initializes the material instance, without a null param buffer
 		 * \param baseMat: The material this instance is based on
@@ -198,6 +201,7 @@ namespace brk::rdr {
 
 	private:
 		static EBufferOptions GetBufferOptions(MaterialSettings::EOptions matOptions);
+		friend struct JsonLoader<MaterialInstance>;
 
 		union {
 			struct
@@ -218,10 +222,16 @@ namespace brk::rdr {
 
 namespace brk {
 	template <>
-	struct BRK_RENDERING_API JsonLoader<rdr::Material, void>
+	struct BRK_RENDERING_API JsonLoader<rdr::Material>
 	{
 		static bool Load(rdr::Material& out_mat, const nlohmann::json& json);
 		static void Save(const rdr::Material& mat, nlohmann::json& out_json);
+	};
+
+	template <>
+	struct BRK_RENDERING_API JsonLoader<rdr::MaterialInstance>
+	{
+		static bool Load(rdr::MaterialInstance& out_mat, const nlohmann::json& json);
 	};
 } // namespace brk
 

@@ -72,8 +72,10 @@ namespace brk::rdr {
 
 		const StringView source{ contents.data(), uint32(contents.size()) };
 
-		m_VertexShader = VertexShader{ source };
-		m_FragmentShader = FragmentShader{ source };
+		if (!m_VertexShader)
+			m_VertexShader = VertexShader{ source };
+		if (!m_FragmentShader)
+			m_FragmentShader = FragmentShader{ source };
 		return m_VertexShader && m_FragmentShader;
 	}
 
@@ -88,6 +90,11 @@ namespace brk::rdr {
 		m_VertexShader.Reset();
 		m_FragmentShader.Reset();
 	}
+
+	MaterialInstance::MaterialInstance(const ULID& id, std::string name)
+		: Resource(id, std::move(name), {})
+		, m_ResourceIds{}
+	{}
 
 	MaterialInstance::MaterialInstance(
 		ResourceRef<Material> baseMat,
@@ -254,10 +261,26 @@ namespace brk {
 	{
 		bool useDefaultVShader = false;
 		bool useDefaultFShader = false;
+		bool dynamicParams = false;
 		Visit("useDefaultVertexShader", json, useDefaultVShader);
-		Visit("useDefaultVertexShader", json, useDefaultFShader);
+		Visit("useDefaultFragmentShader", json, useDefaultFShader);
+		Visit("dynamicParamBuffer", json, dynamicParams);
 		out_mat.m_UseDefaultVertexShader = useDefaultVShader;
 		out_mat.m_UseDefaultFragmentShader = useDefaultFShader;
+		if (dynamicParams)
+			out_mat.m_Options.Set(rdr::MaterialSettings::DynamicBufferParam);
+
 		return true;
 	}
+
+	inline bool JsonLoader<rdr::MaterialInstance>::Load(
+		rdr::MaterialInstance& out_mat,
+		const nlohmann::json& json)
+	{
+		if (!Visit("material", json, out_mat.m_ResourceIds.m_MaterialId))
+			return false;
+		Visit("textures", json, out_mat.m_ResourceIds.m_TextureIds);
+		return true;
+	}
+
 } // namespace brk

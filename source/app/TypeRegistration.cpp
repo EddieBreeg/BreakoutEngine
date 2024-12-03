@@ -31,6 +31,7 @@ void brk::App::RegisterResources(const EntryPoint& entryPoint)
 {
 	auto& manager = ResourceManager::GetInstance();
 	manager.RegisterResourceType<rdr::Material>();
+	manager.RegisterResourceType<rdr::MaterialInstance>();
 	if (entryPoint.RegisterGameResources)
 		entryPoint.RegisterGameResources(manager);
 }

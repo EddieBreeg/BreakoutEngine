@@ -42,6 +42,7 @@ brk::InputByteStream brk::Resource::LoadFileContents()
 		return {};
 	}
 	std::vector<char> buf(file.tellg());
+	file.seekg(0, std::ios::beg);
 	file.read(buf.data(), buf.size());
 
 	DEBUG_CHECK(!(file.eof() || file.fail() || file.bad()))

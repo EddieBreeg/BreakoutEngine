@@ -29,19 +29,10 @@ namespace {
 	{
 		using namespace brk;
 
-		constexpr rdr::MaterialSettings settings{
-			{},
-			sandbox::s_FragShaderSource,
-			rdr::MaterialSettings::DynamicBufferParam,
-		};
 		constexpr rdr::Texture2dSettings texSettings = {
 			rdr::EPixelFormat::RGBA8,
 		};
 
-		auto& baseMaterial = manager.AddResource<rdr::Material>(
-			settings,
-			sandbox::s_MaterialId,
-			"material1");
 		manager.AddResource<rdr::Texture2d>(
 			texSettings,
 			sandbox::s_TextureId,
@@ -52,12 +43,6 @@ namespace {
 			s_PlaneIndices,
 			brk::sandbox::s_MeshId,
 			"plane");
-		auto& matInstance = manager.AddResource<rdr::MaterialInstance>(
-			ResourceRef<rdr::Material>{ &baseMaterial },
-			float4{ 1, 1, 1, 1 },
-			sandbox::s_MaterialInstanceId,
-			"mat_instance");
-		matInstance.SetTextureId(0, sandbox::s_TextureId);
 	}
 } // namespace
 
