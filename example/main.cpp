@@ -42,7 +42,7 @@ namespace {
 			settings,
 			sandbox::s_MaterialId,
 			"material1");
-		auto& texture = manager.AddResource<rdr::Texture2d>(
+		manager.AddResource<rdr::Texture2d>(
 			texSettings,
 			sandbox::s_TextureId,
 			"texture1",
@@ -57,7 +57,7 @@ namespace {
 			float4{ 1, 1, 1, 1 },
 			sandbox::s_MaterialInstanceId,
 			"mat_instance");
-		matInstance.SetTexture(0, ResourceRef<rdr::Texture2d>{ &texture });
+		matInstance.SetTextureId(0, sandbox::s_TextureId);
 	}
 } // namespace
 

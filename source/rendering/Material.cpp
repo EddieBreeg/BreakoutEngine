@@ -3,6 +3,7 @@
 #include <core/InputFile.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/ULIDFormatter.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Texture.hpp>
 #include <fstream>
@@ -94,20 +95,36 @@ namespace brk::rdr {
 		std::string name)
 		: Resource(id, std::move(name), {})
 		, m_BaseMat{ std::move(baseMat) }
-	{
-		m_ResourceIds[0] = m_BaseMat->GetId();
-	}
+		, m_Textures{}
+		, m_IsValid{ (bool)m_BaseMat }
+	{}
 
-	MaterialInstance::~MaterialInstance() {}
+	MaterialInstance::~MaterialInstance()
+	{
+		if (!m_IsValid)
+			return;
+		m_BaseMat.Reset();
+		for (auto& texture : m_Textures)
+		{
+			texture.Reset();
+		}
+	}
 
 	void MaterialInstance::SetTexture(uint32 slot, ResourceRef<Texture2d> texture)
 	{
 		BRK_ASSERT(
 			slot < s_MaxTextureCount,
-			"Tried to bind texture to slot {}, valid indices range from 0 to {}",
+			"Tried to bind texture to slot {} on material instance {} ({}), valid "
+			"indices range from 0 to {}",
 			slot,
+			m_Name,
+			m_Id,
 			s_MaxTextureCount - 1);
-		m_ResourceIds[slot + 1] = texture->GetId();
+		BRK_ASSERT(
+			m_IsValid,
+			"Called SetTexture on invalid material instance {} ({})",
+			m_Name,
+			m_Id);
 		m_Textures[slot] = std::move(texture);
 	}
 
@@ -125,38 +142,108 @@ namespace brk::rdr {
 				numTextures,
 				startSlot,
 				s_MaxTextureCount);
+			return;
 		}
+		BRK_ASSERT(
+			m_IsValid,
+			"Called SetTexture on invalid material instance {} ({})",
+			m_Name,
+			m_Id);
 		for (uint32 i = 0; i < numTextures; i++)
-		{
-			m_ResourceIds[1 + startSlot + i] = textures[i]->GetId();
 			m_Textures[startSlot + i] = textures[i];
+	}
+
+	void MaterialInstance::SetTextureId(uint32 slot, const ULID& id)
+	{
+		BRK_ASSERT(
+			slot < s_MaxTextureCount,
+			"Tried to bind texture to slot {} on material instance {} ({}), valid "
+			"indices range from 0 to {}",
+			slot,
+			m_Name,
+			m_Id,
+			s_MaxTextureCount - 1);
+		if (!m_IsValid)
+		{
+			m_ResourceIds.m_TextureIds[slot] = id;
+			return;
 		}
+		m_Textures[slot] = ResourceManager::GetInstance().GetRef<Texture2d>(id);
+	}
+
+	void MaterialInstance::SetTextureIds(const ULID* ids, uint32 numIds, uint32 startSlot)
+	{
+		DEBUG_CHECK((numIds + startSlot) <= s_MaxTextureCount)
+		{
+			numIds = s_MaxTextureCount - startSlot;
+			BRK_LOG_WARNING(
+				"Called MaterialInstance::SetTextures with {} textures starting at slot "
+				"{}, but max is {}",
+				numIds,
+				startSlot,
+				s_MaxTextureCount);
+			return;
+		}
+		if (!m_IsValid)
+		{
+			for (uint32 i = 0; i < numIds; i++)
+				m_ResourceIds.m_TextureIds[startSlot + i] = ids[i];
+			return;
+		}
+		auto& resourceManager = ResourceManager::GetInstance();
+		for (uint32 i = 0; i < numIds; i++)
+			m_Textures[startSlot + i] = resourceManager.GetRef<Texture2d>(ids[i]);
 	}
 
 	bool MaterialInstance::DoLoad()
 	{
-		if (m_BaseMat)
+		if (m_IsValid)
 			return true;
 
+		const auto temp = m_ResourceIds;
+		m_ResourceIds = {};
+
 		ResourceManager& resourceManager = ResourceManager::GetInstance();
-		m_BaseMat = resourceManager.GetRef<Material>(m_ResourceIds[0]);
+		new (&m_BaseMat) ResourceRef<Material>{
+			resourceManager.GetRef<Material>(temp.m_MaterialId),
+		};
+		m_IsValid = (bool)m_BaseMat;
+		if (!m_IsValid)
+			return false;
+
 		for (uint32 i = 0; i < s_MaxTextureCount; i++)
 		{
-			if (!m_ResourceIds[1 + i])
+			const ULID texId = temp.m_TextureIds[i];
+			if (!texId)
+			{
+				new (m_Textures + i) ResourceRef<Texture2d>{};
 				continue;
-			m_Textures[i] = resourceManager.GetRef<Texture2d>(m_ResourceIds[1 + i]);
+			}
+			new (m_Textures + i) ResourceRef<Texture2d>{
+				resourceManager.GetRef<Texture2d>(texId),
+			};
 		}
-
-		return m_BaseMat;
+		return true;
 	}
 
 	void MaterialInstance::DoUnload()
 	{
-		if (!m_BaseMat)
+		if (!m_IsValid)
 			return;
+		decltype(m_ResourceIds) temp = {};
+		temp.m_MaterialId = m_BaseMat->GetId();
 		m_BaseMat.Reset();
-		for (auto& texture : m_Textures)
-			texture.Reset();
+
+		for (uint32 i = 0; i < s_MaxTextureCount; ++i)
+		{
+			if (m_Textures[i])
+			{
+				temp.m_TextureIds[i] = m_Textures[i]->GetId();
+				m_Textures[i].Reset();
+			}
+		}
+		m_ResourceIds = temp;
+		m_IsValid = false;
 	}
 } // namespace brk::rdr
 

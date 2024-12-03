@@ -111,7 +111,22 @@ namespace brk::rdr {
 
 		static constexpr uint32 s_MaxTextureCount = 8;
 
+		/** Binds a texture reference to a texture slot of the material instance
+		 * The texture will be accessible from all shader stages. Valid slot indices
+		 * range from 0 to s_MaxTextureCount - 1.
+		 * \warning This function requires the material instance to be valid (i.e. holding
+		 * a valid material reference), and will assert otherwise
+		 */
 		void SetTexture(uint32 slot, ResourceRef<Texture2d> texture);
+		/** Binds a texture references to a texture slot of the material instance
+		 * The textures will be accessible from all shader stages. Valid slot indices
+		 * range from 0 to s_MaxTextureCount - 1.
+		 * \param textures: An array of texture references used to populate the slots
+		 * \param numTextures: The number of textures in the array
+		 * \param startSlot: The first slot index which will be populated
+		 * \warning This function requires the material instance to be valid, and will
+		 * assert otherwise
+		 */
 		void SetTextures(
 			const ResourceRef<Texture2d>* textures,
 			uint32 numTextures,
@@ -122,6 +137,25 @@ namespace brk::rdr {
 			uint32 startSlot = 0)
 		{
 			SetTextures(textures, N, startSlot);
+		}
+
+		/**
+		 * Sets the texture id for a specific slot. If the material instance is valid,
+		 * the texture will be fetched directly from the resource manager. Otherwise,
+		 * the id will be stored, and the texture will be retrieved when DoLoad is called.
+		 */
+		void SetTextureId(uint32 slot, const ULID& id);
+		/**
+		 * Sets the texture id for a specific slot. If the material instance is valid,
+		 * the textures will be fetched directly from the resource manager. Otherwise,
+		 * the ids will be stored, and the textures will be retrieved when DoLoad is
+		 * called.
+		 */
+		void SetTextureIds(const ULID* ids, uint32 numIds, uint32 startSlot = 0);
+		template <uint32 N>
+		void SetTextureIds(const ULID (&ids)[N], uint32 startSlot = 0)
+		{
+			SetTextureIds(ids, N, startSlot);
 		}
 
 		[[nodiscard]] const ResourceRef<Texture2d>* GetTextures() const noexcept
@@ -152,6 +186,8 @@ namespace brk::rdr {
 			return m_BaseMat->m_Options.Get();
 		}
 
+		[[nodiscard]] bool IsValid() const noexcept { return m_IsValid; }
+
 		/**
 		 * Updates the parameter buffer with the provided object
 		 * \param params: This object will be directly uploaded to the GPU, and made
@@ -163,10 +199,20 @@ namespace brk::rdr {
 	private:
 		static EBufferOptions GetBufferOptions(MaterialSettings::EOptions matOptions);
 
-		ResourceRef<Material> m_BaseMat;
+		union {
+			struct
+			{
+				ResourceRef<Material> m_BaseMat;
+				ResourceRef<Texture2d> m_Textures[s_MaxTextureCount];
+			};
+			struct
+			{
+				ULID m_MaterialId;
+				ULID m_TextureIds[s_MaxTextureCount];
+			} m_ResourceIds;
+		};
 		Buffer m_ParamBuffer;
-		ResourceRef<Texture2d> m_Textures[s_MaxTextureCount];
-		ULID m_ResourceIds[1 + s_MaxTextureCount] = {};
+		bool m_IsValid = false;
 	};
 } // namespace brk::rdr
 

@@ -22,14 +22,14 @@ namespace brk::rdr {
 		std::string name)
 		: Resource(id, std::move(name), {})
 		, m_BaseMat{ std::move(baseMat) }
+		, m_Textures{}
 		, m_ParamBuffer{
 			Buffer::ParamBuffer,
 			std::forward<P>(params),
 			GetBufferOptions(m_BaseMat->m_Options.Get()),
 		}
-	{
-		m_ResourceIds[0] = m_BaseMat->GetId();
-	}
+		, m_IsValid{(bool)m_BaseMat}
+	{}
 
 	inline EBufferOptions MaterialInstance::GetBufferOptions(
 		MaterialSettings::EOptions matOptions)
