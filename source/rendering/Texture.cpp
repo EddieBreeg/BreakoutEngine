@@ -1,6 +1,6 @@
 #include "Texture.hpp"
 #include <core/LogManager.hpp>
-#include <core/ULIDFormatter.hpp>
+#include <core/ResourceFormatter.hpp>
 
 #include <cstdio>
 #define STB_IMAGE_IMPLEMENTATION
@@ -37,17 +37,15 @@ bool brk::rdr::Texture2d::DoLoad()
 
 	BRK_ASSERT(
 		m_FilePath.length(),
-		"Can't load texture {} ({}): empty file path",
-		m_Name,
-		m_Id);
+		"Can't load texture {}: empty file path",
+		static_cast<const Resource&>(*this));
 	int32 width = 0, height = 0, numChannels = 0;
 	FILE* file = std::fopen(m_FilePath.c_str(), "rb");
 	if (!file)
 	{
 		BRK_LOG_ERROR(
-			"Cannot load texture {} ({}) from file {}: {}",
-			m_Name,
-			m_Id,
+			"Cannot load texture {} from file {}: {}",
+			static_cast<const Resource&>(*this),
 			m_FilePath,
 			std::strerror(errno));
 		return false;

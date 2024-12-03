@@ -1,7 +1,7 @@
 #include "Resource.hpp"
 #include "Loaders.hpp"
 #include "LogManager.hpp"
-#include "ULIDFormatter.hpp"
+#include "ResourceFormatter.hpp"
 #include <fstream>
 
 brk::Resource::Resource(const ULID id)
@@ -29,9 +29,8 @@ brk::InputByteStream brk::Resource::LoadFileContents()
 {
 	BRK_ASSERT(
 		m_FilePath.length(),
-		"Called LoadFileContents on resource {} ({}) with empty file path",
-		m_Name,
-		m_Id);
+		"Called LoadFileContents on resource {} with empty file path",
+		*this);
 	std::ifstream file{ m_FilePath, std::ios_base::binary | std::ios_base::ate };
 	DEBUG_CHECK(file.is_open())
 	{

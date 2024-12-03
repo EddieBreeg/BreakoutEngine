@@ -3,7 +3,7 @@
 #include <core/InputFile.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
-#include <core/ULIDFormatter.hpp>
+#include <core/ResourceFormatter.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Texture.hpp>
 #include <fstream>
@@ -121,17 +121,15 @@ namespace brk::rdr {
 	{
 		BRK_ASSERT(
 			slot < s_MaxTextureCount,
-			"Tried to bind texture to slot {} on material instance {} ({}), valid "
+			"Tried to bind texture to slot {} on material instance {}, valid "
 			"indices range from 0 to {}",
 			slot,
-			m_Name,
-			m_Id,
+			static_cast<const Resource&>(*this),
 			s_MaxTextureCount - 1);
 		BRK_ASSERT(
 			m_IsValid,
-			"Called SetTexture on invalid material instance {} ({})",
-			m_Name,
-			m_Id);
+			"Called SetTexture on invalid material instance {}",
+			static_cast<const Resource&>(*this));
 		m_Textures[slot] = std::move(texture);
 	}
 
@@ -153,9 +151,8 @@ namespace brk::rdr {
 		}
 		BRK_ASSERT(
 			m_IsValid,
-			"Called SetTexture on invalid material instance {} ({})",
-			m_Name,
-			m_Id);
+			"Called SetTexture on invalid material instance {}",
+			static_cast<const Resource&>(*this));
 		for (uint32 i = 0; i < numTextures; i++)
 			m_Textures[startSlot + i] = textures[i];
 	}
@@ -164,11 +161,10 @@ namespace brk::rdr {
 	{
 		BRK_ASSERT(
 			slot < s_MaxTextureCount,
-			"Tried to bind texture to slot {} on material instance {} ({}), valid "
+			"Tried to bind texture to slot {} on material instance {}, valid "
 			"indices range from 0 to {}",
 			slot,
-			m_Name,
-			m_Id,
+			static_cast<const Resource&>(*this),
 			s_MaxTextureCount - 1);
 		if (!m_IsValid)
 		{

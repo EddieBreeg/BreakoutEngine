@@ -6,6 +6,7 @@ add_library(BRK_CORE ${BRK_LIBTYPE}
 	InputFile.cpp
 	LogManager.cpp
 	Resource.cpp
+	ResourceFormatter.cpp
 	ResourceRef.cpp
 	RNG.cpp
 	Scene.cpp

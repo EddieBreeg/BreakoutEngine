@@ -13,7 +13,7 @@
 #include <core/Assert.hpp>
 #include <core/LogManager.hpp>
 #include <core/DebugBreak.hpp>
-#include <core/ULIDFormatter.hpp>
+#include <core/ResourceFormatter.hpp>
 
 #include <imgui.h>
 #include <backends/imgui_impl_dx11.h>
@@ -494,21 +494,19 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 	DEBUG_CHECK(pipelineState.m_VertexShader)
 	{
 		BRK_LOG_ERROR(
-			"Tried to bind material {} ({}) to the pipeline, which has an invalid vertex "
+			"Tried to bind material {} to the pipeline, which has an invalid vertex "
 			"shader",
-			material.GetName(),
-			material.GetId());
+			static_cast<const Resource&>(material));
 		return;
 	}
 	pipelineState.m_PixelShader = material.GetFragmentShader().GetHandle();
 	DEBUG_CHECK(pipelineState.m_PixelShader)
 	{
 		BRK_LOG_ERROR(
-			"Tried to bind material {} ({}) to the pipeline, which has an invalid "
+			"Tried to bind material {} to the pipeline, which has an invalid "
 			"fragment "
 			"shader",
-			material.GetName(),
-			material.GetId());
+			static_cast<const Resource&>(material));
 		return;
 	}
 
@@ -525,10 +523,9 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 		DEBUG_CHECK(handle.m_ShaderResource && handle.m_Sampler)
 		{
 			BRK_LOG_ERROR(
-				"Tried to bind texture {} ({}) to render pipeline, but texture isn't a "
+				"Tried to bind texture {} to render pipeline, but texture isn't a "
 				"shader resource",
-				textures[i]->GetName(),
-				textures[i]->GetId());
+				static_cast<const Resource&>(*textures[i]));
 			continue;
 		}
 		pipelineState.m_Samplers[i] = handle.m_Sampler;
