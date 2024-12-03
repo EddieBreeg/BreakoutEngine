@@ -8,17 +8,8 @@
 #include <rendering/Vertex.hpp>
 #include <rendering/Texture.hpp>
 #include <systems/VisualComponents.hpp>
-#include "Static.hpp"
 
 namespace {
-	static constexpr uint32 s_Indices[] = { 0, 1, 2, 2, 3, 0 };
-	static constexpr brk::rdr::Vertex3d s_Vertices[] = {
-		{ { -.5f, -.5f, 0 }, { 0, 0, 1 }, { 0, 0 } },
-		{ { .5f, -.5f, 0 }, { 0, 0, 1 }, { 1, 0 } },
-		{ { .5f, .5f, 0 }, { 0, 0, 1 }, { 1, 1 } },
-		{ { -.5f, .5f, 0 }, { 0, 0, 1 }, { 0, 1 } },
-	};
-
 	struct FragmentParams
 	{
 		float4 m_DiffuseColor;

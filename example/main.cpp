@@ -1,11 +1,10 @@
 #include <app/Entry.hpp>
-#include "TestSystem.hpp"
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Material.hpp>
 #include <rendering/Mesh.hpp>
 #include <rendering/Texture.hpp>
-#include "Static.hpp"
+#include "TestSystem.hpp"
 
 namespace {
 	static constexpr brk::rdr::Vertex3d s_PlaneVertices[] = {
@@ -15,6 +14,8 @@ namespace {
 		{ { -.5f, .5f, 0 }, { 0, 0, 1 }, { 0, 1 } },
 	};
 	static constexpr uint32 s_PlaneIndices[] = { 0, 1, 2, 2, 3, 0 };
+
+	constexpr brk::ULID s_MeshId = brk::ULID::FromString("01JDYJJNF0R14DEZ74XR2YEK5G");
 
 	void RegisterGameSystems(brk::ecs::Manager& ecsManager)
 	{
@@ -29,11 +30,8 @@ namespace {
 	{
 		using namespace brk;
 
-		manager.AddResource<rdr::Mesh>(
-			s_PlaneVertices,
-			s_PlaneIndices,
-			brk::sandbox::s_MeshId,
-			"plane");
+		manager
+			.AddResource<rdr::Mesh>(s_PlaneVertices, s_PlaneIndices, s_MeshId, "plane");
 	}
 } // namespace
 
