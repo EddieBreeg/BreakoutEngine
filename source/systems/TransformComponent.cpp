@@ -4,6 +4,8 @@
 
 float4x4 brk::TransformComponent::GetMatrix() const
 {
-	return glm::scale(glm::translate(glm::identity<float4x4>(), m_Translate), m_Scale) *
-		   glm::mat4_cast(m_Rotation);
+	return glm::scale(
+		glm::translate(glm::identity<float4x4>(), m_Translate) *
+			glm::mat4_cast(m_Rotation),
+		m_Scale);
 }
