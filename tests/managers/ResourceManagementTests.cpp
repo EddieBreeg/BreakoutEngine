@@ -1,8 +1,9 @@
 #include <managers/ResourceManager.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/ResourceLoader.hpp>
+
 #include <entt/entity/registry.hpp>
-#include <systems/ResourceLoadingSystem.hpp>
 #include <cassert>
 
 namespace brk::resource_ref::ut {
@@ -60,9 +61,14 @@ namespace brk::resource_ref::ut {
 		RAIIHelper()
 			: m_Manager{ ResourceManager::Init(m_EntityWorld) }
 		{
+			ResourceLoader::Init();
 			LogManager::GetInstance().m_Level = LogManager::Trace;
 		}
-		~RAIIHelper() { m_Manager.Reset(); }
+		~RAIIHelper()
+		{
+			m_Manager.Reset();
+			ResourceLoader::Reset();
+		}
 
 		entt::registry m_EntityWorld;
 		ResourceManager& m_Manager;
@@ -98,14 +104,14 @@ namespace brk::resource_ref::ut {
 			assert(ref);
 			assert(ref->GetLoadingState() == Resource::Loading);
 
-			assert(ResourceLoadingRequests::s_Instance.m_LoadRequests.size() == 1);
+			assert(ResourceLoader::GetInstance().GetQueueSize() == 1);
 
 			ref->DoLoad();
 			auto* rawPtr = ref.Get();
 			ref.Reset();
 			assert(rawPtr->GetLoadingState() == Resource::Unloading);
 			{
-				assert(ResourceLoadingRequests::s_Instance.m_UnloadRequests.size() == 1);
+				assert(ResourceLoader::GetInstance().GetQueueSize() == 2);
 			}
 			ResourceRef<Res1> ref2 = helper.m_Manager.GetRef<Res1>(s_ResId3);
 			assert(!ref2);

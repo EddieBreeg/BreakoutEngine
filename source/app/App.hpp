@@ -9,6 +9,8 @@ namespace brk::ecs {
 }
 
 namespace brk {
+	class ResourceLoader;
+
 	struct EntryPoint;
 
 	/**
@@ -69,6 +71,7 @@ namespace brk {
 #endif
 
 		ecs::Manager& m_ECSManager;
+		ResourceLoader& m_ResourceLoader;
 		bool m_KeepRunning = true;
 	};
 } // namespace brk

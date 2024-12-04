@@ -60,11 +60,11 @@ namespace brk {
 #ifndef BRK_DEV
 		uint32 m_Offset;
 #endif
-		uint32 m_RefCount = 0;
-		ELoadingState m_LoadingState = Unloaded;
+		std::atomic<uint32> m_RefCount = 0;
+		std::atomic<ELoadingState> m_LoadingState = Unloaded;
 
+		friend class ResourceLoader;
 		friend class ResourceLoadingSystem;
-		friend class ResourceManager;
 		friend struct JsonLoader<Resource>;
 		friend struct RetainTraits<Resource>;
 	};
@@ -73,17 +73,5 @@ namespace brk {
 	struct BRK_CORE_API JsonLoader<Resource>
 	{
 		static bool Load(Resource& out_res, const nlohmann::json& json);
-	};
-
-	struct BRK_CORE_API ResourceLoadingRequests
-	{
-		std::vector<Resource*> m_LoadRequests;
-		std::vector<Resource*> m_UnloadRequests;
-
-		static ResourceLoadingRequests s_Instance;
-
-	private:
-		ResourceLoadingRequests() = default;
-		ResourceLoadingRequests(const ResourceLoadingRequests&) = delete;
 	};
 } // namespace brk

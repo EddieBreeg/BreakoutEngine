@@ -1,6 +1,7 @@
 #include "Entry.hpp"
 
 #include <core/LogManager.hpp>
+#include <core/ResourceLoader.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
@@ -21,7 +22,6 @@
 
 #include <SDL3/SDL_video.h>
 
-#include <systems/ResourceLoadingSystem.hpp>
 #include <systems/VisualSystem.hpp>
 #include <systems/WindowSystem.hpp>
 #include "App.hpp"
@@ -51,8 +51,6 @@ namespace brk {
 	void App::InitSystems(const EntryPoint& entryPoint)
 	{
 		{
-			m_ECSManager.AddSystem<ResourceLoadingSystem>();
-
 			if (entryPoint.RegisterGameSystems)
 				entryPoint.RegisterGameSystems(m_ECSManager);
 
@@ -73,6 +71,7 @@ namespace brk {
 #ifdef BRK_EDITOR
 		editor::Editor::GetInstance().Update();
 #endif
+		m_ResourceLoader.ProcessBatch();
 		m_GameTime.Update();
 		return m_KeepRunning;
 	}
@@ -84,6 +83,7 @@ namespace brk {
 		, m_ImGuiContext{ ImGui::CreateContext() }
 #endif
 		, m_ECSManager{ ecs::Manager::Init() }
+		, m_ResourceLoader{ ResourceLoader::Init() }
 	{
 		std::locale::global(std::locale("en_US", std::locale::all));
 #ifdef BRK_DEV
@@ -127,6 +127,7 @@ namespace brk {
 
 	void App::Cleanup()
 	{
+		m_ResourceLoader.StopDeferred();
 		ecs::Manager::GetInstance().Clear();
 
 		DestroySingletons<
@@ -135,7 +136,8 @@ namespace brk {
 #endif
 			ResourceManager,
 			SceneManager,
-			ecs::Manager>(); // ensure the ecs manager is destroyed LAST, other managers
-							 // might still need the entity world!
+			ecs::Manager, // ensure the ecs manager is destroyed LAST, other managers
+						  // might still need the entity world!
+			ResourceLoader>();
 	}
 } // namespace brk

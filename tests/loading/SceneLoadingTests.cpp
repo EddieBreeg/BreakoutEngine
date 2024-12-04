@@ -1,5 +1,6 @@
 #include <core/FieldList.hpp>
 #include <core/Loaders.hpp>
+#include <core/ResourceLoader.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include <managers/SceneManager.hpp>
 #include <nlohmann/json.hpp>
@@ -20,7 +21,8 @@ namespace brk::scene_loading::ut {
 	{
 	public:
 		RAIIHelper()
-			: m_SceneManager{ SceneManager::Init() }
+			: m_ResLoader{ ResourceLoader::Init() }
+			, m_SceneManager{ SceneManager::Init() }
 			, m_Registry{ ecs::ComponentRegistry::Init() }
 			, m_ECSManager{ ecs::Manager::Init() }
 			, m_World{ m_ECSManager.GetWorld() }
@@ -34,8 +36,10 @@ namespace brk::scene_loading::ut {
 			m_Registry.Reset();
 			m_SceneManager.Reset();
 			m_ResManager.Reset();
+			ResourceLoader::Reset();
 		}
 
+		ResourceLoader& m_ResLoader;
 		SceneManager& m_SceneManager;
 		ecs::ComponentRegistry& m_Registry;
 		ecs::Manager& m_ECSManager;
@@ -79,6 +83,8 @@ namespace brk::scene_loading::ut {
 		};
 		helper.m_SceneManager.LoadSceneDescriptions(sceneDesc);
 		helper.m_SceneManager.LoadScene(ULID::FromString(s_SceneId1));
+		helper.m_ResLoader.ProcessBatch();
+		helper.m_ResLoader.Wait();
 
 		{
 			const ecs::GameObject* object = helper.m_SceneManager.GetObject(s_ObjectId1);

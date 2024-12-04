@@ -1,3 +1,4 @@
+#include <core/ResourceLoader.hpp>
 #include <editor/Editor.hpp>
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
@@ -22,7 +23,8 @@ namespace brk::project_loading::ut {
 	struct RAIIHelper
 	{
 		RAIIHelper()
-			: m_ECSManager{ ecs::Manager::Init() }
+			: m_ResLoader{ ResourceLoader::Init() }
+			, m_ECSManager{ ecs::Manager::Init() }
 			, m_ResManager{ ResourceManager::Init(m_ECSManager.GetWorld()) }
 			, m_SceneManager{ SceneManager::Init() }
 			, m_Editor{ editor::Editor::Init(
@@ -35,6 +37,7 @@ namespace brk::project_loading::ut {
 			m_ResManager.RegisterResourceType<Res1>();
 		}
 
+		ResourceLoader& m_ResLoader;
 		ecs::Manager& m_ECSManager;
 		ResourceManager& m_ResManager;
 		SceneManager& m_SceneManager;
@@ -46,6 +49,7 @@ namespace brk::project_loading::ut {
 			m_ECSManager.Reset();
 			m_SceneManager.Reset();
 			m_ResManager.Reset();
+			ResourceLoader::Reset();
 			ImGui::DestroyContext();
 		}
 	};
@@ -56,6 +60,8 @@ namespace brk::project_loading::ut {
 			RAIIHelper helper;
 			helper.m_Editor.LoadProjectDeferred(DATA_DIR "/testProj.brk");
 			helper.m_Editor.Update();
+			helper.m_ResLoader.ProcessBatch();
+			helper.m_ResLoader.Wait();
 
 			RetainPtr ref = helper.m_ResManager.GetRef<Res1>(s_ResId1);
 			assert(ref);

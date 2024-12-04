@@ -1,6 +1,5 @@
 #include "ResourceRef.hpp"
-
-brk::ResourceLoadingRequests brk::ResourceLoadingRequests::s_Instance;
+#include "ResourceLoader.hpp"
 
 void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 {
@@ -8,7 +7,7 @@ void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 		res->m_LoadingState != Resource::Loaded)
 	{
 		res->m_LoadingState = Resource::Loading;
-		ResourceLoadingRequests::s_Instance.m_LoadRequests.emplace_back(res);
+		ResourceLoader::GetInstance().AddJob(res);
 	}
 }
 
@@ -18,7 +17,7 @@ void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 		res->m_LoadingState != Resource::Unloading)
 	{
 		res->m_LoadingState = Resource::Unloading;
-		ResourceLoadingRequests::s_Instance.m_UnloadRequests.emplace_back(res);
+		ResourceLoader::GetInstance().AddJob(res, false);
 	}
 }
 

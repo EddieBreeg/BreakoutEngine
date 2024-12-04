@@ -31,17 +31,21 @@ R& brk::ResourceManager::AddResource(Args&&... args)
 	static_assert(std::is_base_of_v<Resource, R>, "R must inherit from Resource");
 	R* res = new R{ std::forward<Args>(args)... };
 	Resource* temp = static_cast<Resource*>(res);
-	BRK_ASSERT(temp->m_Id, "Newly created resource has invalid ULID");
-	BRK_ASSERT(
-		m_Resources.try_emplace(temp->m_Id, temp).second,
-		"Couldn't add resource {} to the manager: ID already present",
-		temp->m_Id);
+	BRK_ASSERT(temp->GetId(), "Newly created resource has invalid ULID");
+	{
+		std::unique_lock lock{ m_Mutex };
+		BRK_ASSERT(
+			m_Resources.try_emplace(temp->GetId(), temp).second,
+			"Couldn't add resource {} to the manager: ID already present",
+			temp->GetId());
+	}
 	return *res;
 }
 
 template <class R>
 brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id)
 {
+	std::shared_lock lock{ m_Mutex };
 	const auto it = m_Resources.find(id);
 	DEBUG_CHECK(it != m_Resources.end())
 	{
@@ -50,6 +54,8 @@ brk::ResourceRef<R> brk::ResourceManager::GetRef(const ULID id)
 	using TRef = ResourceRef<R>;
 
 	Resource* ptr = it->second;
+	lock.unlock();
+
 	BRK_ASSERT(dynamic_cast<R*>(ptr), "Invalid cast for resource {}!", ptr->GetId());
 	return TRef{ static_cast<R*>(ptr) };
 }

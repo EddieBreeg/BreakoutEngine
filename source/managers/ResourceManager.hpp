@@ -4,6 +4,8 @@
 #include <core/ResourceRef.hpp>
 #include <core/Singleton.hpp>
 #include <entt/entity/fwd.hpp>
+
+#include <shared_mutex>
 #include <unordered_map>
 
 namespace brk {
@@ -72,6 +74,7 @@ namespace brk {
 		using TTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
 		TTypeMap m_TypeMap;
 		entt::registry& m_World;
+		std::shared_mutex m_Mutex;
 	};
 
 	template <class R>

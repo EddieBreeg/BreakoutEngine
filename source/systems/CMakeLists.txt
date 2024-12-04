@@ -2,7 +2,6 @@
 file(GLOB SYSTEMS_H *.h *.hpp *.inl)
 
 add_library(BRK_SYSTEMS ${BRK_LIBTYPE}
-	ResourceLoadingSystem.cpp
 	TransformComponent.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp

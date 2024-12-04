@@ -8,6 +8,7 @@ std::unique_ptr<brk::ResourceManager> brk::ResourceManager::s_Instance;
 
 brk::ResourceManager::~ResourceManager()
 {
+	std::unique_lock lock{ m_Mutex };
 	while (!m_Resources.empty())
 	{
 		for (auto it = m_Resources.begin(); it != m_Resources.end();)
@@ -41,8 +42,11 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 			continue;
 		}
 
-		if (m_Resources.find(resId) != m_Resources.end())
-			continue;
+		{
+			std::shared_lock lock{ m_Mutex };
+			if (m_Resources.find(resId) != m_Resources.end())
+				continue;
+		}
 
 		if (!Visit("type", desc, resType))
 		{
@@ -70,6 +74,7 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 			delete res;
 			continue;
 		}
+		std::unique_lock lock{ m_Mutex };
 		m_Resources.emplace(res->GetId(), res);
 	}
 }

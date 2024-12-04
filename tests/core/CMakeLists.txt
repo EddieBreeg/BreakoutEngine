@@ -13,6 +13,7 @@ add_executable(CoreTests main.cpp
 	
 add_executable(ThreadingTests thread_main.cpp	
 	ThreadPoolTests.cpp
+	ResourceLoaderTests.cpp
 )
 
 target_link_libraries(CoreTests PRIVATE
@@ -25,3 +26,4 @@ target_link_libraries(ThreadingTests PRIVATE
 )
 
 add_test(NAME CoreTests COMMAND CoreTests)
+add_test(NAME ThreadingTests COMMAND ThreadingTests)
