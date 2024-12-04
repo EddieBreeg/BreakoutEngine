@@ -248,6 +248,20 @@ namespace brk::rdr {
 		m_ResourceIds = temp;
 		m_IsValid = false;
 	}
+
+	bool MaterialInstance::IsLoaded() const noexcept
+	{
+		if (!m_IsValid)
+			return false;
+		if (!m_BaseMat->IsLoaded())
+			return false;
+		for (auto& texture : m_Textures)
+		{
+			if (texture && !texture->IsLoaded())
+				return false;
+		}
+		return true;
+	}
 } // namespace brk::rdr
 
 namespace brk {

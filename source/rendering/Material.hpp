@@ -190,7 +190,7 @@ namespace brk::rdr {
 		}
 
 		[[nodiscard]] bool IsValid() const noexcept { return m_IsValid; }
-
+		[[nodiscard]] bool IsLoaded() const noexcept;
 		/**
 		 * Updates the parameter buffer with the provided object
 		 * \param params: This object will be directly uploaded to the GPU, and made

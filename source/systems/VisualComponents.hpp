@@ -19,9 +19,8 @@ namespace brk {
 
 		[[nodiscard]] operator bool() const noexcept
 		{
-			return m_MaterialRef && m_MeshRef &&
-				   m_MaterialRef->GetLoadingState() == Resource::Loaded &&
-				   m_MeshRef->GetLoadingState() == Resource::Loaded;
+			return m_MaterialRef && m_MeshRef && m_MaterialRef->IsLoaded() &&
+				   m_MeshRef->IsLoaded();
 		}
 
 		static constexpr meta::

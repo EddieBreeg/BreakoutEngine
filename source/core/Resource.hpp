@@ -9,7 +9,7 @@
 #include <string>
 
 namespace brk {
-	template<class T>
+	template <class T>
 	struct RetainTraits;
 
 	/**
@@ -41,6 +41,11 @@ namespace brk {
 		 */
 		virtual bool DoLoad() { return false; }
 		virtual void DoUnload() { m_LoadingState = ELoadingState::Unloaded; }
+
+		[[nodiscard]] bool IsLoaded() const noexcept
+		{
+			return m_LoadingState == ELoadingState::Loaded;
+		}
 
 		[[nodiscard]] ELoadingState GetLoadingState() const noexcept
 		{
