@@ -22,7 +22,7 @@ namespace brk::project_loading::ut {
 namespace brk::project_loading::ut {
 	struct RAIIHelper
 	{
-		RAIIHelper()
+		RAIIHelper(int argc = 0, const char** argv = nullptr)
 			: m_ResLoader{ ResourceLoader::Init() }
 			, m_ECSManager{ ecs::Manager::Init() }
 			, m_ResManager{ ResourceManager::Init(m_ECSManager.GetWorld()) }
@@ -31,8 +31,8 @@ namespace brk::project_loading::ut {
 				  *ImGui::CreateContext(),
 				  m_ECSManager,
 				  m_SceneManager,
-				  0,
-				  nullptr) }
+				  argc,
+				  argv) }
 		{
 			m_ResManager.RegisterResourceType<Res1>();
 		}
@@ -57,8 +57,8 @@ namespace brk::project_loading::ut {
 	void Tests()
 	{
 		{
-			RAIIHelper helper;
-			helper.m_Editor.LoadProjectDeferred(DATA_DIR "/testProj.brk");
+			const char* args[2] = { nullptr, DATA_DIR "/testProj.brk" };
+			RAIIHelper helper{ 2, args };
 			helper.m_Editor.Update();
 			helper.m_ResLoader.ProcessBatch();
 			helper.m_ResLoader.Wait();

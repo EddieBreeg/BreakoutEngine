@@ -22,7 +22,8 @@ void brk::editor::ui::UiData::MenuBar()
 				tinyfd_openFileDialog("Open Project", "", 1, &s_BrkExt, nullptr, 0);
 			if (filePath)
 			{
-				Editor::GetInstance().LoadProjectDeferred(filePath);
+				m_FilePath = filePath;
+				m_ProjectLoadRequested = true;
 			}
 		}
 

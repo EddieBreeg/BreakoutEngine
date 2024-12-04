@@ -28,8 +28,6 @@ namespace brk::editor {
 	public:
 		~Editor() = default;
 
-		void LoadProjectDeferred(const StringView filePath) noexcept;
-		void LoadSceneDeferred(const ULID sceneId) noexcept;
 		void Update();
 		void ShowUI();
 
@@ -43,15 +41,8 @@ namespace brk::editor {
 			int argc,
 			const char** argv);
 
-		enum class LoadState
-		{
-			None = 0,
-			Project,
-			Scene,
-		} m_LoadState = LoadState::None;
-
-		void LoadProject();
-		void LoadScene();
+		void LoadProject(const char* path);
+		void LoadScene(ULID id);
 		void CreateNewScene(const char* path);
 
 		void SaveProjectFile();
@@ -59,7 +50,6 @@ namespace brk::editor {
 		ui::UiData* m_UiData = nullptr;
 		std::string m_ProjectFilePath;
 		std::optional<Project> m_Project;
-		ULID m_CurrentScene;
 
 		ecs::Manager& m_ECSManager;
 		SceneManager& m_SceneManager;

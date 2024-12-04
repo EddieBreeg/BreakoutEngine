@@ -23,7 +23,8 @@ void brk::editor::ui::UiData::StartupWindow()
 
 		if (filePath)
 		{
-			Editor::GetInstance().LoadProjectDeferred(filePath);
+			m_ProjectLoadRequested = true;
+			m_FilePath = filePath;
 		}
 	}
 	ImGui::End();

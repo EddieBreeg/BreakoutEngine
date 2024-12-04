@@ -13,7 +13,8 @@ void brk::editor::ui::UiData::SceneSelection(const TULIDMap<SceneDescription>& s
 	{
 		if (ImGui::Button(descr.GetName().c_str()))
 		{
-			Editor::GetInstance().LoadSceneDeferred(id);
+			m_SceneLoadRequested = true;
+			m_SceneId = id;
 			break;
 		}
 	}

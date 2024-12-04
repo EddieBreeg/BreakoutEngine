@@ -30,21 +30,25 @@ bool brk::editor::ui::UiData::SceneCreation()
 			"");
 
 		if (path)
+		{
 			m_FilePath = path;
+		}
 	}
 
-	const bool res = ImGui::Button("Create") && m_FilePath;
+	ImGui::BeginDisabled(!m_FilePath);
+	m_NewSceneRequested = ImGui::Button("Create") && m_FilePath;
+	ImGui::EndDisabled();
 
 	ImGui::End();
-	m_ShowSceneCreationWindow = !res;
-	return res;
+	m_ShowSceneCreationWindow = !m_NewSceneRequested;
+	return m_NewSceneRequested;
 }
 
 void brk::editor::ui::UiData::OpenSceneCreationWindow()
 {
 	if (m_ShowSceneCreationWindow)
 		return;
-	m_FilePath = "";
+	m_FilePath = nullptr;
 	m_ShowSceneCreationWindow = true;
 }
 

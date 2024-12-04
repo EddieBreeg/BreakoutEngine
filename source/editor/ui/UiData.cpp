@@ -13,11 +13,11 @@ void brk::editor::ui::UiData::Display(entt::registry& world, SceneManager& scene
 
 	if (m_ShowSceneCreationWindow)
 	{
-		m_NewSceneRequested = SceneCreation();
+		SceneCreation();
 		return;
 	}
 
-	if (m_ShowSceneSelectionWindow)
+	if (!m_SceneId)
 	{
 		SceneSelection(sceneManager.GetSceneDesriptions());
 		return;

@@ -27,14 +27,16 @@ namespace brk::editor::ui {
 		void OpenSceneCreationWindow();
 
 		bool m_ShowStartupWindow = false;
-		bool m_ShowSceneSelectionWindow = false;
 		bool m_ShowSceneCreationWindow = false;
 		bool m_ShowOutliner = false;
 
+		bool m_ProjectLoadRequested = false;
+		bool m_SceneLoadRequested = false;
 		bool m_NewSceneRequested = false;
 
 		const char* m_FilePath = nullptr;
 
+		ULID m_SceneId;
 		ULID m_SelectedObjectId;
 	};
 

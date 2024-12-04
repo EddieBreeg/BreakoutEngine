@@ -35,19 +35,8 @@ brk::editor::Editor::Editor(
 	ImGui::SetCurrentContext(&ctx);
 	if (argc < 2)
 		return;
-	LoadProjectDeferred(argv[1]);
-}
-
-void brk::editor::Editor::LoadProjectDeferred(const StringView filePath) noexcept
-{
-	m_LoadState = LoadState::Project;
-	m_ProjectFilePath = std::string{ filePath.GetPtr(), filePath.GetLen() };
-}
-
-void brk::editor::Editor::LoadSceneDeferred(const ULID sceneId) noexcept
-{
-	m_LoadState = LoadState::Scene;
-	m_CurrentScene = sceneId;
+	m_UiData->m_ProjectLoadRequested = true;
+	m_UiData->m_FilePath = argv[1];
 }
 
 void brk::editor::Editor::CreateNewScene(const char* path)
@@ -91,11 +80,17 @@ void brk::editor::Editor::SaveProjectFile()
 
 void brk::editor::Editor::Update()
 {
-	switch (m_LoadState)
+	if (m_UiData->m_ProjectLoadRequested)
 	{
-	case LoadState::Project: LoadProject(); break;
-	case LoadState::Scene: LoadScene(); break;
-	default: break;
+		m_UiData->m_ProjectLoadRequested = false;
+		LoadProject(m_UiData->m_FilePath);
+		return;
+	}
+	if (m_UiData->m_SceneLoadRequested)
+	{
+		m_UiData->m_SceneLoadRequested = false;
+		LoadScene(m_UiData->m_SceneId);
+		return;
 	}
 
 	if (m_UiData->m_NewSceneRequested)
@@ -106,9 +101,9 @@ void brk::editor::Editor::Update()
 	}
 }
 
-void brk::editor::Editor::LoadProject()
+void brk::editor::Editor::LoadProject(const char* filePath)
 {
-	m_LoadState = LoadState::None;
+	m_ProjectFilePath = filePath;
 	std::ifstream projectFile{ m_ProjectFilePath };
 	if (!projectFile.is_open())
 	{
@@ -159,26 +154,25 @@ void brk::editor::Editor::LoadProject()
 	BRK_LOG_TRACE("Finished loading project");
 }
 
-void brk::editor::Editor::LoadScene()
+void brk::editor::Editor::LoadScene(ULID id)
 {
-	BRK_LOG_TRACE("Loading scene {}", m_CurrentScene);
-	SceneManager::GetInstance().LoadScene(m_CurrentScene);
-	m_LoadState = LoadState::None;
+	BRK_LOG_TRACE("Loading scene {}", id);
+	SceneManager::GetInstance().LoadScene(id);
 }
 
 void brk::editor::Editor::ShowUI()
 {
 	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
 
-	m_UiData->m_ShowStartupWindow = !m_Project.has_value();
+	if (m_UiData->m_ShowStartupWindow = !m_Project.has_value())
+	{
+		m_UiData->Display(m_ECSManager.GetWorld(), m_SceneManager);
+		return;
+	}
 
-	if (m_Project && scenes.empty())
+	if (scenes.empty())
 	{
 		m_UiData->OpenSceneCreationWindow();
-	}
-	else if (m_Project)
-	{
-		m_UiData->m_ShowSceneSelectionWindow = !m_CurrentScene;
 	}
 
 	m_UiData->Display(m_ECSManager.GetWorld(), m_SceneManager);
