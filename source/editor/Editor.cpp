@@ -1,12 +1,7 @@
 #include "Editor.hpp"
 
 #ifdef BRK_EDITOR
-#include "ui/Inspector.hpp"
-#include "ui/Menubar.hpp"
-#include "ui/Outliner.hpp"
-#include "ui/SceneCreation.hpp"
-#include "ui/SceneSelection.hpp"
-#include "ui/StartupWindow.hpp"
+#include "ui/UiData.hpp"
 
 #include <app/App.hpp>
 
@@ -33,7 +28,8 @@ brk::editor::Editor::Editor(
 	SceneManager& sceneManager,
 	int argc,
 	const char** argv)
-	: m_ECSManager{ ecsManager }
+	: m_UiData{ new ui::UiData{} }
+	, m_ECSManager{ ecsManager }
 	, m_SceneManager{ sceneManager }
 {
 	ImGui::SetCurrentContext(&ctx);
@@ -97,18 +93,15 @@ void brk::editor::Editor::Update()
 {
 	switch (m_LoadState)
 	{
-	case LoadState::Project:
-		LoadProject();
-		Outliner::s_Instance.Open();
-		break;
+	case LoadState::Project: LoadProject(); break;
 	case LoadState::Scene: LoadScene(); break;
 	default: break;
 	}
 
-	if (m_NewSceneRequested)
+	if (m_UiData->m_NewSceneRequested)
 	{
-		m_NewSceneRequested = false;
-		CreateNewScene(SceneCreationWindow::s_Instance.GetScenePath());
+		m_UiData->m_NewSceneRequested = false;
+		CreateNewScene(m_UiData->m_FilePath);
 		SaveProjectFile();
 	}
 }
@@ -175,38 +168,20 @@ void brk::editor::Editor::LoadScene()
 
 void brk::editor::Editor::ShowUI()
 {
-	MenuBar();
-
-	if (!m_Project.has_value())
-	{
-		StartupWindow();
-		return;
-	}
-
 	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
-	if (scenes.empty())
-		SceneCreationWindow::s_Instance.Open();
 
-	if (SceneCreationWindow::s_Instance.IsOpen())
+	m_UiData->m_ShowStartupWindow = !m_Project.has_value();
+
+	if (m_Project && scenes.empty())
 	{
-		m_NewSceneRequested = SceneCreationWindow::s_Instance.Show();
-		return;
+		m_UiData->OpenSceneCreationWindow();
+	}
+	else if (m_Project)
+	{
+		m_UiData->m_ShowSceneSelectionWindow = !m_CurrentScene;
 	}
 
-	if (!m_CurrentScene)
-	{
-		SceneSelectionWindow(scenes);
-		return;
-	}
-
-	if (Outliner::s_Instance.Display(m_SceneManager))
-	{
-		Inspector::s_Instance.Open();
-		Inspector::s_Instance.m_SelectedObjectId =
-			Outliner::s_Instance.GetSelectedObjectId();
-	}
-
-	Inspector::s_Instance.Display(m_ECSManager.GetWorld(), m_SceneManager);
+	m_UiData->Display(m_ECSManager.GetWorld(), m_SceneManager);
 }
 
 #endif

@@ -1,5 +1,4 @@
-#include "Inspector.hpp"
-
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <core/ULIDFormatter.hpp>
 #include <imgui.h>
@@ -9,16 +8,11 @@
 #include <managers/SceneManager.hpp>
 #include <entt/entity/registry.hpp>
 
-brk::editor::Inspector brk::editor::Inspector::s_Instance;
-
-bool brk::editor::Inspector::Display(
+bool brk::editor::ui::UiData::Inspector(
 	entt::registry& entityWorld,
 	SceneManager& sceneManager)
 {
-	if (!m_Show)
-		return false;
-
-	ImGui::Begin("Inspector", &m_Show);
+	ImGui::Begin("Inspector");
 
 	if (!m_SelectedObjectId)
 	{

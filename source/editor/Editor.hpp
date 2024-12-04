@@ -18,6 +18,10 @@ namespace brk::ecs {
 	class Manager;
 } // namespace brk::ecs
 
+namespace brk::editor::ui {
+	struct UiData;
+}
+
 namespace brk::editor {
 	class BRK_EDITOR_API Editor : public Singleton<Editor>
 	{
@@ -52,14 +56,13 @@ namespace brk::editor {
 
 		void SaveProjectFile();
 
+		ui::UiData* m_UiData = nullptr;
 		std::string m_ProjectFilePath;
 		std::optional<Project> m_Project;
 		ULID m_CurrentScene;
 
 		ecs::Manager& m_ECSManager;
 		SceneManager& m_SceneManager;
-
-		bool m_NewSceneRequested = false;
 	};
 } // namespace brk::editor
 

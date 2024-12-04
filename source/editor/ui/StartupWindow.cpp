@@ -1,5 +1,4 @@
-#include "StartupWindow.hpp"
-
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 
 #include <tinyfiledialogs.h>
@@ -12,7 +11,7 @@ namespace {
 	const char* s_BrkExt = "*.brk";
 }
 
-void brk::editor::StartupWindow()
+void brk::editor::ui::UiData::StartupWindow()
 {
 	ImGui::Begin("Welcome", nullptr, ImGuiWindowFlags_Modal | ImGuiWindowFlags_NoDocking);
 	ImGui::Text("Welcome to the Breakout engine editor! To continue, either create a new "

@@ -10,6 +10,7 @@ add_library(BRK_EDITOR ${BRK_LIBTYPE}
 	ui/StartupWindow.cpp
 	ui/SceneCreation.cpp
 	ui/SceneSelection.cpp
+	ui/UiData.cpp
 )
 CreateExports(BRK_EDITOR)
 

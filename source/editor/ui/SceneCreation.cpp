@@ -1,5 +1,4 @@
-#include "SceneCreation.hpp"
-
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <imgui.h>
 #include <tinyfiledialogs.h>
@@ -8,32 +7,22 @@ namespace {
 	constexpr const char* s_SceneFileExtension = "*.brkscn";
 } // namespace
 
-brk::editor::SceneCreationWindow brk::editor::SceneCreationWindow::s_Instance;
-
-void brk::editor::SceneCreationWindow::Open() noexcept
+bool brk::editor::ui::UiData::SceneCreation()
 {
-	if (m_Show)
-		return;
-	m_Show = true;
-	m_FilePath[0] = 0;
-}
-
-bool brk::editor::SceneCreationWindow::Show()
-{
-	if (!m_Show)
+	if (!m_ShowSceneCreationWindow)
 		return false;
 
-	if (!ImGui::Begin("New Scene", &m_Show))
+	if (!ImGui::Begin("New Scene", &m_ShowSceneCreationWindow))
 	{
 		ImGui::End();
 		return false;
 	}
 
-	ImGui::InputText("File Path", m_FilePath, sizeof(m_FilePath));
+	ImGui::Text("Selected path: %s", m_FilePath);
 
-	if (ImGui::Button("Choose path"))
+	if (ImGui::Button("Choose file"))
 	{
-		const char* path = tinyfd_saveFileDialog(
+		char* path = tinyfd_saveFileDialog(
 			"Select a location to save the file",
 			nullptr,
 			1,
@@ -41,14 +30,22 @@ bool brk::editor::SceneCreationWindow::Show()
 			"");
 
 		if (path)
-			strcpy_s(m_FilePath, path);
+			m_FilePath = path;
 	}
 
 	const bool res = ImGui::Button("Create") && m_FilePath;
 
 	ImGui::End();
-	m_Show = !res;
+	m_ShowSceneCreationWindow = !res;
 	return res;
+}
+
+void brk::editor::ui::UiData::OpenSceneCreationWindow()
+{
+	if (m_ShowSceneCreationWindow)
+		return;
+	m_FilePath = "";
+	m_ShowSceneCreationWindow = true;
 }
 
 #endif // BRK_EDITOR

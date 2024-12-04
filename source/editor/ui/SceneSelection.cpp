@@ -1,11 +1,11 @@
-#include "SceneSelection.hpp"
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <managers/SceneManager.hpp>
 #include <editor/Editor.hpp>
 
 #include <imgui.h>
 
-void brk::editor::SceneSelectionWindow(const TULIDMap<SceneDescription>& scenes)
+void brk::editor::ui::UiData::SceneSelection(const TULIDMap<SceneDescription>& scenes)
 {
 	ImGui::Begin("Select a scene", nullptr);
 

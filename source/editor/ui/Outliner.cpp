@@ -1,13 +1,10 @@
-#include "Outliner.hpp"
-
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <managers/SceneManager.hpp>
 
 #include <imgui.h>
 
-brk::editor::Outliner brk::editor::Outliner::s_Instance;
-
-bool brk::editor::Outliner::Display(SceneManager& sceneManager)
+bool brk::editor::ui::UiData::Outliner(SceneManager& sceneManager)
 {
 	if (!ImGui::Begin("Outliner"))
 	{
@@ -36,5 +33,4 @@ bool brk::editor::Outliner::Display(SceneManager& sceneManager)
 	ImGui::End();
 	return result;
 }
-
 #endif

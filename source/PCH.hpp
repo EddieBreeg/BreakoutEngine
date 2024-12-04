@@ -44,6 +44,10 @@ using uint64 = uint64_t;
 	if constexpr (false)
 #endif
 
+#ifndef BRK_MAX_PATH
+#define BRK_MAX_PATH	1024
+#endif
+
 #define MARK_UNUSED(expr) (void)(expr)
 
 #ifndef BIT

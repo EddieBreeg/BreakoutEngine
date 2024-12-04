@@ -1,17 +1,15 @@
-#include "Menubar.hpp"
+#include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
 #include <tinyfiledialogs.h>
 #include <array>
 #include <imgui.h>
 
-#include "SceneCreation.hpp"
-
 namespace {
 	const char* s_BrkExt = "*.brk";
 } // namespace
 
-void brk::editor::MenuBar()
+void brk::editor::ui::UiData::MenuBar()
 {
 	if (!ImGui::BeginMainMenuBar())
 		return;
@@ -30,7 +28,7 @@ void brk::editor::MenuBar()
 
 		if (ImGui::MenuItem("New Scene", "Ctrl+N"))
 		{
-			SceneCreationWindow::s_Instance.Open();
+			OpenSceneCreationWindow();
 		}
 
 		ImGui::MenuItem("Save", "Ctrl+S", nullptr, false);
