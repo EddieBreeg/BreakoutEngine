@@ -7,23 +7,31 @@ function(CreateExports LIBNAME)
 	generate_export_header(${LIBNAME}
 		EXPORT_MACRO_NAME ${LIBNAME}_API
 	)
-endfunction(CreateExports MODNAME)
-
+endfunction(CreateExports LIBNAME)
 
 add_subdirectory(math)
-add_subdirectory(rendering)
 add_subdirectory(core)
+
+set(CMAKE_FOLDER "Engine/Tools")
+add_subdirectory(tools)
+
+function(EmbedAsset AssetFile AssetName NamespaceName)
+	set(OutputFile ${CMAKE_CURRENT_BINARY_DIR}/${AssetName}.hpp)
+	add_custom_command(OUTPUT ${OutputFile} 
+		COMMAND $<TARGET_FILE:AssetEmbedder> "${AssetFile}" "${OutputFile}" "${AssetName}" "${NamespaceName}"
+		DEPENDS AssetEmbedder ${AssetFile}
+	)
+endfunction(EmbedAsset AssetFile AssetName NamespaceName)
+
+set(CMAKE_FOLDER "Engine")
+
+add_subdirectory(rendering)
 add_subdirectory(ecs)
 add_subdirectory(managers)
 add_subdirectory(debug)
 add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
-
-set(CMAKE_FOLDER "Engine/Tools")
-add_subdirectory(tools)
-
-set(CMAKE_FOLDER "Engine")
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE

@@ -92,6 +92,7 @@ namespace brk::b85 {
 			block += fac[i] * 84;
 		for (uint32 i = 0; i < blockSize; i++)
 			buf[pos++] = uint8(block >> 8 * (3 - i));
+		text.TrimLeft(blockSize+1);
 
 		return pos;
 	}

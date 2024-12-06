@@ -63,9 +63,9 @@ bool brk::tools::EmbedData(
 	outStream << "namespace " << namespaceName << R"( {
 	constexpr struct {
 		uint32 m_UncompressedSize;
-		brk::StringView m_Data
+		brk::StringView m_Data;
 	} s_)" << assetName
-			  << '{' << fileContents.size() << ",R\"(";
+			  << '{' << fileContents.size() << ",R\"~>(";
 
 	bzStream.next_in = fileContents.data();
 	bzStream.avail_in = uint32(fileContents.size());
@@ -86,7 +86,7 @@ bool brk::tools::EmbedData(
 		bzStream.avail_out = sizeof(buf);
 	}
 	BZ2_bzCompressEnd(&bzStream);
-	outStream << ")\"};\n}";
+	outStream << ")~>\"};\n}";
 
 	return true;
 }
@@ -109,19 +109,15 @@ std::vector<char> brk::tools::ReadEmbeddedData(
 
 	while (errCode != BZ_STREAM_END)
 	{
-		if (!view.GetLen())
+		if (view.GetLen())
 		{
-			BRK_LOG_ERROR("Failed to decompress: unexpected end of stream");
-			uncompressed.clear();
-			break;
+			stream.avail_in = b85::Decode(view, inBuf, sizeof(inBuf));
+			stream.next_in = inBuf;
 		}
-
-		stream.next_in = inBuf;
-		stream.avail_in = b85::Decode(view, inBuf, sizeof(inBuf));
 
 		stream.next_out = outBuf;
 		stream.avail_out = sizeof(outBuf);
-		uint32 pos = uncompressed.size();
+		uint32 pos = stream.total_out_lo32;
 
 		errCode = BZ2_bzDecompress(&stream);
 		if (errCode != BZ_OK && errCode != BZ_STREAM_END)
@@ -130,6 +126,8 @@ std::vector<char> brk::tools::ReadEmbeddedData(
 			return uncompressed;
 		}
 
+		if (stream.total_out_lo32 == pos)
+			continue;
 		uncompressed.resize(stream.total_out_lo32);
 		std::memcpy(uncompressed.data() + pos, outBuf, stream.total_out_lo32 - pos);
 	}
