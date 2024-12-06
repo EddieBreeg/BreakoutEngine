@@ -20,7 +20,8 @@ constexpr brk::BasicStringView<Char>::BasicStringView(const std::string& str)
 {}
 
 template <class Char>
-inline constexpr bool brk::BasicStringView<Char>::operator==(const BasicStringView& other)
+inline constexpr bool brk::BasicStringView<Char>::operator==(
+	const BasicStringView& other) const noexcept
 {
 	if (m_Len != other.m_Len)
 		return false;
@@ -33,7 +34,8 @@ inline constexpr bool brk::BasicStringView<Char>::operator==(const BasicStringVi
 }
 
 template <class Char>
-inline constexpr bool brk::BasicStringView<Char>::operator!=(const BasicStringView& other)
+inline constexpr bool brk::BasicStringView<Char>::operator!=(
+	const BasicStringView& other) const noexcept
 {
 	return !(*this == other);
 }
