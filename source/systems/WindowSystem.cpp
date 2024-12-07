@@ -31,6 +31,12 @@ namespace {
 	}
 } // namespace
 
+#ifdef BRK_EDITOR
+namespace brk::editor {
+	void ImportEditorFonts(ImGuiIO& io, float dpiScale);
+}
+#endif
+
 brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& settings)
 	: m_Settings{ settings }
 	, m_App{ app }
@@ -47,11 +53,14 @@ brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& setti
 
 #if defined(BRK_DEV)
 	ImGui::SetCurrentContext(&m_App.GetImGuiContext());
-	ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
-								  ImGuiConfigFlags_DockingEnable |
-								  ImGuiConfigFlags_ViewportsEnable;
+	ImGuiIO& io = ImGui::GetIO();
+	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
+					  ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
 	const float uiScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_WinPtr));
 	BRK_ASSERT(uiScale, "Failed to retrieve DPI scaling value: {}", SDL_GetError());
+#ifdef BRK_EDITOR
+	editor::ImportEditorFonts(io, uiScale);
+#endif
 	ImGuiStyle& style = ImGui::GetStyle();
 	ImGui::StyleColorsDark(&style);
 	style.ScaleAllSizes(uiScale);
