@@ -6,7 +6,9 @@ target_include_directories(Base85 INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 target_link_libraries(Base85 INTERFACE Breakout::Core)
 
 add_library(DataEmbedLib STATIC DataEmbed.cpp)
-target_link_libraries(DataEmbedLib PRIVATE Base85 BZip2::BZLib)
+target_link_libraries(DataEmbedLib 
+	PUBLIC Breakout::Core
+	PRIVATE Base85 BZip2::BZLib)
 target_compile_features(DataEmbedLib PUBLIC cxx_std_17)
 
 add_executable(AssetEmbedder EmbedAsset.cpp)

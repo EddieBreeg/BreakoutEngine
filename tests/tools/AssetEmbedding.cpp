@@ -14,26 +14,16 @@ namespace {
 int main(int argc, char const* argv[])
 {
 	{
-		brk::InputByteStream inStream{ {} };
-		std::stringstream outStream;
-		assert(!brk::tools::EmbedData(outStream, inStream, "asset"));
-	}
-	{
-		static_assert(
-			brk::asset_embed::ut::s_Lorem.m_UncompressedSize == s_Lorem.GetLen());
-
-		std::vector<char> data = brk::tools::ReadEmbeddedData(
-			brk::asset_embed::ut::s_Lorem.m_Data.GetPtr(),
-			brk::asset_embed::ut::s_Lorem.m_Data.GetLen(),
+		std::vector<char> data = brk::tools::DecodeEmbeddedData(
+			brk::asset_embed::ut::s_Lorem.m_Data,
 			brk::asset_embed::ut::s_Lorem.m_UncompressedSize);
 		assert(data.size() == brk::asset_embed::ut::s_Lorem.m_UncompressedSize);
 		const brk::StringView view{ data.data(), uint32(data.size()) };
 		assert(view == s_Lorem);
 	}
 	{
-		std::vector<char> data = brk::tools::ReadEmbeddedData(
-			brk::asset_embed::ut::s_BrkIcon.m_Data.GetPtr(),
-			brk::asset_embed::ut::s_BrkIcon.m_Data.GetLen(),
+		std::vector<char> data = brk::tools::DecodeEmbeddedData(
+			brk::asset_embed::ut::s_BrkIcon.m_Data,
 			brk::asset_embed::ut::s_BrkIcon.m_UncompressedSize);
 		assert(data.size() == brk::asset_embed::ut::s_BrkIcon.m_UncompressedSize);
 	}

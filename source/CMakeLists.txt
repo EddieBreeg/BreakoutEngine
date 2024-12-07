@@ -9,6 +9,18 @@ function(CreateExports LIBNAME)
 	)
 endfunction(CreateExports LIBNAME)
 
+add_library(BRK_INCLUDES INTERFACE)
+target_include_directories(BRK_INCLUDES INTERFACE
+	${CMAKE_CURRENT_SOURCE_DIR}
+	${CMAKE_CURRENT_BINARY_DIR}
+)
+target_compile_definitions(BRK_INCLUDES INTERFACE
+	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>
+	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
+	GLM_FORCE_DEPTH_ZERO_TO_ONE=1,
+)
+add_library(Breakout::Includes ALIAS BRK_INCLUDES)
+
 add_subdirectory(math)
 add_subdirectory(core)
 
@@ -18,7 +30,8 @@ add_subdirectory(tools)
 function(EmbedAsset AssetFile AssetName NamespaceName)
 	set(OutputFile ${CMAKE_CURRENT_BINARY_DIR}/${AssetName}.hpp)
 	add_custom_command(OUTPUT ${OutputFile} 
-		COMMAND $<TARGET_FILE:AssetEmbedder> "${AssetFile}" "${OutputFile}" "${AssetName}" "${NamespaceName}"
+		COMMAND $<TARGET_FILE:AssetEmbedder> 
+			"${AssetFile}" "${AssetName}" "${NamespaceName}" > "${OutputFile}"
 		DEPENDS AssetEmbedder ${AssetFile}
 	)
 endfunction(EmbedAsset AssetFile AssetName NamespaceName)
@@ -33,16 +46,6 @@ add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
 
-add_library(BRK_INCLUDES INTERFACE)
-target_include_directories(BRK_INCLUDES INTERFACE
-	${CMAKE_CURRENT_SOURCE_DIR}
-	${CMAKE_CURRENT_BINARY_DIR}
-)
-target_compile_definitions(BRK_INCLUDES INTERFACE
-	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>
-	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
-	GLM_FORCE_DEPTH_ZERO_TO_ONE=1,
-)
 add_library(${PROJECT_NAME} INTERFACE)
 
 target_link_libraries(${PROJECT_NAME} INTERFACE
