@@ -27,19 +27,19 @@ namespace brk::resource_loader::ut {
 
 	void Tests()
 	{
-		//{
-		//	RAIIHelper helper;
-		//	helper.m_Loader.ProcessBatch();
-		//	helper.m_Loader.Wait();
-		//}
-		//{
-		//	RAIIHelper helper;
-		//	Res r{ Resource::Loading };
-		//	helper.m_Loader.AddJob(&r);
-		//	helper.m_Loader.ProcessBatch();
-		//	helper.m_Loader.Wait();
-		//	assert(r.GetLoadingState() == Resource::Loaded);
-		//}
+		{
+			RAIIHelper helper;
+			helper.m_Loader.ProcessBatch();
+			helper.m_Loader.Wait();
+		}
+		{
+			RAIIHelper helper;
+			Res r{ Resource::Loading };
+			helper.m_Loader.AddJob(&r);
+			helper.m_Loader.ProcessBatch();
+			helper.m_Loader.Wait();
+			assert(r.GetLoadingState() == Resource::Loaded);
+		}
 		{
 			RAIIHelper helper;
 			Res r{ Resource::Loading };

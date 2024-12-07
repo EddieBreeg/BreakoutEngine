@@ -68,7 +68,8 @@ namespace brk {
 		std::mutex m_Mutex;
 		std::condition_variable m_Cv;
 
-		uint32 m_ActiveRequests = 0; // number of requests in the current batch
+		uint32 m_ActiveRequests = 0;
+		std::atomic_uint32_t m_PendingRequests = 0;
 		std::atomic_bool m_Running = true;
 	};
 } // namespace brk

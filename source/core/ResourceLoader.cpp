@@ -20,7 +20,7 @@ void brk::ResourceLoader::StopDeferred()
 	{
 		std::unique_lock lock{ m_Mutex };
 		m_Jobs.swap(temp);
-		m_ActiveRequests = 0;
+		m_PendingRequests = 0;
 	}
 
 	m_Cv.notify_all();
@@ -52,7 +52,7 @@ void brk::ResourceLoader::ProcessBatch()
 		if (m_ActiveRequests)
 			return;
 
-		m_ActiveRequests = m_Jobs.size();
+		m_ActiveRequests = m_PendingRequests = m_Jobs.size();
 	}
 	m_Cv.notify_all();
 }
@@ -96,26 +96,35 @@ void brk::ResourceLoader::Loop()
 
 	while (m_Running)
 	{
-		std::unique_lock lock{ m_Mutex };
-		while (m_Running && !m_ActiveRequests)
 		{
-			m_Cv.wait(lock);
+			std::unique_lock lock{ m_Mutex };
+			while (m_Running && !m_PendingRequests)
+			{
+				m_Cv.wait(lock);
+			}
+			if (!m_Running)
+				return;
+
+			if (!m_PendingRequests)
+				continue;
 		}
-		if (!m_Running)
-			return;
 
-		if (!m_ActiveRequests || m_Jobs.empty())
-			continue;
-
-		while (m_ActiveRequests && m_Running)
+		while (m_PendingRequests && m_Running)
 		{
-			auto& job = m_Jobs.front();
-			m_Jobs.pop();
+			--m_PendingRequests;
+			Job job;
+			{
+				std::unique_lock lock{ m_Mutex };
 
-			lock.unlock();
+				job = m_Jobs.front();
+				m_Jobs.pop();
+			}
+
 			(execFunctions[job.second])(job.first);
-			lock.lock();
-			--m_ActiveRequests;
+			{
+				std::unique_lock lock{ m_Mutex };
+				--m_ActiveRequests;
+			}
 			m_Cv.notify_all();
 		}
 	}
