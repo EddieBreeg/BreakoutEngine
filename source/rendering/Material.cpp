@@ -1,6 +1,6 @@
 #include "Material.hpp"
 #include <core/DebugBreak.hpp>
-#include <core/InputFile.hpp>
+#include <core/IO.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
 #include <core/ResourceFormatter.hpp>

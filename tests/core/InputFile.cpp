@@ -1,4 +1,4 @@
-#include <core/InputFile.hpp>
+#include <core/IO.hpp>
 #include <core/StringView.hpp>
 #include <vector>
 
