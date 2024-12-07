@@ -104,19 +104,19 @@ void brk::ResourceLoader::Loop()
 		if (!m_Running)
 			return;
 
-		if (!m_ActiveRequests)
+		if (!m_ActiveRequests || m_Jobs.empty())
 			continue;
 
 		while (m_ActiveRequests && m_Running)
 		{
 			auto& job = m_Jobs.front();
 			m_Jobs.pop();
-			--m_ActiveRequests;
 
 			lock.unlock();
 			(execFunctions[job.second])(job.first);
-			m_Cv.notify_all();
 			lock.lock();
+			--m_ActiveRequests;
+			m_Cv.notify_all();
 		}
 	}
 }
