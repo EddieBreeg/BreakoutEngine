@@ -57,7 +57,7 @@ namespace brk {
 		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
 
 	protected:
-		[[nodiscard]] InputByteStream LoadFileContents();
+		[[nodiscard]] DynamicArrayStream LoadFileContents();
 
 		ULID m_Id;
 		std::string m_Name;

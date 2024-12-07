@@ -4,82 +4,115 @@
 #include "LogManager.hpp"
 
 namespace brk {
-	InputByteBuf::pos_type InputByteBuf::seekoff(
+	DynamicArrayStreamBuf::DynamicArrayStreamBuf(
+		std::vector<char> buffer,
+		uint64 readPos,
+		uint64 writePos)
+		: m_Buf{ std::move(buffer) }
+		, m_ReadPos{ readPos }
+		, m_WritePos{ writePos }
+	{}
+
+	std::streampos DynamicArrayStreamBuf::seekoff(
 		off_type offset,
 		std::ios_base::seekdir dir,
-		std::ios_base::openmode)
+		std::ios_base::openmode mode)
 	{
 		switch (dir)
 		{
-		case std::ios_base::beg:
+		case std::ios::beg: return seekpos(offset, mode);
+		case std::ios::end: return seekpos(m_Buf.size() + offset, mode);
+		case std::ios::cur:
+		{
 			BRK_ASSERT(
-				offset <= m_Buf.size(),
-				"Attempted to seek offset {} in a stream of size {}",
-				m_Pos,
-				m_Buf.size());
-			BRK_ASSERT(offset >= 0, "Attempted to seek negative offset: {}", offset);
-			m_Pos = uint32(offset);
+				(mode & s_DefaultOpenMode) != s_DefaultOpenMode,
+				"in+out open mode is not supported when stream direction is cur");
+			if (mode & std::ios::in)
+			{
+				m_ReadPos += offset;
+				BRK_ASSERT(
+					m_ReadPos <= m_Buf.size(),
+					"Tried to set read position to {} but current stream length is {}",
+					m_ReadPos,
+					m_Buf.size());
+				return m_ReadPos;
+			}
+			if (mode & std::ios::out)
+			{
+				return m_WritePos += offset;
+			}
 			break;
-		case std::ios_base::cur:
-			BRK_ASSERT(
-				(m_Pos + offset) <= m_Buf.size(),
-				"Attempted to seek offset {} in a stream of size {}",
-				m_Pos + offset,
-				m_Buf.size());
-			m_Pos += offset;
-			break;
-		case std::ios_base::end:
-			BRK_ASSERT(
-				offset <= 0,
-				"Attempted to seek offset {} in a stream of size {}",
-				m_Buf.size() + offset,
-				m_Buf.size());
-			m_Pos = m_Buf.size() + offset;
-			break;
-
-		default:
-			BRK_LOG_CRITICAL("Invalid seek direction type: {}", int64(dir));
-			dbg::Break();
 		}
-		
-
-		return m_Pos;
+		default:
+			BRK_LOG_CRITICAL("Invalid stream direction: {}", dir);
+			dbg::Break();
+			break;
+		}
+		return -1;
 	}
 
-	InputByteBuf::pos_type InputByteBuf::seekpos(pos_type pos, std::ios_base::openmode)
+	std::streampos DynamicArrayStreamBuf::seekpos(
+		std::streampos pos,
+		std::ios_base::openmode mode)
 	{
-		BRK_ASSERT(
-			pos <= m_Buf.size(),
-			"Attempted to seek offset {} in a stream of size {}",
-			size_t(pos));
-		
-		return m_Pos = pos;
+		if (mode & std::ios::out)
+			m_WritePos = pos;
+		if (mode & std::ios::in)
+		{
+			BRK_ASSERT(
+				pos <= m_Buf.size(),
+				"Tried to set read position to {} but current stream length is {}",
+				uint64(pos),
+				m_Buf.size());
+			m_ReadPos = pos;
+		}
+		return pos;
 	}
 
-	std::streamsize InputByteBuf::showmanyc()
+	std::streamsize DynamicArrayStreamBuf::showmanyc()
 	{
-		if (m_Pos >= m_Buf.size())
+		if (m_ReadPos >= m_Buf.size())
 			return -1;
-		return m_Buf.size() - m_Pos;
+		return m_Buf.size() - m_ReadPos;
 	}
 
-	InputByteBuf::int_type InputByteBuf::underflow()
+	int DynamicArrayStreamBuf::underflow()
 	{
-		if (m_Pos >= m_Buf.size())
+		if (m_ReadPos >= m_Buf.size())
 			return traits_type::eof();
-		int_type res = m_Buf[m_Pos++];
-		
+		int_type res = m_Buf[m_ReadPos++];
+
 		return res;
 	}
 
-	std::streamsize InputByteBuf::xsgetn(char_type* s, std::streamsize count)
+	std::streamsize DynamicArrayStreamBuf::xsgetn(char_type* s, std::streamsize count)
 	{
 		std::streamsize n = 0;
-		while (n < count && m_Pos < m_Buf.size())
+		while (n < count && m_ReadPos < m_Buf.size())
 		{
-			s[n++] = m_Buf[m_Pos++];
+			s[n++] = m_Buf[m_ReadPos++];
 		}
-		
+
 		return n;
+	}
+
+	std::streamsize DynamicArrayStreamBuf::xsputn(const char* data, std::streamsize n)
+	{
+		if ((m_WritePos + n) > m_Buf.size())
+		{
+			m_Buf.resize(m_WritePos + n);
+		}
+		std::memcpy(m_Buf.data() + m_WritePos, data, n);
+		m_WritePos += n;
+
+		return n;
+	}
+
+	int DynamicArrayStreamBuf::overflow(int_type ch)
+	{
+		if (m_WritePos >= m_Buf.size())
+			m_Buf.resize(m_WritePos + 1);
+		m_Buf[m_WritePos++] = ch;
+		return ch;
 	}
 } // namespace brk

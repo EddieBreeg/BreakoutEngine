@@ -64,9 +64,8 @@ namespace brk::rdr {
 		if (m_FilePath.empty())
 			return false;
 
-		InputByteStream stream = LoadFileContents();
-		const std::vector<char>& contents =
-			static_cast<InputByteBuf*>(stream.rdbuf())->GetContents();
+		DynamicArrayStream stream = LoadFileContents();
+		const std::vector<char>& contents = stream.GetBuffer().m_Buf;
 		if (contents.empty())
 			return false;
 

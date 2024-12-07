@@ -27,7 +27,7 @@ namespace brk::enums::ut {
 } // namespace brk::enums::ut
 
 namespace brk::io::ut {
-	void InputFileTests();
+	void DynArrayBufTests();
 } // namespace brk::io::ut
 
 int main(int argc, char const* argv[])
@@ -39,6 +39,6 @@ int main(int argc, char const* argv[])
 	brk::signal::ut::Tests();
 	brk::retain_ptr::ut::Tests();
 	brk::enums::ut::Tests();
-	brk::io::ut::InputFileTests();
+	brk::io::ut::DynArrayBufTests();
 	return 0;
 }

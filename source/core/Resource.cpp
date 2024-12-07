@@ -25,7 +25,7 @@ bool brk::JsonLoader<brk::Resource>::Load(Resource& out_res, const nlohmann::jso
 
 brk::Resource::~Resource() = default;
 
-brk::InputByteStream brk::Resource::LoadFileContents()
+brk::DynamicArrayStream brk::Resource::LoadFileContents()
 {
 	BRK_ASSERT(
 		m_FilePath.length(),
