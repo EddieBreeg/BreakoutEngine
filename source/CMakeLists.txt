@@ -29,9 +29,20 @@ add_subdirectory(tools)
 
 function(EmbedAsset AssetFile AssetName NamespaceName)
 	set(OutputFile ${CMAKE_CURRENT_BINARY_DIR}/${AssetName}.hpp)
+	set(Flags USE_BASE85)
+	set(Args)
+	set(ListArgs)
+	message("Embedding ${AssetName}")
+	cmake_parse_arguments(arg "${Flags}" "${Args}" "${ListArgs}" ${ARGN})
+	set(CommandArgs "${AssetFile}" "${AssetName}" "${NamespaceName}")
+
+	if (${arg_USE_BASE85})
+		list(APPEND CommandArgs "-b")
+	endif(${arg_USE_BASE85})
+	message(${CommandArgs})
+	
 	add_custom_command(OUTPUT ${OutputFile} 
-		COMMAND $<TARGET_FILE:AssetEmbedder> 
-			"${AssetFile}" "${AssetName}" "${NamespaceName}" > "${OutputFile}"
+		COMMAND $<TARGET_FILE:AssetEmbedder> ${CommandArgs} > "${OutputFile}"
 		DEPENDS AssetEmbedder ${AssetFile}
 	)
 endfunction(EmbedAsset AssetFile AssetName NamespaceName)

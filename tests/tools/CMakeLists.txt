@@ -1,8 +1,8 @@
 add_executable(Base85Tests Base85Tests.cpp)
 target_link_libraries(Base85Tests PRIVATE Base85)
 
-EmbedAsset(${CMAKE_CURRENT_SOURCE_DIR}/Lorem.txt Lorem brk::asset_embed::ut)
-EmbedAsset(${BRK_ROOT}/example/Icon.ico BrkIcon brk::asset_embed::ut)
+EmbedAsset(${CMAKE_CURRENT_SOURCE_DIR}/Lorem.txt Lorem brk::asset_embed::ut USE_BASE85)
+EmbedAsset(${BRK_ROOT}/example/Icon.ico BrkIcon brk::asset_embed::ut USE_BASE85)
 
 add_executable(AssetEmbeddingTests 
 	AssetEmbedding.cpp
