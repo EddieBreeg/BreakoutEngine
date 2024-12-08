@@ -1,7 +1,7 @@
-#include <managers/ResourceManager.hpp>
-#include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/Loaders.hpp>
 #include <core/ResourceLoader.hpp>
+#include <managers/ResourceManager.hpp>
 
 #include <entt/entity/registry.hpp>
 #include <cassert>

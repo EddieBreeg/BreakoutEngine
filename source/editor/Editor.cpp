@@ -25,11 +25,13 @@ std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
 brk::editor::Editor::Editor(
 	ImGuiContext& ctx,
 	ecs::Manager& ecsManager,
+	ResourceManager& resourceManager,
 	SceneManager& sceneManager,
 	int argc,
 	const char** argv)
 	: m_UiData{ new ui::UiData{} }
 	, m_ECSManager{ ecsManager }
+	, m_ResourceManager{ resourceManager }
 	, m_SceneManager{ sceneManager }
 {
 	ImGui::SetCurrentContext(&ctx);
@@ -166,7 +168,7 @@ void brk::editor::Editor::ShowUI()
 
 	if (m_UiData->m_ShowStartupWindow = !m_Project.has_value())
 	{
-		m_UiData->Display(m_ECSManager.GetWorld(), m_SceneManager);
+		m_UiData->Display(m_ECSManager.GetWorld(), m_ResourceManager, m_SceneManager);
 		return;
 	}
 
@@ -175,7 +177,7 @@ void brk::editor::Editor::ShowUI()
 		m_UiData->OpenSceneCreationWindow();
 	}
 
-	m_UiData->Display(m_ECSManager.GetWorld(), m_SceneManager);
+	m_UiData->Display(m_ECSManager.GetWorld(), m_ResourceManager, m_SceneManager);
 }
 
 #endif

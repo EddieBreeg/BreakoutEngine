@@ -80,7 +80,8 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 }
 #endif
 
-const brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(StringView typeName)
+const brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(
+	StringView typeName) const
 {
 	const uint32 hash = Hash<StringView>{}(typeName);
 	const auto it = m_TypeMap.find(hash);

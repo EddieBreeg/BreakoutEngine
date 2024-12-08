@@ -102,6 +102,7 @@ namespace brk {
 		editor::Editor::Init(
 			*m_ImGuiContext,
 			ecs::Manager::GetInstance(),
+			ResourceManager::GetInstance(),
 			SceneManager::GetInstance(),
 			m_Argc,
 			m_Argv);

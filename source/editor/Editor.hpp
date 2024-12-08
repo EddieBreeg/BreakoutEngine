@@ -11,6 +11,7 @@
 struct ImGuiContext;
 
 namespace brk {
+	class ResourceManager;
 	class SceneManager;
 } // namespace brk
 
@@ -37,6 +38,7 @@ namespace brk::editor {
 		Editor(
 			ImGuiContext& imguICtx,
 			ecs::Manager& ecsManager,
+			ResourceManager& resManager,
 			SceneManager& sceneManager,
 			int argc,
 			const char** argv);
@@ -52,6 +54,7 @@ namespace brk::editor {
 		std::optional<Project> m_Project;
 
 		ecs::Manager& m_ECSManager;
+		ResourceManager& m_ResourceManager;
 		SceneManager& m_SceneManager;
 	};
 } // namespace brk::editor

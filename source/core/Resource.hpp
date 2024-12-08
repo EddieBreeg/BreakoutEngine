@@ -8,6 +8,10 @@
 
 #include <string>
 
+namespace brk::editor::ui {
+	struct UiData;
+}
+
 namespace brk {
 	template <class T>
 	struct RetainTraits;
@@ -55,6 +59,10 @@ namespace brk {
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
 		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
+
+#ifdef BRK_EDITOR
+		virtual bool UiWidget() { return false; }
+#endif
 
 	protected:
 		[[nodiscard]] DynamicArrayStream LoadFileContents();

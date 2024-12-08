@@ -30,6 +30,7 @@ namespace brk::project_loading::ut {
 			, m_Editor{ editor::Editor::Init(
 				  *ImGui::CreateContext(),
 				  m_ECSManager,
+				  m_ResManager,
 				  m_SceneManager,
 				  argc,
 				  argv) }

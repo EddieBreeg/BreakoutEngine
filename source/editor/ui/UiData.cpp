@@ -1,7 +1,10 @@
 #include "UiData.hpp"
 #include <managers/SceneManager.hpp>
 
-void brk::editor::ui::UiData::Display(entt::registry& world, SceneManager& sceneManager)
+void brk::editor::ui::UiData::Display(
+	entt::registry& world,
+	ResourceManager& resourceManager,
+	SceneManager& sceneManager)
 {
 	MenuBar();
 
@@ -25,4 +28,7 @@ void brk::editor::ui::UiData::Display(entt::registry& world, SceneManager& scene
 
 	Outliner(sceneManager);
 	Inspector(world, sceneManager);
+	ResourceExplorer();
+	if (m_ShowResourceCreationWindow)
+		ResourceCreationWindow(resourceManager);
 }
