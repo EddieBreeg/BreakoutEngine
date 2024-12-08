@@ -50,7 +50,7 @@ set(CMAKE_FOLDER "Engine")
 add_subdirectory(rendering)
 add_subdirectory(ecs)
 add_subdirectory(managers)
-add_subdirectory(debug)
+add_subdirectory(imgui)
 add_subdirectory(systems)
 add_subdirectory(editor)
 add_subdirectory(app)
@@ -60,6 +60,7 @@ add_library(${PROJECT_NAME} INTERFACE)
 target_link_libraries(${PROJECT_NAME} INTERFACE
 	BRK_INCLUDES
 	Breakout::Core
+	Breakout::DevUi
 	Breakout::ECS
 	Breakout::Managers
 	Breakout::Systems

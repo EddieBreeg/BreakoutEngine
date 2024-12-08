@@ -3,7 +3,7 @@
 #include "TransformComponent.hpp"
 #include "VisualComponents.hpp"
 #ifdef BRK_DEV
-#include <debug/DebugOverlay.hpp>
+#include <imgui/DebugOverlay.hpp>
 #include <editor/Editor.hpp>
 #include <imgui.h>
 #endif

@@ -2,7 +2,6 @@
 
 #ifdef BRK_EDITOR
 
-#include "MiscWidgets.hpp"
 #include <core/Resource.hpp>
 #include <managers/ResourceManager.hpp>
 #include <imgui.h>

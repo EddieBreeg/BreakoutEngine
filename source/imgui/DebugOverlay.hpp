@@ -4,13 +4,16 @@
 
 #ifdef BRK_DEV
 
+struct ImGuiContext;
+
 namespace brk::dbg
 {
-	struct BRK_DEBUG_API Overlay
+	struct BRK_DEV_UI_API Overlay
 	{
 		bool m_Enabled = false;
 
 		void Draw();
+		void Init(ImGuiContext& context);
 
 		static Overlay s_Instance;
 

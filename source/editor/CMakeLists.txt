@@ -6,7 +6,6 @@ add_library(BRK_EDITOR ${BRK_LIBTYPE}
 	ui/ComponentWidgets.cpp
 	ui/Inspector.cpp
 	ui/MenuBar.cpp
-	ui/MiscWidgets.cpp
 	ui/Outliner.cpp
 	ui/ResourceExplorer.cpp
 	ui/StartupWindow.cpp

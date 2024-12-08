@@ -1,6 +1,6 @@
 #include "MiscWidgets.hpp"
 
-#ifdef BRK_EDITOR
+#ifdef BRK_DEV
 
 #include <imgui.h>
 
@@ -17,7 +17,7 @@ namespace {
 	}
 } // namespace
 
-bool brk::editor::ui::StdStringInput(
+bool brk::dev_ui::StdStringInput(
 	const char* label,
 	std::string& out_string,
 	int flags)

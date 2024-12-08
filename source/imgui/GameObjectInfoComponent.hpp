@@ -19,6 +19,6 @@ namespace brk::dbg {
 		ULID m_Id;
 	};
 
-	BRK_DEBUG_API bool GameObjectInfoWidget(GameObjectInfoComponent& comp);
+	BRK_DEV_UI_API bool GameObjectInfoWidget(GameObjectInfoComponent& comp);
 } // namespace brk::dbg
 #endif

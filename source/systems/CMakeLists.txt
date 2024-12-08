@@ -19,7 +19,7 @@ target_link_libraries(BRK_SYSTEMS PUBLIC
 
 target_link_libraries(BRK_SYSTEMS PRIVATE
 	Breakout::Core
-	Breakout::Debug
+	Breakout::DevUi
 	Breakout::EmbedLib
 	Breakout::Editor
 	Breakout::Managers

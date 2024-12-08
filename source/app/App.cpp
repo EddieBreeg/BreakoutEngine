@@ -11,7 +11,7 @@
 #include <iostream>
 #include <clocale>
 
-#include <debug/DebugOverlay.hpp>
+#include <imgui/DebugOverlay.hpp>
 
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>

@@ -4,7 +4,7 @@
 
 #include <core/Assert.hpp>
 
-#include <debug/DebugOverlay.hpp>
+#include <imgui/DebugOverlay.hpp>
 
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
@@ -58,6 +58,7 @@ brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& setti
 					  ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
 	const float uiScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(m_WinPtr));
 	BRK_ASSERT(uiScale, "Failed to retrieve DPI scaling value: {}", SDL_GetError());
+	dbg::Overlay::s_Instance.Init(m_App.GetImGuiContext());
 #ifdef BRK_EDITOR
 	editor::ImportEditorFonts(io, uiScale);
 #endif

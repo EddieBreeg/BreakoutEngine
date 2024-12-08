@@ -4,7 +4,7 @@
 #include <imgui.h>
 #include <imgui_macros.hpp>
 #include <imgui_stdlib.h>
-#include <debug/GameObjectInfoComponent.hpp>
+#include <imgui/GameObjectInfoComponent.hpp>
 #include <managers/SceneManager.hpp>
 #include <entt/entity/registry.hpp>
 

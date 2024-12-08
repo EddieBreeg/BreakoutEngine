@@ -13,4 +13,9 @@ void brk::dbg::Overlay::Draw()
 	ImGui::ShowDemoWindow(&m_Enabled);
 }
 
+void brk::dbg::Overlay::Init(ImGuiContext& context)
+{
+	ImGui::SetCurrentContext(&context);
+}
+
 #endif
