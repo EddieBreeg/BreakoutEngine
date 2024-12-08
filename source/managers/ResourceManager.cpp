@@ -80,6 +80,16 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 }
 #endif
 
+const brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(StringView typeName)
+{
+	const uint32 hash = Hash<StringView>{}(typeName);
+	const auto it = m_TypeMap.find(hash);
+	BRK_ASSERT(
+		it != m_TypeMap.end(),
+		"Tried resource type info for {}, which hasn't been registered");
+	return it->second;
+}
+
 brk::ResourceManager::ResourceManager(entt::registry& world) noexcept
 	: m_World{ world }
 {}

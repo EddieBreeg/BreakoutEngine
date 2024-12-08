@@ -9,6 +9,13 @@
 #include <unordered_map>
 
 namespace brk {
+	struct ResourceTypeInfo
+	{
+		StringView m_TypeName;
+		Resource* (*m_Constructor)(const ULID) = nullptr;
+		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
+	};
+
 	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
@@ -33,6 +40,8 @@ namespace brk {
 		 */
 		void CreateResources(const nlohmann::json& list);
 #endif
+
+		const ResourceTypeInfo& GetResourceTypeInfo(StringView typeName);
 
 		/**
 		 * \short Manually adds a new resource to the map. The object is heap allocated
@@ -64,12 +73,6 @@ namespace brk {
 		ResourceManager(entt::registry& world) noexcept;
 
 		TULIDMap<Resource*> m_Resources;
-
-		struct ResourceTypeInfo
-		{
-			Resource* (*m_Constructor)(const ULID) = nullptr;
-			bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
-		};
 
 		using TTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
 		TTypeMap m_TypeMap;

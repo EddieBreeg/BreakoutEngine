@@ -10,6 +10,7 @@ void brk::ResourceManager::RegisterResourceType()
 
 	constexpr uint32 h = Hash<StringView>{}(R::Name);
 	ResourceTypeInfo info{
+		R::Name,
 		[](const ULID id) -> Resource*
 		{
 			return static_cast<Resource*>(new R{ id });
