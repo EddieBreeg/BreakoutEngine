@@ -12,6 +12,9 @@ namespace brk {
 		float3 m_Translate = { 0, 0, 0 };
 		float3 m_Scale = { 1, 1, 1 };
 		math::Quaternion m_Rotation = glm::identity<math::Quaternion>();
+#ifdef BRK_EDITOR
+		float3 m_EulerAngles; // better suited for the ui widget
+#endif
 
 		[[nodiscard]] float4x4 GetMatrix() const;
 
