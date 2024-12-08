@@ -61,7 +61,11 @@ namespace brk {
 		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
 
 #ifdef BRK_EDITOR
-		virtual bool UiWidget() { return false; }
+		/**
+		 * UI Widget used to create a new resource. Returns true when the resource is
+		 * ready to be added to the manager.
+		 */
+		virtual bool CreationUiWidget() { return false; }
 #endif
 
 	protected:

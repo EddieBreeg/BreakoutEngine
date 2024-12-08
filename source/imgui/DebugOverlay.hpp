@@ -13,7 +13,6 @@ namespace brk::dbg
 		bool m_Enabled = false;
 
 		void Draw();
-		void Init(ImGuiContext& context);
 
 		static Overlay s_Instance;
 

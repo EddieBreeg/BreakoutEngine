@@ -9,6 +9,11 @@
 #include <fstream>
 #include <vector>
 
+#ifdef BRK_EDITOR
+#include <imgui/MiscWidgets.hpp>
+#include <SDL3/SDL_dialog.h>
+#endif
+
 namespace {
 	/**
 	 * If source is not empty, returns a new shader compiled from source. Otherwise,
@@ -89,6 +94,29 @@ namespace brk::rdr {
 		m_VertexShader.Reset();
 		m_FragmentShader.Reset();
 	}
+
+#ifdef BRK_EDITOR
+	constexpr SDL_DialogFileFilter s_HlslFilter = { "HLSL files", "hlsl" };
+
+	bool Material::CreationUiWidget()
+	{
+		dev_ui::ULIDWidget("ULID", m_Id);
+		dev_ui::StdStringInput("Material Name", m_Name);
+
+		dev_ui::FilePathInput("HLSL File", m_FilePath, false, &s_HlslFilter, 1);
+		using TOpts = MaterialSettings::EOptions;
+		m_Options = (TOpts)dev_ui::FlagCheckbox(
+			"Dynamic Parameter Buffer",
+			m_Options.Get(),
+			MaterialSettings::DynamicBufferParam);
+		m_Options = (TOpts)dev_ui::FlagCheckbox(
+			"No Face Culling",
+			m_Options.Get(),
+			MaterialSettings::NoFaceCulling);
+
+		return m_Name.size() && m_FilePath.length();
+	}
+#endif
 
 	MaterialInstance::MaterialInstance(const ULID& id, std::string name)
 		: Resource(id, std::move(name), {})

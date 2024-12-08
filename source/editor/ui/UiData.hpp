@@ -43,6 +43,7 @@ namespace brk::editor::ui {
 		bool m_ProjectLoadRequested = false;
 		bool m_SceneLoadRequested = false;
 		bool m_NewSceneRequested = false;
+		bool m_AddResourceRequested = false;
 
 		const char* m_FilePath = nullptr;
 

@@ -101,6 +101,12 @@ void brk::editor::Editor::Update()
 		CreateNewScene(m_UiData->m_FilePath);
 		SaveProjectFile();
 	}
+	if (m_UiData->m_AddResourceRequested)
+	{
+		m_ResourceManager.AddResource(m_UiData->m_ResourceCreationData.m_Resource);
+		m_UiData->m_ResourceCreationData = {};
+		m_UiData->m_AddResourceRequested = false;
+	}
 }
 
 void brk::editor::Editor::LoadProject(const char* filePath)

@@ -65,6 +65,12 @@ namespace brk {
 		 */
 		template <class R, class... Args>
 		R& AddResource(Args&&... args);
+		/**
+		 * Adds a resource to the map. After this call, the resource manager owns the
+		 * pointer that was passed in; the object will be freed when the manager shuts
+		 * down.
+		 */
+		void AddResource(Resource* res);
 
 		/**
 		 * \return A reference to the resource with the corresponding ID, or a null

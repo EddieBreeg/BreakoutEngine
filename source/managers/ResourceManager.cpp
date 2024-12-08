@@ -91,6 +91,18 @@ const brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(
 	return it->second;
 }
 
+void brk::ResourceManager::AddResource(Resource* res)
+{
+	BRK_ASSERT(res, "Null pointer passed to AddResource");
+	const ULID id = res->GetId();
+	BRK_ASSERT(id, "Tried to add resource with invalid ULID");
+	std::unique_lock lock{ m_Mutex };
+	BRK_ASSERT(
+		m_Resources.try_emplace(id, res).second,
+		"Couldn't add resource {} to the manager: ID already present",
+		id);
+}
+
 brk::ResourceManager::ResourceManager(entt::registry& world) noexcept
 	: m_World{ world }
 {}

@@ -58,8 +58,13 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 		data.m_Info = nullptr;
 		goto RES_CREATION_END;
 	}
-
-	data.m_Info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
+	const auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
+	if (info != data.m_Info)
+	{
+		delete data.m_Resource;
+		data.m_Resource = nullptr;
+	}
+	data.m_Info = info;
 	if (!data.m_Info)
 		goto RES_CREATION_END;
 
@@ -68,7 +73,12 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 		data.m_Resource = data.m_Info->m_Constructor(ULID::Generate());
 	}
 
-	data.m_Resource->UiWidget();
+	const bool ready = data.m_Resource->CreationUiWidget();
+
+	ImGui::BeginDisabled(!ready);
+	m_AddResourceRequested = ImGui::Button("Create");
+	m_ShowResourceCreationWindow = !m_AddResourceRequested;
+	ImGui::EndDisabled();
 
 RES_CREATION_END:
 	ImGui::End();

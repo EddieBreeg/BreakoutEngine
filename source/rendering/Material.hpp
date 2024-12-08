@@ -61,6 +61,10 @@ namespace brk::rdr {
 		bool DoLoad() noexcept override;
 		void DoUnload() noexcept override;
 
+#ifdef BRK_EDITOR
+		bool CreationUiWidget() override;
+#endif
+
 		static constexpr StringView Name = "material";
 
 		~Material() = default;
