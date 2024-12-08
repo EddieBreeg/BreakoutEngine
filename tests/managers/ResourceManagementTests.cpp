@@ -44,6 +44,10 @@ struct brk::JsonLoader<brk::resource_ref::ut::Res2>
 	{
 		return Visit("value", json, out_res.m_Value);
 	}
+	static void Save(const resource_ref::ut::Res2& res, nlohmann::json& out_json)
+	{
+		out_json["value"] = res.m_Value;
+	}
 };
 
 namespace brk::resource_ref::ut {

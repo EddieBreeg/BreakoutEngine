@@ -153,3 +153,8 @@ inline bool brk::JsonLoader<brk::rdr::Texture2d>::Load(
 
 	return true;
 }
+
+void brk::JsonLoader<brk::rdr::Texture2d>::Save(
+	const rdr::Texture2d& tex,
+	nlohmann::json& out_json)
+{}

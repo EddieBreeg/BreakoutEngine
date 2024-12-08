@@ -22,6 +22,10 @@ void brk::ResourceManager::RegisterResourceType()
 		{
 			return JsonLoader<R>::Load(static_cast<R&>(out_res), json);
 		};
+		info.m_Save = [](const Resource& res, nlohmann::json& out_json)
+		{
+			JsonLoader<R>::Save(static_cast<const R&>(res), out_json);
+		};
 	}
 	m_TypeMap.emplace(h, info);
 }

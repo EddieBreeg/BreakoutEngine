@@ -286,6 +286,11 @@ namespace brk {
 		return true;
 	}
 
+	void JsonLoader<rdr::Material>::Save(
+		const rdr::Material& mat,
+		nlohmann::json& out_json)
+	{}
+
 	inline bool JsonLoader<rdr::MaterialInstance>::Load(
 		rdr::MaterialInstance& out_mat,
 		const nlohmann::json& json)
@@ -295,5 +300,10 @@ namespace brk {
 		Visit("textures", json, out_mat.m_ResourceIds.m_TextureIds);
 		return true;
 	}
+
+	void JsonLoader<rdr::MaterialInstance>::Save(
+		const rdr::MaterialInstance& mat,
+		nlohmann::json& out_json)
+	{}
 
 } // namespace brk

@@ -110,4 +110,5 @@ template <>
 struct BRK_RENDERING_API brk::JsonLoader<brk::rdr::Texture2d>
 {
 	static bool Load(rdr::Texture2d& out_tex, const nlohmann::json& json);
+	static void Save(const rdr::Texture2d& tex, nlohmann::json& out_json);
 };

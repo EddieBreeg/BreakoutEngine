@@ -14,6 +14,7 @@ namespace brk {
 		StringView m_TypeName;
 		Resource* (*m_Constructor)(const ULID) = nullptr;
 		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
+		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
 	};
 
 	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>

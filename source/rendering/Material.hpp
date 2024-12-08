@@ -234,6 +234,7 @@ namespace brk {
 	struct BRK_RENDERING_API JsonLoader<rdr::MaterialInstance>
 	{
 		static bool Load(rdr::MaterialInstance& out_mat, const nlohmann::json& json);
+		static void Save(const rdr::MaterialInstance& mat, nlohmann::json& out_json);
 	};
 } // namespace brk
 
