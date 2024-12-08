@@ -271,13 +271,17 @@ namespace brk {
 		bool useDefaultVShader = false;
 		bool useDefaultFShader = false;
 		bool dynamicParams = false;
+		bool noFaceCulling = false;
 		Visit("useDefaultVertexShader", json, useDefaultVShader);
 		Visit("useDefaultFragmentShader", json, useDefaultFShader);
 		Visit("dynamicParamBuffer", json, dynamicParams);
+		Visit("noFaceCulling", json, noFaceCulling);
 		out_mat.m_UseDefaultVertexShader = useDefaultVShader;
 		out_mat.m_UseDefaultFragmentShader = useDefaultFShader;
 		if (dynamicParams)
 			out_mat.m_Options.Set(rdr::MaterialSettings::DynamicBufferParam);
+		if (noFaceCulling)
+			out_mat.m_Options.Set(rdr::MaterialSettings::NoFaceCulling);
 
 		return true;
 	}

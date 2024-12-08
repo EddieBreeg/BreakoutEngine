@@ -19,6 +19,8 @@ namespace brk::rdr {
 			// Indicates the parameter buffer in material instances should be
 			// created with the Dynamic option
 			DynamicBufferParam = BIT(0),
+			// Disable backface culling
+			NoFaceCulling = BIT(1),
 			NOptions
 		};
 

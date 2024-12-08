@@ -23,6 +23,7 @@
 			"name": "material1",
 			"useDefaultVertexShader": true,
 			"dynamicParamBuffer": true,
+			"noFaceCulling": true,
 			"file": "Data\\Shaders\\frag1.hlsl"
 		},
 		{

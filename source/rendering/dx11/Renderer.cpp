@@ -280,13 +280,15 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	{
 		CD3D11_RASTERIZER_DESC rasterizerDesc{ D3D11_DEFAULT };
 		rasterizerDesc.FrontCounterClockwise = true;
-		m_DefaultRasterizer = CreateRasterizer(m_Device, rasterizerDesc);
+		m_Rasterizers.m_Default = CreateRasterizer(m_Device, rasterizerDesc);
+		rasterizerDesc.CullMode = D3D11_CULL_NONE;
+		m_Rasterizers.m_NoCulling = CreateRasterizer(m_Device, rasterizerDesc);
 	}
-	DEBUG_CHECK(m_DefaultRasterizer)
+	DEBUG_CHECK(m_Rasterizers.m_Default && m_Rasterizers.m_NoCulling)
 	{
 		dbg::Break();
 	}
-	m_DeviceContext->RSSetState(m_DefaultRasterizer);
+	m_CurrentPipelineState.m_Rasterizer = m_Rasterizers.m_Default;
 
 	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilState, 1);
 #ifdef BRK_DEV
@@ -509,6 +511,16 @@ void brk::rdr::Renderer::SetMaterial(const MaterialInstance& material)
 			static_cast<const Resource&>(material));
 		return;
 	}
+	ID3D11DeviceContext* deviceContext = m_Data->m_DeviceContext;
+
+	const EnumFlags options = material.GetOptions();
+	{
+		auto& rasterizers = m_Data->m_Rasterizers;
+		pipelineState.m_Rasterizer = options.HasAny(MaterialSettings::NoFaceCulling)
+										 ? rasterizers.m_NoCulling
+										 : rasterizers.m_Default;
+	}
+	deviceContext->RSSetState(pipelineState.m_Rasterizer);
 
 	const auto* textures = material.GetTextures();
 	for (uint32 i = 0; i < MaterialInstance::s_MaxTextureCount; i++)

@@ -21,7 +21,11 @@ namespace brk::rdr {
 		d3d::Ref<ID3D11Texture2D> m_DepthStencilBuffer;
 		d3d::Ref<ID3D11DepthStencilView> m_DepthStencilView;
 		d3d::Ref<ID3D11DepthStencilState> m_DepthStencilState;
-		d3d::Ref<ID3D11RasterizerState> m_DefaultRasterizer;
+		struct
+		{
+			d3d::Ref<ID3D11RasterizerState> m_Default;
+			d3d::Ref<ID3D11RasterizerState> m_NoCulling;
+		} m_Rasterizers;
 
 		d3d::Ref<ID3DBlob> m_DefaultVShader, m_DefaultPShader;
 		d3d::Ref<ID3D11InputLayout> m_InputLayout;
@@ -51,6 +55,8 @@ namespace brk::rdr {
 
 		struct PipelineState
 		{
+			ID3D11RasterizerState* m_Rasterizer = nullptr;
+
 			ID3D11Buffer* m_ParamBuffer = nullptr;
 			ID3D11Buffer* m_FrameData = nullptr;
 			ID3D11Buffer* m_TransformData = nullptr;
