@@ -98,12 +98,21 @@ namespace brk::rdr {
 #ifdef BRK_EDITOR
 	constexpr SDL_DialogFileFilter s_HlslFilter = { "HLSL files", "hlsl" };
 
-	bool Material::CreationUiWidget()
+	void MaterialWidget::Init(const Resource& res)
+	{
+		const auto& mat = static_cast<const Material&>(res);
+		m_Id = mat.m_Id;
+		m_Name = mat.m_Name;
+		m_FilePath = mat.m_FilePath;
+		m_Options = mat.m_Options;
+	}
+
+	bool MaterialWidget::CreationUi()
 	{
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Material Name", m_Name);
 
-		dev_ui::FilePathInput("HLSL File", m_FilePath, false, &s_HlslFilter, 1);
+		dev_ui::FilePathInput("HLSL File", m_FilePath, true, &s_HlslFilter, 1);
 		using TOpts = MaterialSettings::EOptions;
 		dev_ui::FlagCheckbox(
 			"Dynamic Parameter Buffer",
@@ -116,6 +125,15 @@ namespace brk::rdr {
 
 		return m_Name.size() && m_FilePath.length();
 	}
+
+	void MaterialWidget::Commit(Resource& out_resource)
+	{
+		auto& mat = static_cast<Material&>(out_resource);
+		mat.m_Name = std::move(m_Name);
+		mat.m_FilePath = std::move(m_FilePath);
+		mat.m_Options = m_Options;
+	}
+
 #endif
 
 	MaterialInstance::MaterialInstance(const ULID& id, std::string name)

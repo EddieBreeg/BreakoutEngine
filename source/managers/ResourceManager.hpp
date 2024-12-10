@@ -13,6 +13,9 @@ namespace brk {
 	{
 		StringView m_TypeName;
 		Resource* (*m_Constructor)(const ULID) = nullptr;
+#ifdef BRK_EDITOR
+		ResourceUiWidget* m_Widget = nullptr;
+#endif
 		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
 		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
 	};
@@ -27,7 +30,7 @@ namespace brk {
 		 * Registers a new resource type. This is required in order to instanciate this
 		 * resource at runtime.
 		 */
-		template <class R>
+		template <class R, class WidgetType = void>
 		void RegisterResourceType();
 
 #ifdef BRK_EDITOR

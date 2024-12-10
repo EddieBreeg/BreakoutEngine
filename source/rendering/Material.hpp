@@ -61,16 +61,13 @@ namespace brk::rdr {
 		bool DoLoad() noexcept override;
 		void DoUnload() noexcept override;
 
-#ifdef BRK_EDITOR
-		bool CreationUiWidget() override;
-#endif
-
 		static constexpr StringView Name = "material";
 
 		~Material() = default;
 
 	private:
 		friend class MaterialInstance;
+		friend class MaterialWidget;
 		friend struct brk::JsonLoader<Material, void>;
 
 		VertexShader m_VertexShader;
@@ -80,6 +77,21 @@ namespace brk::rdr {
 		bool m_UseDefaultVertexShader : 1;
 		bool m_UseDefaultFragmentShader : 1;
 	};
+
+#ifdef BRK_EDITOR
+	class BRK_RENDERING_API MaterialWidget : public ResourceUiWidget
+	{
+	public:
+		MaterialWidget() = default;
+		void Init(const Resource&) override;
+		bool CreationUi() override;
+
+		void Commit(Resource& out_resource) override;
+
+	private:
+		EnumFlags<MaterialSettings::EOptions> m_Options;
+	};
+#endif
 
 	/**
 	 * A specific instance of a material, with the associated parameters.

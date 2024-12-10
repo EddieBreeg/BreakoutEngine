@@ -18,6 +18,8 @@ namespace {
 			return current;
 		for (const auto& [hash, info] : types)
 		{
+			if (!info.m_Widget)
+				continue;
 			bool selected = &info == current;
 			if (!ImGui::Selectable(info.m_TypeName.GetPtr(), &selected))
 				continue;
@@ -35,9 +37,7 @@ void brk::editor::ui::UiData::ResourceExplorer()
 {
 	ImGui::Begin("Resource Explorer");
 
-	ImGui::BeginDisabled(m_ShowResourceCreationWindow);
 	m_ShowResourceCreationWindow |= ImGui::Button("Create Resource");
-	ImGui::EndDisabled();
 
 	ImGui::End();
 }
@@ -71,13 +71,16 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 	if (!data.m_Resource)
 	{
 		data.m_Resource = data.m_Info->m_Constructor(ULID::Generate());
+		data.m_Info->m_Widget->Init(*data.m_Resource);
 	}
 
-	const bool ready = data.m_Resource->CreationUiWidget();
+	const bool ready = data.m_Info->m_Widget->CreationUi();
 
 	ImGui::BeginDisabled(!ready);
-	m_AddResourceRequested = ImGui::Button("Create");
-	m_ShowResourceCreationWindow = !m_AddResourceRequested;
+	if (m_AddResourceRequested = ImGui::Button("Create"))
+	{
+		data.m_Info->m_Widget->Commit(*data.m_Resource);
+	}
 	ImGui::EndDisabled();
 
 RES_CREATION_END:

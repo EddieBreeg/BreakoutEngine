@@ -60,14 +60,6 @@ namespace brk {
 		[[nodiscard]] const std::string& GetFile() const noexcept { return m_FilePath; }
 		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
 
-#ifdef BRK_EDITOR
-		/**
-		 * UI Widget used to create a new resource. Returns true when the resource is
-		 * ready to be added to the manager.
-		 */
-		virtual bool CreationUiWidget() { return false; }
-#endif
-
 	protected:
 		[[nodiscard]] DynamicArrayStream LoadFileContents();
 
@@ -85,6 +77,22 @@ namespace brk {
 		friend struct JsonLoader<Resource>;
 		friend struct RetainTraits<Resource>;
 	};
+
+#ifdef BRK_EDITOR
+	struct ResourceUiWidget
+	{
+		ResourceUiWidget() = default;
+		virtual void Init(const Resource&) {}
+		virtual bool CreationUi() { return false; }
+		virtual bool EditionUi(const Resource& inout_res) { return false; }
+		virtual void Commit(Resource& inout_res) {}
+		virtual ~ResourceUiWidget() = default;
+
+	protected:
+		ULID m_Id;
+		std::string m_Name, m_FilePath;
+	};
+#endif
 
 	template <>
 	struct BRK_CORE_API JsonLoader<Resource>

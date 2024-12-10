@@ -1,6 +1,6 @@
 #include <core/ULIDFormatter.hpp>
 
-template <class R>
+template <class R, class WidgetType>
 void brk::ResourceManager::RegisterResourceType()
 {
 	static_assert(
@@ -16,6 +16,15 @@ void brk::ResourceManager::RegisterResourceType()
 			return static_cast<Resource*>(new R{ id });
 		},
 	};
+#ifdef BRK_EDITOR
+	if constexpr (!std::is_void_v<WidgetType>)
+	{
+		static_assert(
+			std::is_base_of_v<ResourceUiWidget, WidgetType>,
+			"Invalid widget type");
+		info.m_Widget = static_cast<ResourceUiWidget*>(new WidgetType{});
+	}
+#endif
 	if constexpr (meta::IsComplete<JsonLoader<R>>)
 	{
 		info.m_Load = [](Resource& out_res, const nlohmann::json& json) -> bool
