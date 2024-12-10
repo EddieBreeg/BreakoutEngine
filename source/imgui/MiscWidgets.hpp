@@ -2,6 +2,7 @@
 
 #include <PCH.hpp>
 #ifdef BRK_DEV
+#include <core/EnumFlags.hpp>
 #include <string>
 
 struct SDL_DialogFileFilter;
@@ -30,6 +31,11 @@ namespace brk::dev_ui {
 		const ULID& ulid,
 		int32 stackId = 0);
 
+	namespace _internal {
+		BRK_DEV_UI_API uint64
+		FlagCheckboxImpl(const char* label, uint64 flags, uint64 switches);
+	} // namespace _internal
+
 	/**
 	 * A convenience widget to toggle one or multiple flags with a single checkbox
 	 * \param label: The label to put beside the checkbox
@@ -40,6 +46,30 @@ namespace brk::dev_ui {
 	 * switches). Otherwise, returns flags.
 	 */
 	BRK_DEV_UI_API uint64 FlagCheckbox(const char* label, uint64 flags, uint64 switches);
+
+	template <class Int, std::enable_if_t<std::is_integral_v<Int>>* = nullptr>
+	bool FlagCheckbox(const char* label, Int& out_flags, Int switches)
+	{
+		const Int newFlags = static_cast<Int>(_internal::FlagCheckboxImpl(
+			label,
+			static_cast<uint64>(out_flags),
+			static_cast<uint64>(switches)));
+		const bool ret = (newFlags != out_flags);
+		out_flags = newFlags;
+		return ret;
+	}
+
+	template <class E>
+	bool FlagCheckbox(const char* label, EnumFlags<E>& out_flags, E switches)
+	{
+		const E newFlags = static_cast<E>(_internal::FlagCheckboxImpl(
+			label,
+			static_cast<uint64>(out_flags.Get()),
+			static_cast<uint64>(switches)));
+		const bool ret = newFlags != out_flags.Get();
+		out_flags = newFlags;
+		return ret;
+	}
 } // namespace brk::dev_ui
 
 #endif

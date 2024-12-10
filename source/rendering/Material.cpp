@@ -105,13 +105,13 @@ namespace brk::rdr {
 
 		dev_ui::FilePathInput("HLSL File", m_FilePath, false, &s_HlslFilter, 1);
 		using TOpts = MaterialSettings::EOptions;
-		m_Options = (TOpts)dev_ui::FlagCheckbox(
+		dev_ui::FlagCheckbox(
 			"Dynamic Parameter Buffer",
-			m_Options.Get(),
+			m_Options,
 			MaterialSettings::DynamicBufferParam);
-		m_Options = (TOpts)dev_ui::FlagCheckbox(
+		dev_ui::FlagCheckbox(
 			"No Face Culling",
-			m_Options.Get(),
+			m_Options,
 			MaterialSettings::NoFaceCulling);
 
 		return m_Name.size() && m_FilePath.length();

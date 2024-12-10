@@ -114,8 +114,10 @@ BRK_DEV_UI_API void brk::dev_ui::ULIDWidget(
 
 #endif
 
-BRK_DEV_UI_API uint64
-brk::dev_ui::FlagCheckbox(const char* label, uint64 currentFlags, uint64 switches)
+BRK_DEV_UI_API uint64 brk::dev_ui::_internal::FlagCheckboxImpl(
+	const char* label,
+	uint64 currentFlags,
+	uint64 switches)
 {
 	bool enabled = (currentFlags & switches) == switches;
 	if (ImGui::Checkbox(label, &enabled))
