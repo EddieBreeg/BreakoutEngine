@@ -103,7 +103,8 @@ void brk::editor::Editor::Update()
 	}
 	if (m_UiData->m_AddResourceRequested)
 	{
-		m_ResourceManager.AddResource(m_UiData->m_ResourceCreationData.m_Resource);
+		m_ResourceManager.AddResource(
+			m_UiData->m_ResourceCreationData.m_Resource.release());
 		m_UiData->m_ResourceCreationData = {};
 		m_UiData->m_AddResourceRequested = false;
 	}

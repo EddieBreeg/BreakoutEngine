@@ -3,6 +3,7 @@
 #include <PCH.hpp>
 
 #ifdef BRK_EDITOR
+#include <core/Resource.hpp>
 #include <core/ULID.hpp>
 #include <entt/entity/fwd.hpp>
 
@@ -50,7 +51,7 @@ namespace brk::editor::ui {
 		struct
 		{
 			const ResourceTypeInfo* m_Info = nullptr;
-			Resource* m_Resource = nullptr;
+			std::unique_ptr<Resource> m_Resource = nullptr;
 		} m_ResourceCreationData;
 
 		ULID m_SceneId;

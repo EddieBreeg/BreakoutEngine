@@ -53,24 +53,22 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 	if (!m_ShowResourceCreationWindow)
 	{
 		// window was closed, cancel resource creation
-		delete data.m_Resource;
-		data.m_Resource = nullptr;
+		data.m_Resource.reset();
 		data.m_Info = nullptr;
 		goto RES_CREATION_END;
 	}
+
 	const auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
 	if (info != data.m_Info)
-	{
-		delete data.m_Resource;
-		data.m_Resource = nullptr;
-	}
+		data.m_Resource.reset();
+
 	data.m_Info = info;
 	if (!data.m_Info)
 		goto RES_CREATION_END;
 
 	if (!data.m_Resource)
 	{
-		data.m_Resource = data.m_Info->m_Constructor(ULID::Generate());
+		data.m_Resource.reset(data.m_Info->m_Constructor(ULID::Generate()));
 		data.m_Info->m_Widget->Init(*data.m_Resource);
 	}
 
