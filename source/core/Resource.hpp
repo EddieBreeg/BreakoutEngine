@@ -48,16 +48,26 @@ namespace brk {
 		 * \return true if the resource was loaded succesfully, false otherwise.
 		 */
 		virtual bool DoLoad() { return false; }
-		virtual void DoUnload() { m_LoadingState = EStateFlags::Unloaded; }
+		virtual void DoUnload() { SetLoadingState(Unloaded); }
 
 		[[nodiscard]] bool IsLoaded() const noexcept
 		{
-			return m_LoadingState == EStateFlags::Loaded;
+			return GetLoadingState() == EStateFlags::Loaded;
+		}
+
+		[[nodiscard]] bool GetSavingDisabled() const noexcept
+		{
+			return (m_State & EStateFlags::SavingDisabled);
+		}
+		[[nodiscard]] void SetSavingDisabled(bool disabled = true) noexcept
+		{
+			const EStateFlags flagBit = EStateFlags(uint8(disabled) << 3);
+			m_State = EStateFlags((m_State & ~SavingDisabled) | flagBit);
 		}
 
 		[[nodiscard]] EStateFlags GetLoadingState() const noexcept
 		{
-			return EStateFlags(m_LoadingState & EStateFlags::LoadingStateMask);
+			return EStateFlags(m_State & EStateFlags::LoadingStateMask);
 		}
 		[[nodiscard]] const ULID GetId() const noexcept { return m_Id; }
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
@@ -65,6 +75,11 @@ namespace brk {
 		[[nodiscard]] uint32 GetRefCount() const noexcept { return m_RefCount; }
 
 	protected:
+		void SetLoadingState(EStateFlags state)
+		{
+			m_State = EStateFlags((m_State & ~LoadingStateMask) | state);
+		}
+
 		[[nodiscard]] DynamicArrayStream LoadFileContents();
 
 		ULID m_Id;
@@ -74,10 +89,9 @@ namespace brk {
 		uint32 m_Offset;
 #endif
 		std::atomic<uint32> m_RefCount = 0;
-		std::atomic<EStateFlags> m_LoadingState = Unloaded;
+		std::atomic<EStateFlags> m_State = EStateFlags::Unloaded;
 
 		friend class ResourceLoader;
-		friend class ResourceLoadingSystem;
 		friend struct JsonLoader<Resource>;
 		friend struct RetainTraits<Resource>;
 	};

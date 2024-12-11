@@ -3,20 +3,22 @@
 
 void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 {
-	if (++res->m_RefCount == 1 && res->m_LoadingState != Resource::Loading &&
-		res->m_LoadingState != Resource::Loaded)
+	const Resource::EStateFlags loadState = res->GetLoadingState();
+	if (++res->m_RefCount == 1 && loadState != Resource::Loading &&
+		loadState != Resource::Loaded)
 	{
-		res->m_LoadingState = Resource::Loading;
+		res->SetLoadingState(Resource::Loading);
 		ResourceLoader::GetInstance().AddJob(res);
 	}
 }
 
 void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 {
-	if (!--res->m_RefCount && res->m_LoadingState != Resource::Unloaded &&
-		res->m_LoadingState != Resource::Unloading)
+	const Resource::EStateFlags loadState = res->GetLoadingState();
+	if (!--res->m_RefCount && loadState != Resource::Unloaded &&
+		loadState != Resource::Unloading)
 	{
-		res->m_LoadingState = Resource::Unloading;
+		res->SetLoadingState(Resource::Unloading);
 		ResourceLoader::GetInstance().AddJob(res, false);
 	}
 }

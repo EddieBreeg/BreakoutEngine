@@ -46,6 +46,7 @@ R& brk::ResourceManager::AddResource(Args&&... args)
 	R* res = new R{ std::forward<Args>(args)... };
 	Resource* temp = static_cast<Resource*>(res);
 	BRK_ASSERT(temp->GetId(), "Newly created resource has invalid ULID");
+	temp->SetSavingDisabled();
 	{
 		std::unique_lock lock{ m_Mutex };
 		BRK_ASSERT(

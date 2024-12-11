@@ -47,11 +47,7 @@ namespace brk::rdr {
 		, m_Options{ settings.m_Options }
 		, m_UseDefaultVertexShader{ false }
 		, m_UseDefaultFragmentShader{ false }
-	{
-		// if all shaders were created successfully, no further loading is required
-		if (m_VertexShader && m_FragmentShader)
-			m_LoadingState = EStateFlags::Loaded;
-	}
+	{}
 
 	bool Material::DoLoad() noexcept
 	{

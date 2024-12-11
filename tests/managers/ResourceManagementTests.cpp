@@ -24,7 +24,7 @@ namespace brk::resource_ref::ut {
 		static constexpr StringView Name = "Res1";
 		bool DoLoad()
 		{
-			m_LoadingState = Loaded;
+			m_State = Loaded;
 			return true;
 		}
 	};

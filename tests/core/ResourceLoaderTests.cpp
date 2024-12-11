@@ -18,11 +18,11 @@ namespace brk::resource_loader::ut {
 		Res(EStateFlags state)
 			: Resource(ULID::Generate())
 		{
-			m_LoadingState = state;
+			m_State = state;
 		}
 
 		bool DoLoad() override { return true; }
-		void SetLoadState(Resource::EStateFlags state) { m_LoadingState = state; }
+		void SetLoadState(Resource::EStateFlags state) { m_State = state; }
 	};
 
 	void Tests()

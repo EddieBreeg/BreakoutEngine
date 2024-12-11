@@ -76,18 +76,18 @@ void brk::ResourceLoader::Loop()
 	void (*execFunctions[])(Resource*) = {
 		[](Resource* res)
 		{
-			if (res->m_LoadingState != Resource::Unloading)
+			if (res->GetLoadingState() != Resource::Unloading)
 				return;
 			res->DoUnload();
-			res->m_LoadingState = Resource::Unloaded;
+			res->SetLoadingState(Resource::Unloaded);
 		},
 		[](Resource* res)
 		{
-			if (res->m_LoadingState != Resource::Loading)
+			if (res->GetLoadingState() != Resource::Loading)
 				return;
 			if (res->DoLoad())
 			{
-				res->m_LoadingState = Resource::Loaded;
+				res->SetLoadingState(Resource::Loaded);
 				return;
 			}
 			BRK_LOG_WARNING("Resource::DoLoad returned false for resource {}", *res);
