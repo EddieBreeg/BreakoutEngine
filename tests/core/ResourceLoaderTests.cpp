@@ -15,14 +15,14 @@ namespace brk::resource_loader::ut {
 
 	struct Res : public Resource
 	{
-		Res(ELoadingState state)
+		Res(EStateFlags state)
 			: Resource(ULID::Generate())
 		{
 			m_LoadingState = state;
 		}
 
 		bool DoLoad() override { return true; }
-		void SetLoadState(Resource::ELoadingState state) { m_LoadingState = state; }
+		void SetLoadState(Resource::EStateFlags state) { m_LoadingState = state; }
 	};
 
 	void Tests()

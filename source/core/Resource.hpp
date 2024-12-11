@@ -25,12 +25,16 @@ namespace brk {
 	class BRK_CORE_API Resource
 	{
 	public:
-		enum ELoadingState
+		enum EStateFlags : uint8
 		{
-			Unloaded,
-			Loading,
-			Loaded,
-			Unloading,
+			Unloaded = 0,
+			Loading = 1,
+			Unloading = 2,
+			Reloading = 3,
+			Loaded = 4,
+			LoadingStateMask = 7,
+
+			SavingDisabled = 8,
 		};
 
 		Resource(const ULID id = ULID{});
@@ -44,16 +48,16 @@ namespace brk {
 		 * \return true if the resource was loaded succesfully, false otherwise.
 		 */
 		virtual bool DoLoad() { return false; }
-		virtual void DoUnload() { m_LoadingState = ELoadingState::Unloaded; }
+		virtual void DoUnload() { m_LoadingState = EStateFlags::Unloaded; }
 
 		[[nodiscard]] bool IsLoaded() const noexcept
 		{
-			return m_LoadingState == ELoadingState::Loaded;
+			return m_LoadingState == EStateFlags::Loaded;
 		}
 
-		[[nodiscard]] ELoadingState GetLoadingState() const noexcept
+		[[nodiscard]] EStateFlags GetLoadingState() const noexcept
 		{
-			return m_LoadingState;
+			return EStateFlags(m_LoadingState & EStateFlags::LoadingStateMask);
 		}
 		[[nodiscard]] const ULID GetId() const noexcept { return m_Id; }
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
@@ -70,7 +74,7 @@ namespace brk {
 		uint32 m_Offset;
 #endif
 		std::atomic<uint32> m_RefCount = 0;
-		std::atomic<ELoadingState> m_LoadingState = Unloaded;
+		std::atomic<EStateFlags> m_LoadingState = Unloaded;
 
 		friend class ResourceLoader;
 		friend class ResourceLoadingSystem;

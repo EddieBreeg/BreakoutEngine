@@ -50,7 +50,7 @@ namespace brk::rdr {
 	{
 		// if all shaders were created successfully, no further loading is required
 		if (m_VertexShader && m_FragmentShader)
-			m_LoadingState = ELoadingState::Loaded;
+			m_LoadingState = EStateFlags::Loaded;
 	}
 
 	bool Material::DoLoad() noexcept
