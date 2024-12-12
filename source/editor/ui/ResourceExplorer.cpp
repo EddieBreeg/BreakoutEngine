@@ -18,14 +18,14 @@ namespace {
 			return current;
 		for (const auto& [hash, info] : types)
 		{
-			if (!info.m_Widget)
+			if (!info->m_Widget)
 				continue;
-			bool selected = &info == current;
-			if (!ImGui::Selectable(info.m_TypeName.GetPtr(), &selected))
+			bool selected = info == current;
+			if (!ImGui::Selectable(info->m_TypeName.GetPtr(), &selected))
 				continue;
 
 			ImGui::EndCombo();
-			return &info;
+			return info;
 		}
 
 		ImGui::EndCombo();

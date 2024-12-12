@@ -16,6 +16,8 @@ namespace brk {
 	template <class T>
 	struct RetainTraits;
 
+	struct ResourceTypeInfo;
+
 	/**
 	 * Represents an generic resource. This class is meant to be subclassed for specific
 	 * types of resources.
@@ -43,6 +45,8 @@ namespace brk {
 		 * Unloads the resource.
 		 */
 		virtual ~Resource();
+
+		[[nodiscard]] virtual const ResourceTypeInfo& GetTypeInfo() const noexcept = 0;
 
 		/**
 		 * \return true if the resource was loaded succesfully, false otherwise.
@@ -131,6 +135,26 @@ namespace brk {
 		template <class R, class Widget = void>
 		static ResourceTypeInfo Create(StringView name);
 	};
+
+	namespace _internal {
+		template <class T, class = void>
+		struct ValidResourceType : std::false_type
+		{};
+		template <class R>
+		struct ValidResourceType<
+			R,
+			std::enable_if_t<
+				std::is_base_of_v<Resource, R> &&
+				std::is_same_v<decltype(R::Info), const ResourceTypeInfo> &&
+				std::is_constructible_v<R, const ULID>>> : std::true_type
+		{};
+	} // namespace _internal
+
+	namespace meta {
+		template <class R>
+		static constexpr bool IsResourceType =
+			brk::_internal::ValidResourceType<R>::value;
+	}
 } // namespace brk
 
 #include "Resource.inl"

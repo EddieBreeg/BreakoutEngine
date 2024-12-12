@@ -15,11 +15,17 @@ namespace brk::resource_loader::ut {
 
 	struct Res : public Resource
 	{
+		Res(const ULID id)
+			: Resource(id)
+		{}
+
 		Res(EStateFlags state)
 			: Resource(ULID::Generate())
 		{
 			m_State = state;
 		}
+		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res>("res");
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
 
 		bool DoLoad() override { return true; }
 		void SetLoadState(Resource::EStateFlags state) { m_State = state; }

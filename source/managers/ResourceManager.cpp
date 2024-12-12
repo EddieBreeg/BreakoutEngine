@@ -58,7 +58,7 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 			it != m_TypeMap.end(),
 			"Attempted to load resource of unregistered type {}",
 			resType);
-		const ResourceTypeInfo& info = it->second;
+		const ResourceTypeInfo& info = *it->second;
 
 		Resource* res = info.m_Constructor(resId);
 
@@ -88,7 +88,7 @@ const brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(
 	BRK_ASSERT(
 		it != m_TypeMap.end(),
 		"Tried resource type info for {}, which hasn't been registered");
-	return it->second;
+	return *it->second;
 }
 
 void brk::ResourceManager::AddResource(Resource* res)

@@ -15,6 +15,8 @@ namespace brk::scene_loading::ut {
 	struct Res : public Resource
 	{
 		using Resource::Resource;
+		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res>("res");
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
 	};
 
 	class RAIIHelper

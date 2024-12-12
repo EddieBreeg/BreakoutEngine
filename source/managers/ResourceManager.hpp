@@ -9,7 +9,8 @@
 #include <unordered_map>
 
 namespace brk {
-	using TResourceTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
+	using TResourceTypeMap =
+		std::unordered_map<uint32, const ResourceTypeInfo*, Hash<uint32>>;
 
 	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
 	{

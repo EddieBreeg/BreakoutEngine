@@ -1,5 +1,8 @@
 #include "Mesh.hpp"
 
+const brk::ResourceTypeInfo brk::rdr::Mesh::Info =
+	brk::ResourceTypeInfo::Create<brk::rdr::Mesh>("mesh");
+
 brk::rdr::Mesh::Mesh(
 	const Vertex3d* vertices,
 	const uint32 nVertices,

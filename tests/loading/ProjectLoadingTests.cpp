@@ -15,6 +15,9 @@ namespace brk::project_loading::ut {
 		uint32 Value = 0;
 		static constexpr StringView Name = "Res1";
 
+		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res1>(Name);
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
 		static constexpr meta::FieldList<&Res1::Value> Fields = { "value" };
 	};
 } // namespace brk::project_loading::ut

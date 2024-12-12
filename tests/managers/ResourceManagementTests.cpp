@@ -22,6 +22,9 @@ namespace brk::resource_ref::ut {
 		void ResetRefCount() { m_RefCount = 0; }
 
 		static constexpr StringView Name = "Res1";
+		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res1>(Name);
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
 		bool DoLoad()
 		{
 			m_State = Loaded;
@@ -34,6 +37,9 @@ namespace brk::resource_ref::ut {
 			: Resource(id)
 		{}
 		static constexpr StringView Name = "Res2";
+		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res2>(Name);
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
 		int32 m_Value = 0;
 	};
 } // namespace brk::resource_ref::ut

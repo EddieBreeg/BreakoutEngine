@@ -60,7 +60,9 @@ namespace brk::rdr {
 	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
-		static constexpr StringView Name = "texture2d";
+		static const ResourceTypeInfo Info;
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
 		using Resource::Resource;
 		/**
 		 * Creates a new texture resource

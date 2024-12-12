@@ -3,14 +3,11 @@
 template <class R, class WidgetType>
 void brk::ResourceManager::RegisterResourceType()
 {
-	static_assert(
-		std::is_base_of_v<Resource, R> && meta::HasName<R> &&
-			std::is_constructible_v<R, const ULID&>,
-		"Invalid resource type");
+	static_assert(meta::IsResourceType<R>, "Invalid resource type");
 
-	constexpr uint32 h = Hash<StringView>{}(R::Name);
+	const uint32 h = Hash<StringView>{}(R::Info.m_TypeName);
 
-	m_TypeMap.emplace(h, ResourceTypeInfo::Create<R, WidgetType>(R::Name));
+	m_TypeMap.emplace(h, &R::Info);
 }
 
 template <class R, class... Args>
