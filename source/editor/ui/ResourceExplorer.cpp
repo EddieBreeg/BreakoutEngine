@@ -21,12 +21,13 @@ namespace {
 		{
 			if (!info->m_Widget)
 				continue;
-			bool selected = info->m_Constructor == current.m_Constructor;
+			const bool isCurrent = info->m_Constructor == current.m_Constructor;
+			bool selected = isCurrent;
 			if (!ImGui::Selectable(info->m_TypeName.GetPtr(), &selected))
 				continue;
 
 			ImGui::EndCombo();
-			return info;
+			return isCurrent ? nullptr : info;
 		}
 
 		ImGui::EndCombo();
@@ -61,7 +62,10 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 
 	const auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
 	if (info)
+	{
 		data.m_Info = *info;
+		data.m_Resource.reset();
+	}
 
 	if (!data.m_Info.m_Constructor)
 		goto RES_CREATION_END;
