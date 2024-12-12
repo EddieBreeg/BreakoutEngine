@@ -35,12 +35,6 @@
             "noFaceCulling": true,
             "type": "material",
             "useDefaultVertexShader": true
-        },
-        {
-            "file": "Data\\Shaders\\frag1.hlsl",
-            "id": "01JEXZ2464M2K5PVPRCYYM2416",
-            "name": "mat_test",
-            "type": "material"
         }
     ],
     "scenes": [
