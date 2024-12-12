@@ -23,6 +23,14 @@ bool brk::JsonLoader<brk::Resource>::Load(Resource& out_res, const nlohmann::jso
 	return result;
 }
 
+void brk::JsonLoader<brk::Resource>::Save(const Resource& res, nlohmann::json& out_json)
+{
+	out_json["id"] = res.m_Id;
+	out_json["name"] = res.m_Name;
+	if (res.m_FilePath.length())
+		out_json["file"] = res.m_FilePath;
+}
+
 brk::Resource::~Resource() = default;
 
 brk::DynamicArrayStream brk::Resource::LoadFileContents()

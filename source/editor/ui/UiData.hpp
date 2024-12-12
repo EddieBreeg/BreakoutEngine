@@ -50,7 +50,7 @@ namespace brk::editor::ui {
 
 		struct
 		{
-			const ResourceTypeInfo* m_Info = nullptr;
+			ResourceTypeInfo m_Info = {};
 			std::unique_ptr<Resource> m_Resource = nullptr;
 		} m_ResourceCreationData;
 

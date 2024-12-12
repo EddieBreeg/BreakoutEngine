@@ -120,6 +120,7 @@ namespace brk {
 	struct BRK_CORE_API JsonLoader<Resource>
 	{
 		static bool Load(Resource& out_res, const nlohmann::json& json);
+		static void Save(const Resource& res, nlohmann::json& out_json);
 	};
 
 	struct ResourceTypeInfo

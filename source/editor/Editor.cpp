@@ -67,11 +67,25 @@ void brk::editor::Editor::SaveProjectFile()
 	nlohmann::json& scenesArr = json["scenes"] = nlohmann::json::array();
 
 	nlohmann::json sceneJson;
-	for (const auto& [id, desc] : SceneManager::GetInstance().GetSceneDesriptions())
+	for (const auto& [id, desc] : m_SceneManager.GetSceneDesriptions())
 	{
 		JsonLoader<SceneDescription>::Save(desc, sceneJson);
 		scenesArr.emplace_back(std::move(sceneJson));
 	}
+
+	nlohmann::json& resourcesArr = json["resources"] = nlohmann::json::array();
+	nlohmann::json resJson;
+	for (const auto& [id, resource] : m_ResourceManager.GetResources())
+	{
+		if (resource->GetSavingDisabled())
+			continue;
+		const ResourceTypeInfo& info = resource->GetTypeInfo();
+		JsonLoader<Resource>::Save(*resource, resJson);
+		if (info.m_Save)
+			info.m_Save(*resource, resJson);
+		resourcesArr.emplace_back(std::move(resJson));
+	}
+
 	std::ofstream projectFile{ m_ProjectFilePath };
 	BRK_ASSERT(
 		projectFile.is_open(),
@@ -107,6 +121,7 @@ void brk::editor::Editor::Update()
 			m_UiData->m_ResourceCreationData.m_Resource.release());
 		m_UiData->m_ResourceCreationData = {};
 		m_UiData->m_AddResourceRequested = false;
+		SaveProjectFile();
 	}
 }
 

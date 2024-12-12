@@ -44,6 +44,10 @@ namespace brk {
 		{
 			return m_TypeMap;
 		}
+		[[nodiscard]] const TULIDMap<Resource*>& GetResources() const noexcept
+		{
+			return m_Resources;
+		}
 #endif
 
 		/**

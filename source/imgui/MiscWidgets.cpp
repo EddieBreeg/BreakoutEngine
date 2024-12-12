@@ -5,6 +5,7 @@
 #include <core/LogManager.hpp>
 #include <core/ULID.hpp>
 #include <filesystem>
+#include <fstream>
 #include <imgui.h>
 #include <SDL3/SDL_clipboard.h>
 #include <SDL3/SDL_dialog.h>
@@ -15,13 +16,13 @@ namespace {
 		std::string* string = static_cast<std::string*>(data->UserData);
 		if (data->EventFlag == ImGuiInputTextFlags_CallbackResize)
 		{
-			string->resize(data->BufSize);
+			string->resize(data->BufTextLen);
 			data->Buf = string->data();
 		}
 		return 0;
 	}
 
-	void FileDialogCallback(void* userData, const char* const* fileList, int filter)
+	void FileOpenCallback(void* userData, const char* const* fileList, int filter)
 	{
 		auto& string = *static_cast<std::string*>(userData);
 		const char* newPath = nullptr;
@@ -29,10 +30,24 @@ namespace {
 			return;
 		using std::filesystem::path;
 
-		if (fileList && newPath)
+		const path relPath = std::filesystem::relative(newPath);
+		string = relPath.u8string();
+	}
+
+	void FileSaveCallback(void* userData, const char* const* fileList, int filter)
+	{
+		auto& string = *static_cast<std::string*>(userData);
+		const char* newPath = nullptr;
+		if (!fileList || !(newPath = fileList[0]))
+			return;
+		using std::filesystem::path;
+
+		const path relPath = std::filesystem::relative(newPath);
+		string = relPath.u8string();
+		// if the file doesn't exist, create it
+		if (!std::filesystem::is_regular_file(relPath))
 		{
-			const path relPath = std::filesystem::relative(newPath);
-			string = relPath.u8string();
+			std::ofstream file{ relPath };
 		}
 	}
 } // namespace
@@ -69,7 +84,7 @@ BRK_DEV_UI_API bool brk::dev_ui::FilePathInput(
 		if (saveFile)
 		{
 			SDL_ShowSaveFileDialog(
-				FileDialogCallback,
+				FileSaveCallback,
 				&path,
 				window,
 				filters,
@@ -79,7 +94,7 @@ BRK_DEV_UI_API bool brk::dev_ui::FilePathInput(
 		else
 		{
 			SDL_ShowOpenFileDialog(
-				FileDialogCallback,
+				FileOpenCallback,
 				&path,
 				window,
 				filters,
