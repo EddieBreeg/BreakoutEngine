@@ -9,34 +9,8 @@ void brk::ResourceManager::RegisterResourceType()
 		"Invalid resource type");
 
 	constexpr uint32 h = Hash<StringView>{}(R::Name);
-	ResourceTypeInfo info{
-		R::Name,
-		[](const ULID id) -> Resource*
-		{
-			return static_cast<Resource*>(new R{ id });
-		},
-	};
-#ifdef BRK_EDITOR
-	if constexpr (!std::is_void_v<WidgetType>)
-	{
-		static_assert(
-			std::is_base_of_v<ResourceUiWidget, WidgetType>,
-			"Invalid widget type");
-		info.m_Widget = static_cast<ResourceUiWidget*>(new WidgetType{});
-	}
-#endif
-	if constexpr (meta::IsComplete<JsonLoader<R>>)
-	{
-		info.m_Load = [](Resource& out_res, const nlohmann::json& json) -> bool
-		{
-			return JsonLoader<R>::Load(static_cast<R&>(out_res), json);
-		};
-		info.m_Save = [](const Resource& res, nlohmann::json& out_json)
-		{
-			JsonLoader<R>::Save(static_cast<const R&>(res), out_json);
-		};
-	}
-	m_TypeMap.emplace(h, info);
+
+	m_TypeMap.emplace(h, ResourceTypeInfo::Create<R, WidgetType>(R::Name));
 }
 
 template <class R, class... Args>

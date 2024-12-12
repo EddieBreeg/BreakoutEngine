@@ -117,4 +117,20 @@ namespace brk {
 	{
 		static bool Load(Resource& out_res, const nlohmann::json& json);
 	};
+
+	struct ResourceTypeInfo
+	{
+		StringView m_TypeName;
+		Resource* (*m_Constructor)(const ULID) = nullptr;
+#ifdef BRK_EDITOR
+		ResourceUiWidget* m_Widget = nullptr;
+#endif
+		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
+		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
+
+		template <class R, class Widget = void>
+		static ResourceTypeInfo Create(StringView name);
+	};
 } // namespace brk
+
+#include "Resource.inl"

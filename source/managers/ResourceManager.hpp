@@ -9,16 +9,6 @@
 #include <unordered_map>
 
 namespace brk {
-	struct ResourceTypeInfo
-	{
-		StringView m_TypeName;
-		Resource* (*m_Constructor)(const ULID) = nullptr;
-#ifdef BRK_EDITOR
-		ResourceUiWidget* m_Widget = nullptr;
-#endif
-		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
-		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
-	};
 	using TResourceTypeMap = std::unordered_map<uint32, ResourceTypeInfo, Hash<uint32>>;
 
 	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
