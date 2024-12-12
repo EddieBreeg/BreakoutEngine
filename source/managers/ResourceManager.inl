@@ -1,6 +1,6 @@
 #include <core/ULIDFormatter.hpp>
 
-template <class R, class WidgetType>
+template <class R>
 void brk::ResourceManager::RegisterResourceType()
 {
 	static_assert(meta::IsResourceType<R>, "Invalid resource type");

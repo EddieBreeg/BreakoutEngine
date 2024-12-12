@@ -20,8 +20,9 @@ namespace brk {
 		/**
 		 * Registers a new resource type. This is required in order to instanciate this
 		 * resource at runtime.
+		 * \details R must meet the requirements of IsResourceType (see Resource.hpp)
 		 */
-		template <class R, class WidgetType = void>
+		template <class R>
 		void RegisterResourceType();
 
 #ifdef BRK_EDITOR

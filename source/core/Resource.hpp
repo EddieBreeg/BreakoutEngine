@@ -152,10 +152,18 @@ namespace brk {
 	} // namespace _internal
 
 	namespace meta {
+
+		/**
+		 * Determines whether R is a valid resource type, that is:
+		 * - R inherits from Resource
+		 * - R is constructible from a ULID object
+		 * - R::Info is an accessible const ResourceTypeInfo object, containing relevant
+		 * runtime information about R
+		 */
 		template <class R>
 		static constexpr bool IsResourceType =
 			brk::_internal::ValidResourceType<R>::value;
-	}
+	} // namespace meta
 } // namespace brk
 
 #include "Resource.inl"
