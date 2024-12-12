@@ -31,7 +31,7 @@ void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 void brk::App::RegisterResources(const EntryPoint& entryPoint)
 {
 	auto& manager = ResourceManager::GetInstance();
-	manager.RegisterResourceType<rdr::Material, rdr::MaterialWidget>();
+	manager.RegisterResourceType<rdr::Material>();
 	manager.RegisterResourceType<rdr::MaterialInstance>();
 	manager.RegisterResourceType<rdr::Texture2d>();
 	if (entryPoint.RegisterGameResources)

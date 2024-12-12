@@ -90,6 +90,8 @@ namespace brk::rdr {
 		void Commit(Resource& out_resource) override;
 
 	private:
+		bool m_UseDefaultVertexShader = false;
+		bool m_UseDefaultFragmentShader = false;
 		EnumFlags<MaterialSettings::EOptions> m_Options;
 	};
 #endif

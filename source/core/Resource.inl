@@ -9,10 +9,12 @@ namespace brk {
 				return new R{ id };
 			},
 		};
+#ifdef BRK_EDITOR
 		if constexpr (!std::is_void_v<Widget>)
 		{
 			info.m_Widget = new Widget{};
 		}
+#endif
 		if constexpr (meta::IsComplete<JsonLoader<R>>)
 		{
 			info.m_Load = [](Resource& res, const nlohmann::json& json)

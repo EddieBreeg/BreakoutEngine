@@ -10,6 +10,7 @@
 #include <vector>
 
 #ifdef BRK_EDITOR
+#include <imgui.h>
 #include <imgui/MiscWidgets.hpp>
 #include <SDL3/SDL_dialog.h>
 #endif
@@ -107,6 +108,8 @@ namespace brk::rdr {
 		m_Name = mat.m_Name;
 		m_FilePath = mat.m_FilePath;
 		m_Options = mat.m_Options;
+		m_UseDefaultVertexShader = mat.m_UseDefaultVertexShader;
+		m_UseDefaultFragmentShader = mat.m_UseDefaultFragmentShader;
 	}
 
 	bool MaterialWidget::CreationUi()
@@ -115,6 +118,11 @@ namespace brk::rdr {
 		dev_ui::StdStringInput("Material Name", m_Name);
 
 		dev_ui::FilePathInput("HLSL File", m_FilePath, true, &s_HlslFilter, 1);
+
+		ImGui::Checkbox("Use Default Vertex Shader", &m_UseDefaultVertexShader);
+		ImGui::SameLine();
+		ImGui::Checkbox("Use Default Fragment Shader", &m_UseDefaultFragmentShader);
+
 		using TOpts = MaterialSettings::EOptions;
 		dev_ui::FlagCheckbox(
 			"Dynamic Parameter Buffer",
@@ -134,6 +142,8 @@ namespace brk::rdr {
 		mat.m_Name = std::move(m_Name);
 		mat.m_FilePath = std::move(m_FilePath);
 		mat.m_Options = m_Options;
+		mat.m_UseDefaultVertexShader = m_UseDefaultVertexShader;
+		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
 	}
 
 #endif

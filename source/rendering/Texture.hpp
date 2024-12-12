@@ -99,6 +99,7 @@ namespace brk::rdr {
 
 	private:
 		friend struct JsonLoader<Texture2d>;
+		friend class Texture2dWidget;
 
 		void Init(const void* data = nullptr);
 
@@ -106,6 +107,20 @@ namespace brk::rdr {
 		HandleType m_Handle = {};
 		Texture2dSettings m_Settings = {};
 	};
+
+#ifdef BRK_EDITOR
+	class Texture2dWidget : public ResourceUiWidget
+	{
+	public:
+		Texture2dWidget() = default;
+		virtual void Init(const Resource& res) override;
+		virtual bool CreationUi() override;
+		virtual void Commit(Resource& out_res) override;
+
+	private:
+		Texture2dSettings m_Settings;
+	};
+#endif
 } // namespace brk::rdr
 
 template <>

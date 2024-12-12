@@ -127,9 +127,7 @@ BRK_DEV_UI_API void brk::dev_ui::ULIDWidget(
 	ImGui::PopID();
 }
 
-#endif
-
-BRK_DEV_UI_API uint64 brk::dev_ui::_internal::FlagCheckboxImpl(
+uint64 brk::dev_ui::_internal::FlagCheckboxImpl(
 	const char* label,
 	uint64 currentFlags,
 	uint64 switches)
@@ -141,3 +139,30 @@ BRK_DEV_UI_API uint64 brk::dev_ui::_internal::FlagCheckboxImpl(
 	}
 	return currentFlags;
 }
+
+uint32 brk::dev_ui::_internal::EnumDropDownImpl(
+	const char* label,
+	const char* const* valueNames,
+	uint32 numValues,
+	uint32 currentValue)
+{
+	BRK_ASSERT(numValues > currentValue, "Current value is out of range");
+	if (!ImGui::BeginCombo(label, valueNames[currentValue]))
+	{
+		return currentValue;
+	}
+
+	for (uint32 i = 0; i < numValues; i++)
+	{
+		bool selected = currentValue == i;
+		if (ImGui::Selectable(valueNames[i], &selected))
+		{
+			ImGui::EndCombo();
+			return i;
+		}
+	}
+
+	ImGui::EndCombo();
+	return currentValue;
+}
+#endif

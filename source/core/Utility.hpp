@@ -24,4 +24,10 @@ namespace brk {
 
 		return ((res = res < right ? res : std::forward<U>(right)), ...);
 	}
+
+	template <class T, size_t N>
+	[[nodiscard]] constexpr size_t ArraySize(const T (&arr)[N]) noexcept
+	{
+		return N;
+	}
 } // namespace brk

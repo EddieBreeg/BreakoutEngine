@@ -3,6 +3,12 @@
 #include <core/LogManager.hpp>
 #include <core/ResourceFormatter.hpp>
 
+#ifdef BRK_EDITOR
+#include <imgui.h>
+#include <imgui/MiscWidgets.hpp>
+#include <SDL3/SDL_dialog.h>
+#endif
+
 #include <cstdio>
 #define STB_IMAGE_IMPLEMENTATION
 #define STBI_ASSERT(x) BRK_ASSERT(x, "stbi error")
@@ -13,10 +19,21 @@ namespace {
 		1,
 		4,
 	};
+
+	constexpr SDL_DialogFileFilter s_ImageFileFilters[] = {
+		{ "Image Files", { "png;jpg;jpeg;bmp;gif;hdr" } },
+	};
+
+	constexpr const char* s_PixelFormatNames[] = { "Grayscale", "RGBA 8" };
+
+	constexpr const char* s_FilterModeNames[] = { "Nearest", "Linear" };
+
+	constexpr const char* s_AddressModeNames[] = { "Clamp", "Wrap", "Mirror", "Border" };
+
 } // namespace
 
 const brk::ResourceTypeInfo brk::rdr::Texture2d::Info =
-	brk::ResourceTypeInfo::Create<brk::rdr::Texture2d>("texture2d");
+	brk::ResourceTypeInfo::Create<rdr::Texture2d, rdr::Texture2dWidget>("texture2d");
 
 brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* data)
 	: Resource(ULID::Generate())
@@ -84,6 +101,64 @@ void brk::rdr::Texture2d::DoUnload()
 {
 	if (!m_FilePath.empty())
 		Reset();
+}
+
+void brk::rdr::Texture2dWidget::Init(const Resource& res)
+{
+	const auto& tex = static_cast<const Texture2d&>(res);
+	m_Id = tex.m_Id;
+	m_Name = tex.m_Name;
+	m_FilePath = tex.m_FilePath;
+	m_Settings = tex.m_Settings;
+}
+
+bool brk::rdr::Texture2dWidget::CreationUi()
+{
+	dev_ui::ULIDWidget("ULID", m_Id);
+	dev_ui::StdStringInput("Texture Name", m_Name);
+	dev_ui::FilePathInput("Image File", m_FilePath, false, s_ImageFileFilters, 1);
+
+	dev_ui::EnumDropDown(
+		"Pixel Format",
+		s_PixelFormatNames,
+		ArraySize(s_PixelFormatNames),
+		m_Settings.m_Format);
+	dev_ui::EnumDropDown(
+		"Filter Mode",
+		s_FilterModeNames,
+		ArraySize(s_FilterModeNames),
+		m_Settings.m_FilterMode);
+	dev_ui::EnumDropDown(
+		"UV Address Mode",
+		s_AddressModeNames,
+		ArraySize(s_AddressModeNames),
+		m_Settings.m_UvAddressMode);
+	if (m_Settings.m_UvAddressMode == EAddressMode::Border)
+	{
+		ImGui::ColorEdit4("Border Color", &m_Settings.m_BorderColor.x);
+	}
+
+	dev_ui::FlagCheckbox(
+		"Is Shader Resource",
+		m_Settings.m_Options,
+		ETextureOptions::ShaderResource);
+	ImGui::SameLine();
+	dev_ui::FlagCheckbox(
+		"Is Render Target",
+		m_Settings.m_Options,
+		ETextureOptions::RenderTarget);
+
+	dev_ui::FlagCheckbox("Is Dynamic", m_Settings.m_Options, ETextureOptions::Dynamic);
+
+	return m_Name.length() && m_FilePath.length();
+}
+
+void brk::rdr::Texture2dWidget::Commit(Resource& out_res)
+{
+	auto& tex = static_cast<Texture2d&>(out_res);
+	tex.m_Name = std::move(m_Name);
+	tex.m_FilePath = std::move(m_FilePath);
+	tex.m_Settings = m_Settings;
 }
 
 inline bool brk::JsonLoader<brk::rdr::Texture2d>::Load(
