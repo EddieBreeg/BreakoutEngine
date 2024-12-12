@@ -27,6 +27,7 @@ void brk::JsonLoader<brk::Resource>::Save(const Resource& res, nlohmann::json& o
 {
 	out_json["id"] = res.m_Id;
 	out_json["name"] = res.m_Name;
+	out_json["type"] = res.GetTypeInfo().m_TypeName;
 	if (res.m_FilePath.length())
 		out_json["file"] = res.m_FilePath;
 }

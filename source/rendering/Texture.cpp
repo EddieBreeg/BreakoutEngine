@@ -160,4 +160,16 @@ inline bool brk::JsonLoader<brk::rdr::Texture2d>::Load(
 void brk::JsonLoader<brk::rdr::Texture2d>::Save(
 	const rdr::Texture2d& tex,
 	nlohmann::json& out_json)
-{}
+{
+	using brk::rdr::ETextureOptions;
+
+	out_json["format"] = tex.m_Settings.m_Format;
+	out_json["addressMode"] = tex.m_Settings.m_UvAddressMode;
+	out_json["filterMode"] = tex.m_Settings.m_FilterMode;
+	if (tex.m_Settings.m_Options.HasAny(ETextureOptions::ShaderResource))
+		out_json["isShaderResource"] = true;
+	if (tex.m_Settings.m_Options.HasAny(ETextureOptions::RenderTarget))
+		out_json["isRenderTarget"] = true;
+	if (tex.m_Settings.m_Options.HasAny(ETextureOptions::Dynamic))
+		out_json["isDynamic"] = true;
+}

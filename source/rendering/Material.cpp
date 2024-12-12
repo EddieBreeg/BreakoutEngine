@@ -337,7 +337,17 @@ namespace brk {
 	void JsonLoader<rdr::Material>::Save(
 		const rdr::Material& mat,
 		nlohmann::json& out_json)
-	{}
+	{
+		using rdr::MaterialSettings;
+		if (mat.m_UseDefaultVertexShader)
+			out_json["useDefaultVertexShader"] = true;
+		if (mat.m_UseDefaultFragmentShader)
+			out_json["useDefaultFragmentShader"] = true;
+		if (mat.m_Options.HasAny(MaterialSettings::DynamicBufferParam))
+			out_json["dynamicParamBuffer"] = true;
+		if (mat.m_Options.HasAny(MaterialSettings::NoFaceCulling))
+			out_json["noFaceCulling"] = true;
+	}
 
 	inline bool JsonLoader<rdr::MaterialInstance>::Load(
 		rdr::MaterialInstance& out_mat,
@@ -352,6 +362,23 @@ namespace brk {
 	void JsonLoader<rdr::MaterialInstance>::Save(
 		const rdr::MaterialInstance& mat,
 		nlohmann::json& out_json)
-	{}
+	{
+		if (mat.IsValid())
+		{
+			out_json["material"] = mat.m_BaseMat->GetId();
+			nlohmann::json& texArray = out_json["textures"] = nlohmann::json::array();
+			for (const auto& tex : mat.m_Textures)
+			{
+				if (tex)
+				{
+					texArray.emplace_back(tex->GetId());
+				}
+				else
+				{
+					texArray.emplace_back(nlohmann::json{});
+				}
+			}
+		}
+	}
 
 } // namespace brk

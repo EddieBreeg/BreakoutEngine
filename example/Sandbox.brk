@@ -1,46 +1,53 @@
 {
-	"name": "Sandbox",
-	"scenes": [
-		{
-			"file": "Data\\Scenes\\Scene0.brkscn",
-			"id": "01J5RJXZPRWSSVPHFHRXBF9VG6",
-			"name": "Scene0"
-		}
-	],
-	"resources": [
-		{
-			"type": "texture2d",
-			"id": "01JDW4CZM6YB7J6ZJNPMC60THK",
-			"name": "texture1",
-			"file": "Data\\Textures\\breakout.png",
-			"format": 1,
-			"filterMode": 1,
-			"isShaderResource": true
-		},
-		{
-			"type": "material",
-			"id": "01JDS6Q072ERV1WXSSCFKRS8CY",
-			"name": "material1",
-			"useDefaultVertexShader": true,
-			"dynamicParamBuffer": true,
-			"noFaceCulling": true,
-			"file": "Data\\Shaders\\frag1.hlsl"
-		},
-		{
-			"type": "materialInstance",
-			"id": "01JDYK0J865THQCRFGKFVY81XJ",
-			"name": "mat_instance",
-			"material": "01JDS6Q072ERV1WXSSCFKRS8CY",
-			"textures": [
-				"01JDW4CZM6YB7J6ZJNPMC60THK",
-				null,
-				null,
-				null,
-				null,
-				null,
-				null,
-				null
-			]
-		}
-	]
+    "name": "Sandbox",
+    "resources": [
+        {
+            "id": "01JDYK0J865THQCRFGKFVY81XJ",
+            "material": "01JDS6Q072ERV1WXSSCFKRS8CY",
+            "name": "mat_instance",
+            "textures": [
+                "01JDW4CZM6YB7J6ZJNPMC60THK",
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null
+            ],
+            "type": "materialInstance"
+        },
+        {
+            "addressMode": 1,
+            "file": "Data\\Textures\\breakout.png",
+            "filterMode": 1,
+            "format": 1,
+            "id": "01JDW4CZM6YB7J6ZJNPMC60THK",
+            "isShaderResource": true,
+            "name": "texture1",
+            "type": "texture2d"
+        },
+        {
+            "dynamicParamBuffer": true,
+            "file": "Data\\Shaders\\frag1.hlsl",
+            "id": "01JDS6Q072ERV1WXSSCFKRS8CY",
+            "name": "material1",
+            "noFaceCulling": true,
+            "type": "material",
+            "useDefaultVertexShader": true
+        },
+        {
+            "file": "Data\\Shaders\\frag1.hlsl",
+            "id": "01JEXZ2464M2K5PVPRCYYM2416",
+            "name": "mat_test",
+            "type": "material"
+        }
+    ],
+    "scenes": [
+        {
+            "file": "Data\\Scenes\\Scene0.brkscn",
+            "id": "01J5RJXZPRWSSVPHFHRXBF9VG6",
+            "name": "Scene0"
+        }
+    ]
 }
