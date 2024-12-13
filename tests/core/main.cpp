@@ -30,6 +30,10 @@ namespace brk::io::ut {
 	void DynArrayBufTests();
 } // namespace brk::io::ut
 
+namespace brk::enumerator::ut {
+	void Tests();
+} // namespace brk::enumerator::ut
+
 int main(int argc, char const* argv[])
 {
 	brk::core::ut::EventTests();
@@ -40,5 +44,6 @@ int main(int argc, char const* argv[])
 	brk::retain_ptr::ut::Tests();
 	brk::enums::ut::Tests();
 	brk::io::ut::DynArrayBufTests();
+	brk::enumerator::ut::Tests();
 	return 0;
 }
