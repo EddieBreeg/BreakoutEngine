@@ -28,7 +28,8 @@ void brk::editor::ui::UiData::Display(
 
 	Outliner(sceneManager);
 	Inspector(world, sceneManager);
-	ResourceExplorer();
+	ResourceExplorer(resourceManager);
+	ResourceEditor();
 	if (m_ShowResourceCreationWindow)
 		ResourceCreationWindow(resourceManager);
 }

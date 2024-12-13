@@ -6,6 +6,7 @@
 #include <core/Resource.hpp>
 #include <core/ULID.hpp>
 #include <entt/entity/fwd.hpp>
+#include <imgui.h>
 
 namespace brk {
 	class Resource;
@@ -31,8 +32,9 @@ namespace brk::editor::ui {
 		bool Outliner(SceneManager& sceneManager);
 		bool Inspector(entt::registry& entityWorld, SceneManager& sceneManager);
 
-		void ResourceExplorer();
+		void ResourceExplorer(const ResourceManager& resourceManager);
 		Resource* ResourceCreationWindow(ResourceManager& resourceManager);
+		void ResourceEditor();
 
 		void OpenSceneCreationWindow();
 
@@ -50,9 +52,21 @@ namespace brk::editor::ui {
 
 		struct
 		{
+			ImGuiTextFilter m_ResourceNameFilter;
+			const ResourceTypeInfo* m_TypeFilter = nullptr;
+		} m_ResourceExplorerData;
+
+		struct {
+			ResourceTypeInfo m_Info = {};
+			Resource* m_Resource = nullptr;
+		} m_ResourceEditorData;
+
+		struct
+		{
 			ResourceTypeInfo m_Info = {};
 			std::unique_ptr<Resource> m_Resource = nullptr;
 		} m_ResourceCreationData;
+
 
 		ULID m_SceneId;
 		ULID m_SelectedObjectId;

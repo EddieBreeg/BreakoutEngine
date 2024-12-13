@@ -55,7 +55,7 @@ namespace brk {
 		/**
 		 * Converts the ULID object into a base 32 string
 		 */
-		template <uint32 N>
+		template <uint32 N, uint32 Offset = 0>
 		constexpr char* ToChars(char (&out_buf)[N]) const noexcept;
 
 		/**

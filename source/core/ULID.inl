@@ -1,4 +1,5 @@
 #include <array>
+#include "ULID.hpp"
 
 constexpr brk::ULID::ULID(
 	const uint64 timestamp,
@@ -8,38 +9,38 @@ constexpr brk::ULID::ULID(
 	, m_Right{ rand2 }
 {}
 
-template <uint32 N>
+template <uint32 N, uint32 Offset>
 inline constexpr char* brk::ULID::ToChars(char (&out_buf)[N]) const noexcept
 {
-	static_assert(N >= 26, "Buffer is too small");
+	static_assert(N >= (26 + Offset), "Buffer is too small");
 	constexpr char alphabet[] = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
 
-	out_buf[0] = alphabet[(m_Left >> 61) & 31];
-	out_buf[1] = alphabet[(m_Left >> 56) & 31];
-	out_buf[2] = alphabet[(m_Left >> 51) & 31];
-	out_buf[3] = alphabet[(m_Left >> 46) & 31];
-	out_buf[4] = alphabet[(m_Left >> 41) & 31];
-	out_buf[5] = alphabet[(m_Left >> 36) & 31];
-	out_buf[6] = alphabet[(m_Left >> 31) & 31];
-	out_buf[7] = alphabet[(m_Left >> 26) & 31];
-	out_buf[8] = alphabet[(m_Left >> 21) & 31];
-	out_buf[9] = alphabet[(m_Left >> 16) & 31];
-	out_buf[10] = alphabet[(m_Left >> 11) & 31];
-	out_buf[11] = alphabet[(m_Left >> 6) & 31];
-	out_buf[12] = alphabet[(m_Left >> 1) & 31];
-	out_buf[13] = alphabet[((m_Left << 4) | (m_Right >> 60)) & 31];
-	out_buf[14] = alphabet[(m_Right >> 55) & 31];
-	out_buf[15] = alphabet[(m_Right >> 50) & 31];
-	out_buf[16] = alphabet[(m_Right >> 45) & 31];
-	out_buf[17] = alphabet[(m_Right >> 40) & 31];
-	out_buf[18] = alphabet[(m_Right >> 35) & 31];
-	out_buf[19] = alphabet[(m_Right >> 30) & 31];
-	out_buf[20] = alphabet[(m_Right >> 25) & 31];
-	out_buf[21] = alphabet[(m_Right >> 20) & 31];
-	out_buf[22] = alphabet[(m_Right >> 15) & 31];
-	out_buf[23] = alphabet[(m_Right >> 10) & 31];
-	out_buf[24] = alphabet[(m_Right >> 5) & 31];
-	out_buf[25] = alphabet[m_Right & 31];
+	out_buf[0 + Offset] = alphabet[(m_Left >> 61) & 31];
+	out_buf[1 + Offset] = alphabet[(m_Left >> 56) & 31];
+	out_buf[2 + Offset] = alphabet[(m_Left >> 51) & 31];
+	out_buf[3 + Offset] = alphabet[(m_Left >> 46) & 31];
+	out_buf[4 + Offset] = alphabet[(m_Left >> 41) & 31];
+	out_buf[5 + Offset] = alphabet[(m_Left >> 36) & 31];
+	out_buf[6 + Offset] = alphabet[(m_Left >> 31) & 31];
+	out_buf[7 + Offset] = alphabet[(m_Left >> 26) & 31];
+	out_buf[8 + Offset] = alphabet[(m_Left >> 21) & 31];
+	out_buf[9 + Offset] = alphabet[(m_Left >> 16) & 31];
+	out_buf[10 + Offset] = alphabet[(m_Left >> 11) & 31];
+	out_buf[11 + Offset] = alphabet[(m_Left >> 6) & 31];
+	out_buf[12 + Offset] = alphabet[(m_Left >> 1) & 31];
+	out_buf[13 + Offset] = alphabet[((m_Left << 4) | (m_Right >> 60)) & 31];
+	out_buf[14 + Offset] = alphabet[(m_Right >> 55) & 31];
+	out_buf[15 + Offset] = alphabet[(m_Right >> 50) & 31];
+	out_buf[16 + Offset] = alphabet[(m_Right >> 45) & 31];
+	out_buf[17 + Offset] = alphabet[(m_Right >> 40) & 31];
+	out_buf[18 + Offset] = alphabet[(m_Right >> 35) & 31];
+	out_buf[19 + Offset] = alphabet[(m_Right >> 30) & 31];
+	out_buf[20 + Offset] = alphabet[(m_Right >> 25) & 31];
+	out_buf[21 + Offset] = alphabet[(m_Right >> 20) & 31];
+	out_buf[22 + Offset] = alphabet[(m_Right >> 15) & 31];
+	out_buf[23 + Offset] = alphabet[(m_Right >> 10) & 31];
+	out_buf[24 + Offset] = alphabet[(m_Right >> 5) & 31];
+	out_buf[25 + Offset] = alphabet[m_Right & 31];
 
 	return out_buf + 26;
 }

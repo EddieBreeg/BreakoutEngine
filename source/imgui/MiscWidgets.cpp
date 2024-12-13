@@ -192,10 +192,9 @@ bool brk::dev_ui::ResourceFilterWidget(
 			continue;
 
 		bool selected = id == selection;
-		const bool temp = selected;
-		if (ImGui::Selectable(name.c_str(), &selected))
+		if (ImGui::Selectable(name.c_str(), selected))
 		{
-			ret = temp != selected;
+			ret = !selected;
 			selection = id;
 			break;
 		}

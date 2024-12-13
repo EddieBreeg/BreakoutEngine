@@ -5,6 +5,7 @@
 #include <core/Resource.hpp>
 #include <managers/ResourceManager.hpp>
 #include <imgui.h>
+#include <imgui/MiscWidgets.hpp>
 
 namespace {
 	static constexpr const char* s_DefaultResName = "Unnamed";
@@ -35,11 +36,38 @@ namespace {
 	}
 } // namespace
 
-void brk::editor::ui::UiData::ResourceExplorer()
+void brk::editor::ui::UiData::ResourceExplorer(const ResourceManager& resourceManager)
 {
 	ImGui::Begin("Resource Explorer");
 
 	m_ShowResourceCreationWindow |= ImGui::Button("Create Resource");
+
+	ImGui::BeginChild("Resources", { 0, 0 }, ImGuiChildFlags_Borders);
+
+	char idStr[28];
+	idStr[0] = '(';
+	idStr[27] = ')';
+
+	for (const auto& [id, res] : resourceManager.GetResources())
+	{
+		id.ToChars<sizeof(idStr), 1>(idStr);
+		ImGui::SetNextItemAllowOverlap();
+		const bool selected = ImGui::Selectable(
+			res->GetName().c_str(),
+			false,
+			ImGuiSelectableFlags_AllowDoubleClick);
+		if (selected && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
+		{
+			m_ResourceEditorData.m_Resource = res;
+			m_ResourceEditorData.m_Info = res->GetTypeInfo();
+			if (m_ResourceEditorData.m_Info.m_Widget)
+				m_ResourceEditorData.m_Info.m_Widget->Init(*res);
+		}
+		ImGui::SameLine();
+		ImGui::TextUnformatted(idStr, idStr + sizeof(idStr));
+	}
+
+	ImGui::EndChild();
 
 	ImGui::End();
 }
@@ -88,5 +116,45 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 RES_CREATION_END:
 	ImGui::End();
 	return nullptr;
+}
+
+void brk::editor::ui::UiData::ResourceEditor()
+{
+	bool show = m_ResourceEditorData.m_Resource;
+	if (!show)
+		return;
+	Resource* resource = m_ResourceEditorData.m_Resource;
+
+	if (!ImGui::Begin("Resource Editor", &show))
+	{
+		goto RES_EDITOR_END;
+	}
+
+	if (!show)
+	{
+		m_ResourceEditorData.m_Resource = {};
+		goto RES_EDITOR_END;
+	}
+
+	ImGui::Text(
+		"Type: %.*s",
+		m_ResourceEditorData.m_Info.m_TypeName.GetLen(),
+		m_ResourceEditorData.m_Info.m_TypeName.GetPtr());
+
+	dev_ui::ULIDWidget("ULID", resource->GetId());
+	if (!m_ResourceEditorData.m_Info.m_Widget)
+		goto RES_EDITOR_END;
+
+	const bool ready = m_ResourceEditorData.m_Info.m_Widget->EditionUi(*resource);
+
+	ImGui::BeginDisabled(!ready);
+	if (ImGui::Button("Apply"))
+	{
+		m_ResourceEditorData.m_Info.m_Widget->Commit(*resource);
+	}
+	ImGui::EndDisabled();
+
+RES_EDITOR_END:
+	ImGui::End();
 }
 #endif

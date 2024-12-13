@@ -18,6 +18,7 @@ CreateExports(BRK_EDITOR)
 target_link_libraries(BRK_EDITOR PRIVATE
 	Breakout::Core
 	Breakout::ECS
+	Breakout::DevUi
 	Breakout::Managers
 	ImGui::ImGui
 	TinyFileDialogs
