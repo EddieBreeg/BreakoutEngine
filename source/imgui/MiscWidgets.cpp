@@ -3,12 +3,13 @@
 #ifdef BRK_DEV
 #include "DevUiContext.hpp"
 #include <core/LogManager.hpp>
-#include <core/ULID.hpp>
+#include <core/Resource.hpp>
 #include <filesystem>
 #include <fstream>
 #include <imgui.h>
 #include <SDL3/SDL_clipboard.h>
 #include <SDL3/SDL_dialog.h>
+#include <unordered_map>
 
 namespace {
 	int ResizeCallback(ImGuiInputTextCallbackData* data)
@@ -164,5 +165,43 @@ uint32 brk::dev_ui::_internal::EnumDropDownImpl(
 
 	ImGui::EndCombo();
 	return currentValue;
+}
+
+bool brk::dev_ui::ResourceFilterWidget(
+	const char* label,
+	const TULIDMap<Resource*>& resources,
+	ULID& selection,
+	ImGuiTextFilter* nameFilter,
+	const ResourceTypeInfo* typeFilter)
+{
+	if (nameFilter)
+		nameFilter->Draw();
+
+	if (!ImGui::BeginListBox(label))
+		return false;
+
+	bool ret = false;
+
+	for (auto&& [id, resource] : resources)
+	{
+		if (typeFilter && (&resource->GetTypeInfo() != typeFilter))
+			continue;
+
+		const std::string& name = resource->GetName();
+		if (nameFilter && !nameFilter->PassFilter(name.c_str()))
+			continue;
+
+		bool selected = id == selection;
+		const bool temp = selected;
+		if (ImGui::Selectable(name.c_str(), &selected))
+		{
+			ret = temp != selected;
+			selection = id;
+			break;
+		}
+	}
+
+	ImGui::EndListBox();
+	return ret;
 }
 #endif

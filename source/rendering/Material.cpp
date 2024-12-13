@@ -32,8 +32,30 @@ namespace brk::rdr {
 	const ResourceTypeInfo Material::Info =
 		ResourceTypeInfo::Create<Material, MaterialWidget>("material");
 
+	class MaterialInstanceWidget : public ResourceUiWidget
+	{
+	public:
+		MaterialInstanceWidget() = default;
+		void Init(const Resource&) override;
+		bool CreationUi() override;
+
+		void Commit(Resource& out_res) override;
+
+	private:
+		bool ResourceSelector(
+			const char* label,
+			ULID& current,
+			const ResourceTypeInfo& type,
+			int32 stackId);
+
+		ULID m_MatId;
+		ULID m_TexIds[8];
+		const TULIDMap<Resource*>* m_Resources = nullptr;
+	};
+
 	const ResourceTypeInfo MaterialInstance::Info =
-		ResourceTypeInfo::Create<MaterialInstance>("materialInstance");
+		ResourceTypeInfo::Create<MaterialInstance, MaterialInstanceWidget>(
+			"materialInstance");
 
 	Material::Material(const ULID& id)
 		: Resource(id)
@@ -97,56 +119,6 @@ namespace brk::rdr {
 		m_VertexShader.Reset();
 		m_FragmentShader.Reset();
 	}
-
-#ifdef BRK_EDITOR
-	constexpr SDL_DialogFileFilter s_HlslFilter = { "HLSL files", "hlsl" };
-
-	void MaterialWidget::Init(const Resource& res)
-	{
-		const auto& mat = static_cast<const Material&>(res);
-		m_Id = mat.m_Id;
-		m_Name = mat.m_Name;
-		m_FilePath = mat.m_FilePath;
-		m_Options = mat.m_Options;
-		m_UseDefaultVertexShader = mat.m_UseDefaultVertexShader;
-		m_UseDefaultFragmentShader = mat.m_UseDefaultFragmentShader;
-	}
-
-	bool MaterialWidget::CreationUi()
-	{
-		dev_ui::ULIDWidget("ULID", m_Id);
-		dev_ui::StdStringInput("Material Name", m_Name);
-
-		dev_ui::FilePathInput("HLSL File", m_FilePath, true, &s_HlslFilter, 1);
-
-		ImGui::Checkbox("Use Default Vertex Shader", &m_UseDefaultVertexShader);
-		ImGui::SameLine();
-		ImGui::Checkbox("Use Default Fragment Shader", &m_UseDefaultFragmentShader);
-
-		using TOpts = MaterialSettings::EOptions;
-		dev_ui::FlagCheckbox(
-			"Dynamic Parameter Buffer",
-			m_Options,
-			MaterialSettings::DynamicBufferParam);
-		dev_ui::FlagCheckbox(
-			"No Face Culling",
-			m_Options,
-			MaterialSettings::NoFaceCulling);
-
-		return m_Name.size() && m_FilePath.length();
-	}
-
-	void MaterialWidget::Commit(Resource& out_resource)
-	{
-		auto& mat = static_cast<Material&>(out_resource);
-		mat.m_Name = std::move(m_Name);
-		mat.m_FilePath = std::move(m_FilePath);
-		mat.m_Options = m_Options;
-		mat.m_UseDefaultVertexShader = m_UseDefaultVertexShader;
-		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
-	}
-
-#endif
 
 	MaterialInstance::MaterialInstance(const ULID& id, std::string name)
 		: Resource(id, std::move(name), {})
@@ -319,6 +291,146 @@ namespace brk::rdr {
 		}
 		return true;
 	}
+
+#ifdef BRK_EDITOR
+	constexpr SDL_DialogFileFilter s_HlslFilter = { "HLSL files", "hlsl" };
+
+	void MaterialWidget::Init(const Resource& res)
+	{
+		const auto& mat = static_cast<const Material&>(res);
+		m_Id = mat.m_Id;
+		m_Name = mat.m_Name;
+		m_FilePath = mat.m_FilePath;
+		m_Options = mat.m_Options;
+		m_UseDefaultVertexShader = mat.m_UseDefaultVertexShader;
+		m_UseDefaultFragmentShader = mat.m_UseDefaultFragmentShader;
+	}
+
+	bool MaterialWidget::CreationUi()
+	{
+		dev_ui::ULIDWidget("ULID", m_Id);
+		dev_ui::StdStringInput("Material Name", m_Name);
+
+		dev_ui::FilePathInput("HLSL File", m_FilePath, true, &s_HlslFilter, 1);
+
+		ImGui::Checkbox("Use Default Vertex Shader", &m_UseDefaultVertexShader);
+		ImGui::SameLine();
+		ImGui::Checkbox("Use Default Fragment Shader", &m_UseDefaultFragmentShader);
+
+		using TOpts = MaterialSettings::EOptions;
+		dev_ui::FlagCheckbox(
+			"Dynamic Parameter Buffer",
+			m_Options,
+			MaterialSettings::DynamicBufferParam);
+		dev_ui::FlagCheckbox(
+			"No Face Culling",
+			m_Options,
+			MaterialSettings::NoFaceCulling);
+
+		return m_Name.size() && m_FilePath.length();
+	}
+
+	void MaterialWidget::Commit(Resource& out_resource)
+	{
+		auto& mat = static_cast<Material&>(out_resource);
+		mat.m_Name = std::move(m_Name);
+		mat.m_FilePath = std::move(m_FilePath);
+		mat.m_Options = m_Options;
+		mat.m_UseDefaultVertexShader = m_UseDefaultVertexShader;
+		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
+	}
+
+	void MaterialInstanceWidget::Init(const Resource& res)
+	{
+		if (!m_Resources)
+		{
+			m_Resources = &ResourceManager::GetInstance().GetResources();
+		}
+
+		const auto& mat = static_cast<const MaterialInstance&>(res);
+		m_Id = mat.m_Id;
+		m_Name = mat.m_Name;
+		if (!mat.m_IsValid)
+		{
+			m_MatId = mat.m_ResourceIds.m_MaterialId;
+			for (auto&& [id, index] : Enumerate(mat.m_ResourceIds.m_TextureIds))
+			{
+				m_TexIds[index] = id;
+			}
+			return;
+		}
+
+		m_MatId = mat.m_BaseMat->GetId();
+		for (auto&& [tex, index] : Enumerate(mat.m_Textures))
+		{
+			if (tex)
+			{
+				m_TexIds[index] = tex->GetId();
+			}
+		}
+	}
+
+	bool MaterialInstanceWidget::CreationUi()
+	{
+		dev_ui::ULIDWidget("ULID", m_Id);
+		dev_ui::StdStringInput("Instance Name", m_Name);
+
+		if (ImGui::CollapsingHeader("Base Material"))
+		{
+			ResourceSelector("Materials", m_MatId, Material::Info, 1);
+		}
+		char headerLabel[] = "Texture 0";
+		for (auto&& [id, index] : Enumerate(m_TexIds))
+		{
+			if (ImGui::CollapsingHeader(headerLabel))
+			{
+				ResourceSelector("Textures", id, Texture2d::Info, index + 1);
+			}
+			headerLabel[8]++;
+		}
+
+		return (bool)m_MatId && m_Name.length();
+	}
+
+	void MaterialInstanceWidget::Commit(Resource& inout_res)
+	{
+		auto& mat = static_cast<MaterialInstance&>(inout_res);
+		mat.m_Name = std::move(m_Name);
+
+		if (mat.m_IsValid)
+		{
+			// first reset all resource references if need be
+
+			mat.m_BaseMat.Reset();
+			for (auto& tex : mat.m_Textures)
+				tex.Reset();
+			mat.m_IsValid = false;
+		}
+		// then copy resource IDs
+
+		mat.m_ResourceIds.m_MaterialId = m_MatId;
+		for (auto&& [id, index] : Enumerate(m_TexIds))
+		{
+			mat.m_ResourceIds.m_TextureIds[index] = id;
+		}
+	}
+
+	bool MaterialInstanceWidget::ResourceSelector(
+		const char* label,
+		ULID& current,
+		const ResourceTypeInfo& type,
+		int32 stackId)
+	{
+		if (current)
+			dev_ui::ULIDWidget("Selected", current, stackId++);
+		ImGui::PushID(stackId);
+		const bool ret =
+			dev_ui::ResourceFilterWidget(label, *m_Resources, current, nullptr, &type);
+		ImGui::PopID();
+		return ret;
+	}
+#endif
+
 } // namespace brk::rdr
 
 namespace brk {
@@ -373,10 +485,10 @@ namespace brk {
 		const rdr::MaterialInstance& mat,
 		nlohmann::json& out_json)
 	{
+		nlohmann::json& texArray = out_json["textures"] = nlohmann::json::array();
 		if (mat.IsValid())
 		{
 			out_json["material"] = mat.m_BaseMat->GetId();
-			nlohmann::json& texArray = out_json["textures"] = nlohmann::json::array();
 			for (const auto& tex : mat.m_Textures)
 			{
 				if (tex)
@@ -388,6 +500,15 @@ namespace brk {
 					texArray.emplace_back(nlohmann::json{});
 				}
 			}
+			return;
+		}
+		out_json["material"] = mat.m_ResourceIds.m_MaterialId;
+		for (const ULID& id : mat.m_ResourceIds.m_TextureIds)
+		{
+			if (id)
+				texArray.emplace_back(id);
+			else
+				texArray.emplace_back(nlohmann::json{});
 		}
 	}
 

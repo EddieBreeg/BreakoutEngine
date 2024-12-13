@@ -3,13 +3,17 @@
 #include <PCH.hpp>
 #ifdef BRK_DEV
 #include <core/EnumFlags.hpp>
+#include <core/ULID.hpp>
 #include <string>
 
+struct ImGuiTextFilter;
 struct SDL_DialogFileFilter;
 
 namespace brk {
-	class ULID;
-}
+	class Resource;
+
+	struct ResourceTypeInfo;
+} // namespace brk
 
 namespace brk::dev_ui {
 	BRK_DEV_UI_API bool StdStringInput(
@@ -96,6 +100,13 @@ namespace brk::dev_ui {
 		inout_currentValue = newVal;
 		return ret;
 	}
+
+	BRK_DEV_UI_API bool ResourceFilterWidget(
+		const char* label,
+		const TULIDMap<Resource*>& resources,
+		ULID& selection,
+		ImGuiTextFilter* nameFilter = nullptr,
+		const ResourceTypeInfo* typeFilter = nullptr);
 } // namespace brk::dev_ui
 
 #endif
