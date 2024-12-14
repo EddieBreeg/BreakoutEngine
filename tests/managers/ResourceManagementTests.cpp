@@ -42,6 +42,24 @@ namespace brk::resource_ref::ut {
 
 		int32 m_Value = 0;
 	};
+
+	struct Res3 : public Resource
+	{
+		using Resource::Resource;
+		Res3(uint32& count, ULID id)
+			: Resource(id)
+			, m_Count{ &++count }
+		{}
+		~Res3()
+		{
+			if (m_Count)
+				--*m_Count;
+		}
+		static inline const auto Info = ResourceTypeInfo::Create<Res3>("res3");
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
+		uint32* m_Count = nullptr;
+	};
 } // namespace brk::resource_ref::ut
 template <>
 struct brk::JsonLoader<brk::resource_ref::ut::Res2>
@@ -164,6 +182,27 @@ namespace brk::resource_ref::ut {
 			assert(res.GetFile() == s_ResPath1);
 			assert(RetainTraits<Resource>::GetCount(&res) == 1);
 			res.ResetRefCount();
+		}
+		{
+			RAIIHelper helper;
+			uint32 count = 0;
+			Res3& res = helper.m_Manager.AddResource<Res3>(count, s_ResId1);
+			assert(count == 1);
+			helper.m_Manager.DeleteResource(&res);
+			assert(count == 0);
+		}
+		{
+			RAIIHelper helper;
+			uint32 count = 0;
+			Res3& res = helper.m_Manager.AddResource<Res3>(count, s_ResId1);
+			{
+				ResourceRef<Res3> ref{ &res };
+				assert(count == 1);
+				helper.m_Manager.DeleteResource(&res);
+				// resource shouldn't have been deleted, there's still a reference to it
+				assert(count == 1);
+			}
+			assert(count == 0);
 		}
 	}
 } // namespace brk::resource_ref::ut
