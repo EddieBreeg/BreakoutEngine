@@ -9,18 +9,9 @@ std::unique_ptr<brk::ResourceManager> brk::ResourceManager::s_Instance;
 brk::ResourceManager::~ResourceManager()
 {
 	std::unique_lock lock{ m_Mutex };
-	while (!m_Resources.empty())
+	for (auto&& [id, resource] : m_Resources)
 	{
-		for (auto it = m_Resources.begin(); it != m_Resources.end();)
-		{
-			if (it->second->GetRefCount())
-			{
-				++it;
-				continue;
-			}
-			delete it->second;
-			it = m_Resources.erase(it);
-		}
+		resource->MarkForDeletion();
 	}
 }
 
@@ -101,6 +92,13 @@ void brk::ResourceManager::AddResource(Resource* res)
 		m_Resources.try_emplace(id, res).second,
 		"Couldn't add resource {} to the manager: ID already present",
 		id);
+}
+
+void brk::ResourceManager::DeleteResource(Resource* res)
+{
+	res->MarkForDeletion();
+	std::unique_lock lock{ m_Mutex };
+	m_Resources.erase(res->GetId());
 }
 
 brk::ResourceManager::ResourceManager(entt::registry& world) noexcept

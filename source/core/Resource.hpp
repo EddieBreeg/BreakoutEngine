@@ -34,9 +34,10 @@ namespace brk {
 			Unloading = 2,
 			Reloading = 3,
 			Loaded = 4,
+			MarkedForDeletion = 5,
 			LoadingStateMask = 7,
 
-			SavingDisabled = 8,
+			SavingDisabled = BIT(3),
 		};
 
 		Resource(const ULID id = ULID{});
@@ -53,6 +54,14 @@ namespace brk {
 		 */
 		virtual bool DoLoad() { return false; }
 		virtual void DoUnload() { SetLoadingState(Unloaded); }
+
+		/**
+		 * If the internal ref count is 0, the resource is deleted immediately. Otherwise,
+		 * it will get deleted when the last ResourceRef pointing to it gets destroyed.
+		 * \warning This should only get called by the resource manager: the resource
+		 * should be removed from the resource map.
+		 */
+		void MarkForDeletion();
 
 		[[nodiscard]] bool IsLoaded() const noexcept
 		{

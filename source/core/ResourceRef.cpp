@@ -15,11 +15,18 @@ void brk::RetainTraits<brk::Resource>::Increment(Resource* res)
 void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 {
 	const Resource::EStateFlags loadState = res->GetLoadingState();
-	if (!--res->m_RefCount && loadState != Resource::Unloaded &&
-		loadState != Resource::Unloading)
+	if (--res->m_RefCount)
+		return;
+
+	switch (res->GetLoadingState())
 	{
+	case Resource::MarkedForDeletion: delete res; return;
+	case Resource::Loaded:
+	case Resource::Loading:
 		res->SetLoadingState(Resource::Unloading);
 		ResourceLoader::GetInstance().AddJob(res, false);
+		return;
+	default: break;
 	}
 }
 

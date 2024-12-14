@@ -34,6 +34,16 @@ void brk::JsonLoader<brk::Resource>::Save(const Resource& res, nlohmann::json& o
 
 brk::Resource::~Resource() = default;
 
+void brk::Resource::MarkForDeletion()
+{
+	if (!m_RefCount)
+	{
+		delete this;
+		return;
+	}
+	SetLoadingState(MarkedForDeletion);
+}
+
 brk::DynamicArrayStream brk::Resource::LoadFileContents()
 {
 	BRK_ASSERT(

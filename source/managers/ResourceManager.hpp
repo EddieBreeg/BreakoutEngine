@@ -70,6 +70,13 @@ namespace brk {
 		 * down.
 		 */
 		void AddResource(Resource* res);
+		/**
+		 * Deletes a resource. The resource is marked for deletion, meaning it will be
+		 * deleted when the last reference to it is destroyed, or immediately if no such
+		 * reference exists. In either case, it is removed from the resource map
+		 * immediately.
+		 */
+		void DeleteResource(Resource* res);
 
 		/**
 		 * \return A reference to the resource with the corresponding ID, or a null
