@@ -85,6 +85,7 @@ void brk::ResourceLoader::Loop()
 				return;
 			res->DoUnload();
 			res->SetLoadingState(Resource::Unloaded);
+			BRK_LOG_TRACE("Unloaded {}", *res);
 		},
 		[](Resource* res)
 		{
