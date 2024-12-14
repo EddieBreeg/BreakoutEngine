@@ -153,6 +153,15 @@ bool brk::rdr::Texture2dWidget::CreationUi()
 	return m_Name.length() && m_FilePath.length();
 }
 
+bool brk::rdr::Texture2dWidget::EditionUi(const Resource& res, bool& out_shouldReload)
+{
+	if (!CreationUi())
+		return false;
+	const Texture2d& tex = static_cast<const Texture2d&>(res);
+	out_shouldReload = m_Settings != tex.m_Settings || m_FilePath != tex.m_FilePath;
+	return out_shouldReload || m_Name != tex.m_Name;
+}
+
 void brk::rdr::Texture2dWidget::Commit(Resource& out_res) const
 {
 	auto& tex = static_cast<Texture2d&>(out_res);

@@ -57,6 +57,24 @@ namespace brk::rdr {
 		float4 m_BorderColor;
 	};
 
+	[[nodiscard]] constexpr bool operator==(
+		const Texture2dSettings& left,
+		const Texture2dSettings& right) noexcept
+	{
+		return left.m_Format == right.m_Format && left.m_Width == right.m_Width &&
+			   left.m_Height == right.m_Height && left.m_Options == right.m_Options &&
+			   left.m_FilterMode == right.m_FilterMode &&
+			   left.m_UvAddressMode == right.m_UvAddressMode &&
+			   left.m_BorderColor == right.m_BorderColor;
+	}
+
+	[[nodiscard]] constexpr bool operator!=(
+		const Texture2dSettings& left,
+		const Texture2dSettings& right) noexcept
+	{
+		return !(left == right);
+	}
+
 	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
@@ -108,19 +126,18 @@ namespace brk::rdr {
 		Texture2dSettings m_Settings = {};
 	};
 
-#ifdef BRK_EDITOR
 	class Texture2dWidget : public ResourceUiWidget
 	{
 	public:
 		Texture2dWidget() = default;
 		virtual void Init(const Resource& res) override;
 		virtual bool CreationUi() override;
+		virtual bool EditionUi(const Resource&, bool& out_shouldReload) override;
 		virtual void Commit(Resource& out_res) const override;
 
 	private:
 		Texture2dSettings m_Settings;
 	};
-#endif
 } // namespace brk::rdr
 
 template <>
