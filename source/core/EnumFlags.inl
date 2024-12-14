@@ -54,4 +54,16 @@ namespace brk {
 	{
 		return (m_Flags & ToInt(flags)) == ToInt(flags);
 	}
+
+	template <class E>
+	inline constexpr bool EnumFlags<E>::operator==(const EnumFlags other) const noexcept
+	{
+		return m_Flags == other.m_Flags;
+	}
+
+	template <class E>
+	inline constexpr bool EnumFlags<E>::operator!=(const EnumFlags other) const noexcept
+	{
+		return m_Flags != other.m_Flags;
+	}
 } // namespace brk

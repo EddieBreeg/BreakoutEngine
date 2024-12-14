@@ -36,6 +36,9 @@ namespace brk {
 		[[nodiscard]] constexpr bool HasAny(E flags) const noexcept;
 		[[nodiscard]] constexpr bool HasAll(E flags) const noexcept;
 
+		[[nodiscard]] constexpr bool operator==(const EnumFlags other) const noexcept;
+		[[nodiscard]] constexpr bool operator!=(const EnumFlags other) const noexcept;
+
 	private:
 		using ValueType = std::make_unsigned_t<std::underlying_type_t<E>>;
 		static constexpr ValueType ToInt(E val) noexcept
