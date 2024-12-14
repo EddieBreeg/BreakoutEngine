@@ -8,13 +8,13 @@
             "format": 1,
             "id": "01JDW4CZM6YB7J6ZJNPMC60THK",
             "isShaderResource": true,
-            "name": "texture1",
+            "name": "brk_icon",
             "type": "texture2d"
         },
         {
             "id": "01JDYK0J865THQCRFGKFVY81XJ",
             "material": "01JDS6Q072ERV1WXSSCFKRS8CY",
-            "name": "mat_instance",
+            "name": "mat_instance1",
             "textures": [
                 "01JDW4CZM6YB7J6ZJNPMC60THK",
                 null,

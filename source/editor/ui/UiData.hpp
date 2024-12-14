@@ -56,18 +56,28 @@ namespace brk::editor::ui {
 			const ResourceTypeInfo* m_TypeFilter = nullptr;
 		} m_ResourceExplorerData;
 
-		struct {
+		struct
+		{
 			ResourceTypeInfo m_Info = {};
 			Resource* m_Resource = nullptr;
 			bool m_ReloadRequested = false;
+			bool m_SaveRequested = false;
 		} m_ResourceEditorData;
+
+		struct ModalPopup
+		{
+			bool m_Show = false;
+			const char* m_Title = nullptr;
+			std::string m_Content;
+			void Open(const char* title, std::string content);
+			void Display();
+		} m_ModalPopup;
 
 		struct
 		{
 			ResourceTypeInfo m_Info = {};
 			std::unique_ptr<Resource> m_Resource = nullptr;
 		} m_ResourceCreationData;
-
 
 		ULID m_SceneId;
 		ULID m_SelectedObjectId;
