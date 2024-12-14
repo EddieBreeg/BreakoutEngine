@@ -34,6 +34,7 @@ namespace brk::rdr {
 		MaterialInstanceWidget() = default;
 		void Init(const Resource&) override;
 		bool CreationUi() override;
+		bool EditionUi(const Resource&, bool& out_shouldReload);
 
 		void Commit(Resource& out_res) const override;
 
@@ -42,11 +43,13 @@ namespace brk::rdr {
 			const char* label,
 			ULID& current,
 			const ResourceTypeInfo& type,
-			int32 stackId);
+			bool allowReset,
+			int32& stackId);
 
 		ULID m_MatId;
 		ULID m_TexIds[8];
 		const TULIDMap<Resource*>* m_Resources = nullptr;
+		bool m_ShouldReload = false;
 	};
 
 	void MaterialWidget::Init(const Resource& res)
@@ -141,16 +144,17 @@ namespace brk::rdr {
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Instance Name", m_Name);
 
+		int32 stackId = 1;
 		if (ImGui::CollapsingHeader("Base Material"))
 		{
-			ResourceSelector("Materials", m_MatId, Material::Info, 1);
+			ResourceSelector("Materials", m_MatId, Material::Info, false, stackId);
 		}
 		char headerLabel[] = "Texture 0";
 		for (auto&& [id, index] : Enumerate(m_TexIds))
 		{
 			if (ImGui::CollapsingHeader(headerLabel))
 			{
-				ResourceSelector("Textures", id, Texture2d::Info, index + 1);
+				ResourceSelector("Textures", id, Texture2d::Info, true, stackId);
 			}
 			headerLabel[8]++;
 		}
@@ -158,26 +162,65 @@ namespace brk::rdr {
 		return (bool)m_MatId && m_Name.length();
 	}
 
+	inline bool MaterialInstanceWidget::EditionUi(
+		const Resource& res,
+		bool& out_shouldReload)
+	{
+		const auto& mat = static_cast<const MaterialInstance&>(res);
+		if (!CreationUi())
+			return false;
+
+		if (mat.m_IsValid)
+		{
+			out_shouldReload = m_MatId != mat.m_BaseMat->GetId();
+			for (auto&& [tex, index] : Enumerate(mat.m_Textures))
+			{
+				if (out_shouldReload)
+					break;
+				const ULID& id = m_TexIds[index];
+				if (tex)
+				{
+					out_shouldReload |= id != tex->GetId();
+					continue;
+				}
+				out_shouldReload |= id;
+			}
+		}
+		else
+		{
+			out_shouldReload = m_MatId != mat.m_ResourceIds.m_MaterialId;
+			for (auto&& [id, index] : Enumerate(mat.m_ResourceIds.m_TextureIds))
+			{
+				if (out_shouldReload)
+					break;
+				out_shouldReload |= m_TexIds[index] != id;
+			}
+		}
+		m_ShouldReload = out_shouldReload;
+
+		return out_shouldReload || m_Name != mat.m_Name;
+	}
+
 	void MaterialInstanceWidget::Commit(Resource& inout_res) const
 	{
 		auto& mat = static_cast<MaterialInstance&>(inout_res);
 		mat.m_Name = m_Name;
 
-		if (mat.m_IsValid)
+		if (mat.m_IsValid && m_ShouldReload)
 		{
-			// first reset all resource references if need be
-
 			mat.m_BaseMat.Reset();
 			for (auto& tex : mat.m_Textures)
 				tex.Reset();
 			mat.m_IsValid = false;
 		}
-		// then copy resource IDs
-
-		mat.m_ResourceIds.m_MaterialId = m_MatId;
-		for (auto&& [id, index] : Enumerate(m_TexIds))
+		if (m_ShouldReload)
 		{
-			mat.m_ResourceIds.m_TextureIds[index] = id;
+			// then copy resource IDs
+			mat.m_ResourceIds.m_MaterialId = m_MatId;
+			for (auto&& [id, index] : Enumerate(m_TexIds))
+			{
+				mat.m_ResourceIds.m_TextureIds[index] = id;
+			}
 		}
 	}
 
@@ -185,11 +228,22 @@ namespace brk::rdr {
 		const char* label,
 		ULID& current,
 		const ResourceTypeInfo& type,
-		int32 stackId)
+		bool allowReset,
+		int32& stackId)
 	{
 		if (current)
+		{
 			dev_ui::ULIDWidget("Selected", current, stackId++);
-		ImGui::PushID(stackId);
+			if (!allowReset)
+				goto SELECTOR_START;
+			ImGui::SameLine();
+			ImGui::PushID(stackId++);
+			if (ImGui::Button("Reset Selection"))
+				current = {};
+			ImGui::PopID();
+		}
+	SELECTOR_START:
+		ImGui::PushID(stackId++);
 		const bool ret =
 			dev_ui::ResourceFilterWidget(label, *m_Resources, current, nullptr, &type);
 		ImGui::PopID();
