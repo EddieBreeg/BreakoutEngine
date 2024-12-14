@@ -4,13 +4,6 @@
 
 namespace brk {
 	template <class E>
-	[[nodiscard]] constexpr auto ToUnderlying(E val) noexcept
-	{
-		static_assert(std::is_enum_v<E>, "E must be an enum type");
-		return static_cast<std::underlying_type_t<E>>(val);
-	}
-
-	template <class E>
 	struct EnumFlags
 	{
 		static_assert(std::is_enum_v<E>, "E must be an enum type");

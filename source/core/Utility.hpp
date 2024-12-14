@@ -81,4 +81,12 @@ namespace brk {
 	{
 		return Enumerator{ std::begin(container), std::end(container) };
 	}
+
+	template <class E>
+	[[nodiscard]] constexpr auto ToUnderlying(E val) noexcept
+	{
+		static_assert(std::is_enum_v<E>, "E must be an enum type");
+		return static_cast<std::underlying_type_t<E>>(val);
+	}
+
 } // namespace brk
