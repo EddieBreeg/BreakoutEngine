@@ -2,6 +2,16 @@
     "name": "Sandbox",
     "resources": [
         {
+            "addressMode": 1,
+            "file": "Data\\Textures\\breakout.png",
+            "filterMode": 1,
+            "format": 1,
+            "id": "01JDW4CZM6YB7J6ZJNPMC60THK",
+            "isShaderResource": true,
+            "name": "texture1",
+            "type": "texture2d"
+        },
+        {
             "id": "01JDYK0J865THQCRFGKFVY81XJ",
             "material": "01JDS6Q072ERV1WXSSCFKRS8CY",
             "name": "mat_instance",
@@ -16,16 +26,6 @@
                 null
             ],
             "type": "materialInstance"
-        },
-        {
-            "addressMode": 1,
-            "file": "Data\\Textures\\breakout.png",
-            "filterMode": 1,
-            "format": 1,
-            "id": "01JDW4CZM6YB7J6ZJNPMC60THK",
-            "isShaderResource": true,
-            "name": "texture1",
-            "type": "texture2d"
         },
         {
             "dynamicParamBuffer": true,

@@ -130,6 +130,7 @@ void brk::editor::Editor::Update()
 			m_UiData->m_ResourceEditorData.m_Resource,
 			ResourceLoader::EJobType::Reload);
 		m_UiData->m_ResourceEditorData.m_ReloadRequested = false;
+		SaveProjectFile();
 	}
 }
 
