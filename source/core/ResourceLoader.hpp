@@ -30,6 +30,15 @@ namespace brk {
 		 */
 		void Wait();
 
+		enum EJobType : int8
+		{
+			Invalid = -1,
+			Unload,
+			Load,
+			Reload,
+			NTypes
+		};
+
 		/**
 		 * Adds a resource load/unload request to the internal queue. Such requests are
 		 * only processed after ProcessBatch has been called.
@@ -37,7 +46,7 @@ namespace brk {
 		 * \param load: Whether the resource should be loaded (true) or unloaded (false)
 		 * \warning This function has no effect if the loader is stopped
 		 */
-		void AddJob(Resource* res, bool load = true);
+		void AddJob(Resource* res, EJobType action = EJobType::Load);
 
 		/**
 		 * Starts processing all jobs currently in the queue, and returns without
@@ -61,7 +70,7 @@ namespace brk {
 		void Loop();
 
 		static constexpr uint32 s_NumThreads = 4;
-		using Job = std::pair<Resource*, bool>;
+		using Job = std::pair<Resource*, EJobType>;
 		std::queue<Job> m_Jobs;
 
 		std::thread m_Threads[s_NumThreads];

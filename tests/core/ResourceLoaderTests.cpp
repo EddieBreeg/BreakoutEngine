@@ -27,8 +27,15 @@ namespace brk::resource_loader::ut {
 		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res>("res");
 		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
 
-		bool DoLoad() override { return true; }
+		bool DoLoad() override
+		{
+			if (GetLoadingState() != Loaded)
+				++m_LoadCount;
+			return true;
+		}
 		void SetLoadState(Resource::EStateFlags state) { m_State = state; }
+
+		uint32 m_LoadCount = 0;
 	};
 
 	void Tests()
@@ -66,11 +73,19 @@ namespace brk::resource_loader::ut {
 			Res r{ Resource::Loading };
 			helper.m_Loader.AddJob(&r);
 			r.SetLoadState(Resource::Unloading);
-			helper.m_Loader.AddJob(&r, false);
+			helper.m_Loader.AddJob(&r, ResourceLoader::EJobType::Unload);
 
 			helper.m_Loader.ProcessBatch();
 			helper.m_Loader.Wait();
 			assert(r.GetLoadingState() == Resource::Unloaded);
+		}
+		{
+			RAIIHelper helper;
+			Res r{ Resource::Reloading };
+			helper.m_Loader.AddJob(&r, ResourceLoader::EJobType::Reload);
+			helper.m_Loader.ProcessBatch();
+			helper.m_Loader.Wait();
+			assert(r.m_LoadCount == 1);
 		}
 	}
 } // namespace brk::resource_loader::ut

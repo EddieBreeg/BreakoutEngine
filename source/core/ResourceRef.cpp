@@ -24,7 +24,7 @@ void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 	case Resource::Loaded:
 	case Resource::Loading:
 		res->SetLoadingState(Resource::Unloading);
-		ResourceLoader::GetInstance().AddJob(res, false);
+		ResourceLoader::GetInstance().AddJob(res, ResourceLoader::EJobType::Unload);
 		return;
 	default: break;
 	}

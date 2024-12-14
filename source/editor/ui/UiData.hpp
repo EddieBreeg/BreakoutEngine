@@ -59,6 +59,7 @@ namespace brk::editor::ui {
 		struct {
 			ResourceTypeInfo m_Info = {};
 			Resource* m_Resource = nullptr;
+			bool m_ReloadRequested = false;
 		} m_ResourceEditorData;
 
 		struct

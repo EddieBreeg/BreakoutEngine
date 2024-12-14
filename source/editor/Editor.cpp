@@ -7,6 +7,7 @@
 
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/ResourceLoader.hpp>
 #include <core/ULIDFormatter.hpp>
 
 #include <imgui.h>
@@ -122,6 +123,13 @@ void brk::editor::Editor::Update()
 		m_UiData->m_ResourceCreationData = {};
 		m_UiData->m_AddResourceRequested = false;
 		SaveProjectFile();
+	}
+	if (m_UiData->m_ResourceEditorData.m_ReloadRequested)
+	{
+		ResourceLoader::GetInstance().AddJob(
+			m_UiData->m_ResourceEditorData.m_Resource,
+			ResourceLoader::EJobType::Reload);
+		m_UiData->m_ResourceEditorData.m_ReloadRequested = false;
 	}
 }
 

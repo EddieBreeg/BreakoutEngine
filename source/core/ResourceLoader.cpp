@@ -35,13 +35,18 @@ void brk::ResourceLoader::Wait()
 	}
 }
 
-void brk::ResourceLoader::AddJob(Resource* res, bool load)
+void brk::ResourceLoader::AddJob(Resource* res, EJobType action)
 {
+	BRK_ASSERT(
+		action > EJobType::Invalid && action < EJobType::NTypes,
+		"Invalid job type");
+	if (action == Reload)
+		res->SetLoadingState(Resource::Reloading);
 	std::unique_lock lock{ m_Mutex };
 	if (!m_Running)
 		return;
 
-	m_Jobs.emplace(res, load);
+	m_Jobs.emplace(res, action);
 }
 
 void brk::ResourceLoader::ProcessBatch()
@@ -73,7 +78,7 @@ brk::ResourceLoader::ResourceLoader()
 
 void brk::ResourceLoader::Loop()
 {
-	void (*execFunctions[])(Resource*) = {
+	void (*execFunctions[EJobType::NTypes])(Resource*) = {
 		[](Resource* res)
 		{
 			if (res->GetLoadingState() != Resource::Unloading)
@@ -88,9 +93,23 @@ void brk::ResourceLoader::Loop()
 			if (res->DoLoad())
 			{
 				res->SetLoadingState(Resource::Loaded);
+				BRK_LOG_TRACE("Successfully loaded {}", *res);
 				return;
 			}
 			BRK_LOG_WARNING("Resource::DoLoad returned false for resource {}", *res);
+		},
+		[](Resource* res)
+		{
+			if (res->GetLoadingState() != Resource::Reloading)
+				return;
+			res->DoUnload();
+			if (res->DoLoad())
+			{
+				res->SetLoadingState(Resource::Loaded);
+				BRK_LOG_TRACE("Successfully reloaded {}", *res);
+				return;
+			}
+			BRK_LOG_WARNING("Reload failed for resource {}", *res);
 		},
 	};
 
