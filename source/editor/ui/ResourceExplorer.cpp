@@ -132,7 +132,7 @@ void brk::editor::ui::UiData::ResourceEditor()
 
 	if (!show)
 	{
-		m_ResourceEditorData.m_Resource = {};
+		m_ResourceEditorData.m_Resource = nullptr;
 		goto RES_EDITOR_END;
 	}
 
@@ -156,6 +156,11 @@ void brk::editor::ui::UiData::ResourceEditor()
 	{
 		m_ResourceEditorData.m_Info.m_Widget->Commit(*resource);
 		m_ResourceEditorData.m_ReloadRequested = shouldReload;
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Cancel"))
+	{
+		m_ResourceEditorData.m_Info.m_Widget->Init(*resource);
 	}
 	ImGui::EndDisabled();
 
