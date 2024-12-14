@@ -141,7 +141,6 @@ void brk::editor::ui::UiData::ResourceEditor()
 		m_ResourceEditorData.m_Info.m_TypeName.GetLen(),
 		m_ResourceEditorData.m_Info.m_TypeName.GetPtr());
 
-	dev_ui::ULIDWidget("ULID", resource->GetId());
 	if (!m_ResourceEditorData.m_Info.m_Widget)
 		goto RES_EDITOR_END;
 

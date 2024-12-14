@@ -224,23 +224,6 @@ namespace brk::rdr {
 		Buffer m_ParamBuffer;
 		bool m_IsValid = false;
 	};
-
-#ifdef BRK_EDITOR
-	class BRK_RENDERING_API MaterialWidget : public ResourceUiWidget
-	{
-	public:
-		MaterialWidget() = default;
-		void Init(const Resource&) override;
-		bool CreationUi() override;
-
-		void Commit(Resource& out_resource) override;
-
-	private:
-		bool m_UseDefaultVertexShader = false;
-		bool m_UseDefaultFragmentShader = false;
-		EnumFlags<MaterialSettings::EOptions> m_Options;
-	};
-#endif
 } // namespace brk::rdr
 
 namespace brk {
