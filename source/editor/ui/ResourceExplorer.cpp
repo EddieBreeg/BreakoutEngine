@@ -147,12 +147,15 @@ void brk::editor::ui::UiData::ResourceEditor()
 	if (!m_ResourceEditorData.m_Info.m_Widget)
 		goto RES_EDITOR_END;
 
-	const bool ready = m_ResourceEditorData.m_Info.m_Widget->EditionUi(*resource);
+	bool shouldReload = false;
+	const bool ready =
+		m_ResourceEditorData.m_Info.m_Widget->EditionUi(*resource, shouldReload);
 
 	ImGui::BeginDisabled(!ready);
 	if (ImGui::Button("Apply"))
 	{
 		m_ResourceEditorData.m_Info.m_Widget->Commit(*resource);
+		m_ResourceEditorData.m_ReloadRequested = shouldReload;
 	}
 	ImGui::EndDisabled();
 

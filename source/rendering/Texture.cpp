@@ -153,11 +153,11 @@ bool brk::rdr::Texture2dWidget::CreationUi()
 	return m_Name.length() && m_FilePath.length();
 }
 
-void brk::rdr::Texture2dWidget::Commit(Resource& out_res)
+void brk::rdr::Texture2dWidget::Commit(Resource& out_res) const
 {
 	auto& tex = static_cast<Texture2d&>(out_res);
-	tex.m_Name = std::move(m_Name);
-	tex.m_FilePath = std::move(m_FilePath);
+	tex.m_Name = m_Name;
+	tex.m_FilePath = m_FilePath;
 	tex.m_Settings = m_Settings;
 }
 

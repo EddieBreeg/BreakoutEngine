@@ -115,8 +115,11 @@ namespace brk {
 		ResourceUiWidget() = default;
 		virtual void Init(const Resource&) {}
 		virtual bool CreationUi() { return false; }
-		virtual bool EditionUi(const Resource& inout_res) { return false; }
-		virtual void Commit(Resource& inout_res) {}
+		virtual bool EditionUi(const Resource& res, bool& out_shouldReload)
+		{
+			return false;
+		}
+		virtual void Commit(Resource& inout_res) const {}
 		virtual ~ResourceUiWidget() = default;
 
 	protected:

@@ -115,7 +115,7 @@ namespace brk::rdr {
 		Texture2dWidget() = default;
 		virtual void Init(const Resource& res) override;
 		virtual bool CreationUi() override;
-		virtual void Commit(Resource& out_res) override;
+		virtual void Commit(Resource& out_res) const override;
 
 	private:
 		Texture2dSettings m_Settings;

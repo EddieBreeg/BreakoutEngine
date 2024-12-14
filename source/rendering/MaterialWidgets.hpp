@@ -18,9 +18,9 @@ namespace brk::rdr {
 		MaterialWidget() = default;
 		void Init(const Resource&) override;
 		bool CreationUi() override;
-		bool EditionUi(const Resource& resource) override;
+		bool EditionUi(const Resource& resource, bool& out_shouldReload) override;
 
-		void Commit(Resource& out_resource) override;
+		void Commit(Resource& out_resource) const override;
 
 	private:
 		bool m_UseDefaultVertexShader = false;
@@ -35,7 +35,7 @@ namespace brk::rdr {
 		void Init(const Resource&) override;
 		bool CreationUi() override;
 
-		void Commit(Resource& out_res) override;
+		void Commit(Resource& out_res) const override;
 
 	private:
 		bool ResourceSelector(
@@ -84,22 +84,23 @@ namespace brk::rdr {
 		return m_Name.size() && m_FilePath.length();
 	}
 
-	bool MaterialWidget::EditionUi(const Resource& resource)
+	bool MaterialWidget::EditionUi(const Resource& resource, bool& out_shouldReload)
 	{
 		if (!CreationUi())
 			return false;
 		const auto& mat = static_cast<const Material&>(resource);
-		return m_Options != mat.m_Options ||
-			   m_UseDefaultFragmentShader != mat.m_UseDefaultFragmentShader ||
-			   m_UseDefaultVertexShader != mat.m_UseDefaultVertexShader ||
-			   m_Name != mat.m_Name || m_FilePath != mat.m_FilePath;
+		out_shouldReload = m_Options != mat.m_Options ||
+						   m_UseDefaultFragmentShader != mat.m_UseDefaultFragmentShader ||
+						   m_UseDefaultVertexShader != mat.m_UseDefaultVertexShader ||
+						   m_FilePath != mat.m_FilePath;
+		return out_shouldReload || m_Name != mat.m_Name;
 	}
 
-	void MaterialWidget::Commit(Resource& out_resource)
+	void MaterialWidget::Commit(Resource& out_resource) const
 	{
 		auto& mat = static_cast<Material&>(out_resource);
-		mat.m_Name = std::move(m_Name);
-		mat.m_FilePath = std::move(m_FilePath);
+		mat.m_Name = m_Name;
+		mat.m_FilePath = m_FilePath;
 		mat.m_Options = m_Options;
 		mat.m_UseDefaultVertexShader = m_UseDefaultVertexShader;
 		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
@@ -157,10 +158,10 @@ namespace brk::rdr {
 		return (bool)m_MatId && m_Name.length();
 	}
 
-	void MaterialInstanceWidget::Commit(Resource& inout_res)
+	void MaterialInstanceWidget::Commit(Resource& inout_res) const
 	{
 		auto& mat = static_cast<MaterialInstance&>(inout_res);
-		mat.m_Name = std::move(m_Name);
+		mat.m_Name = m_Name;
 
 		if (mat.m_IsValid)
 		{
