@@ -62,6 +62,8 @@ namespace brk::editor::ui {
 			Resource* m_Resource = nullptr;
 			bool m_ReloadRequested = false;
 			bool m_SaveRequested = false;
+			bool m_ShowDeletionWarning = false;
+			bool m_DeletionRequested = false;
 		} m_ResourceEditorData;
 
 		struct ModalPopup

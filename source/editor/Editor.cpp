@@ -124,6 +124,7 @@ void brk::editor::Editor::Update()
 		m_UiData->m_AddResourceRequested = false;
 		SaveProjectFile();
 	}
+
 	if (m_UiData->m_ResourceEditorData.m_ReloadRequested)
 	{
 		ResourceLoader::GetInstance().AddJob(
@@ -131,9 +132,18 @@ void brk::editor::Editor::Update()
 			ResourceLoader::EJobType::Reload);
 		m_UiData->m_ResourceEditorData.m_ReloadRequested = false;
 	}
+
 	if (m_UiData->m_ResourceEditorData.m_SaveRequested)
 	{
 		m_UiData->m_ResourceEditorData.m_SaveRequested = false;
+		SaveProjectFile();
+	}
+
+	if (m_UiData->m_ResourceEditorData.m_DeletionRequested)
+	{
+		m_UiData->m_ResourceEditorData.m_DeletionRequested = false;
+		m_ResourceManager.DeleteResource(m_UiData->m_ResourceEditorData.m_Resource);
+		m_UiData->m_ResourceEditorData.m_Resource = nullptr;
 		SaveProjectFile();
 	}
 }

@@ -151,8 +151,38 @@ void brk::editor::ui::UiData::ResourceEditor()
 	ImGui::BeginDisabled(disabled);
 	m_ResourceEditorData.m_ReloadRequested = ImGui::Button("Reload");
 	ImGui::SameLine();
-	ImGui::Button("Delete");
+	if (m_ResourceEditorData.m_ShowDeletionWarning |= ImGui::Button("Delete"))
+	{
+		ImGui::OpenPopup("Delete Resource?");
+	}
 	ImGui::EndDisabled();
+
+	if (ImGui::BeginPopupModal(
+			"Delete Resource?",
+			&m_ResourceEditorData.m_ShowDeletionWarning))
+	{
+		const uint32 refCount = resource->GetRefCount();
+		if (refCount)
+		{
+			ImGui::Text(
+				"Are you sure you want to delete %s?\nIt is currently referenced"
+				"%u time(s), all references will become invalid and will have to\n"
+				"be fixed manually.",
+				resource->GetName().c_str(),
+				refCount);
+		}
+		else
+		{
+			ImGui::Text(
+				"Are you sure you want to delete %s?",
+				resource->GetName().c_str());
+		}
+		m_ResourceEditorData.m_DeletionRequested = ImGui::Button("Confirm");
+		ImGui::SameLine();
+		m_ResourceEditorData.m_ShowDeletionWarning =
+			!ImGui::Button("Cancel") && !m_ResourceEditorData.m_DeletionRequested;
+		ImGui::EndPopup();
+	}
 
 	if (!m_ResourceEditorData.m_Info.m_Widget)
 		goto RES_EDITOR_END;
