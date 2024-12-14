@@ -53,6 +53,8 @@ namespace brk::rdr {
 		~Mesh() = default;
 
 	private:
+		friend class MeshWidget;
+
 		Buffer m_VertexBuffer, m_IndexBuffer;
 		uint32 m_NumIndices = 0;
 	};

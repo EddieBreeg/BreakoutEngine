@@ -142,20 +142,33 @@ void brk::editor::ui::UiData::ResourceEditor()
 		m_ResourceEditorData.m_Info.m_TypeName.GetPtr());
 	ImGui::SameLine();
 
+	const bool disabled = resource->GetSavingDisabled();
+	if (disabled)
+	{
+		ImGui::TextDisabled("(?)");
+		ImGui::SetItemTooltip("Can't edit this resource: saving is disabled");
+	}
+	ImGui::BeginDisabled(disabled);
 	m_ResourceEditorData.m_ReloadRequested = ImGui::Button("Reload");
+	ImGui::SameLine();
+	ImGui::Button("Delete");
+	ImGui::EndDisabled();
 
 	if (!m_ResourceEditorData.m_Info.m_Widget)
 		goto RES_EDITOR_END;
 
 	bool shouldReload = false;
+	ImGui::BeginDisabled(disabled);
 	const bool ready =
 		m_ResourceEditorData.m_Info.m_Widget->EditionUi(*resource, shouldReload);
+	ImGui::EndDisabled();
 
 	ImGui::BeginDisabled(!ready);
 	if (ImGui::Button("Apply"))
 	{
 		m_ResourceEditorData.m_Info.m_Widget->Commit(*resource);
 		m_ResourceEditorData.m_ReloadRequested = shouldReload;
+		m_ResourceEditorData.m_SaveRequested = !resource->GetSavingDisabled();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Cancel"))
