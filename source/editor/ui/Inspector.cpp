@@ -2,6 +2,7 @@
 #ifdef BRK_EDITOR
 #include <core/ULIDFormatter.hpp>
 #include <imgui.h>
+#include <imgui/MiscWidgets.hpp>
 #include <imgui_macros.hpp>
 #include <imgui_stdlib.h>
 #include <imgui/GameObjectInfoComponent.hpp>
@@ -33,28 +34,18 @@ bool brk::editor::ui::UiData::Inspector(
 
 	if (ImGui::TreeNode("Object Info"))
 	{
-		char idStr[27];
-		idStr[26] = 0;
-		object->m_Id.ToChars(idStr);
-		ImGui::Text("ULID: %s", idStr);
+		dev_ui::ULIDWidget("ULID", object->m_Id);
 		IMGUI_LEFT_LABEL(ImGui::InputText, "Name", &object->m_Name);
 		ImGui::TreePop();
 	}
 
 	bool result = false;
-	for (const ecs::ComponentInfo* comp : object->m_Components)
+	for (auto&& [info, widget] : object->m_Components)
 	{
-		DEBUG_CHECK(comp->m_UiWidget)
-		{
-			BRK_LOG_WARNING(
-				"Cannot display component {} in the inspector: no ui widget available",
-				comp->m_Name);
-			continue;
-		}
-		if (!ImGui::TreeNode(comp->m_Name))
+		if (!ImGui::TreeNode(info->m_Name.GetPtr()))
 			continue;
 
-		result |= comp->m_UiWidget(entityWorld, object->m_Entity);
+		result |= info->m_WidgetInfo.m_Display(widget, entityWorld, object->m_Entity);
 		ImGui::TreePop();
 	}
 	ImGui::End();

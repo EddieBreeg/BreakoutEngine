@@ -55,14 +55,16 @@ namespace brk::scene_loading::ut {
 		int x = 0, y = 1;
 		static constexpr meta::FieldList<&C1::x, &C1::y> Fields{ "x", "y" };
 
-		static constexpr StringView Name = "C1";
+		static inline const ecs::ComponentInfo Info =
+			ecs::ComponentInfo::Create<C1>("C1");
 	};
 
 	struct C2
 	{
 		ResourceRef<Res> m_Ref;
 		static constexpr meta::FieldList<&C2::m_Ref> Fields{ "resId" };
-		static constexpr StringView Name = "C2";
+		static inline const ecs::ComponentInfo Info =
+			ecs::ComponentInfo::Create<C2>("C2");
 	};
 
 	constexpr ULID s_ObjectId1 = ULID::FromString("01HXARTASQ9HX1SEJPF85A52VR");

@@ -1,43 +1,17 @@
 #pragma once
 
 #include <PCH.hpp>
+#include "Component.hpp"
 #include <core/Assert.hpp>
-#include <core/Function.hpp>
 #include <core/Hash.hpp>
 #include <core/LoadersFwd.hpp>
 #include <core/LogManager.hpp>
 #include <core/Singleton.hpp>
 #include <core/StringViewFormatter.hpp>
-#include <entt/entity/fwd.hpp>
 
 #include <unordered_map>
 
 namespace brk::ecs {
-	/**
-	 * Runtime information about a component type. Used for loading/unloading, as well as
-	 * ui widgets
-	 */
-	struct ComponentInfo
-	{
-		/**
-		 * This is called when loading a component from a scene file in the editor
-		 */
-		bool (*m_LoadJson)(const nlohmann::json&, entt::registry&, const entt::entity) =
-			nullptr;
-#ifdef BRK_DEV
-		/**
-		 * The widget used to display the component in an ImGui overlay. Should
-		 *  return true if the component data was modified, false otherwise
-		 */
-		UniqueFunction<bool(entt::registry&, const entt::entity)> m_UiWidget;
-#endif
-		const char* m_Name;
-
-	private:
-		friend class ComponentRegistry;
-		ComponentInfo() = default;
-	};
-
 	/**
 	 * A global map containing type erased information about registered ECS components
 	 */
@@ -54,7 +28,7 @@ namespace brk::ecs {
 		 * the component had already been registered.
 		 */
 		template <class C>
-		const ComponentInfo& Register(bool (*uiWidget)(C&) = nullptr);
+		const ComponentInfo& Register();
 
 		/**
 		 * Gets a component's info from its type
@@ -76,10 +50,7 @@ namespace brk::ecs {
 		BRK_ECS_API static std::unique_ptr<ComponentRegistry> s_Instance;
 		ComponentRegistry() = default;
 
-		template <class C>
-		static ComponentInfo CreateInfo(bool (*widget)(C&));
-
-		using TMap = std::unordered_map<uint32, const ComponentInfo, Hash<uint32>>;
+		using TMap = std::unordered_map<uint32, const ComponentInfo*, Hash<uint32>>;
 		TMap m_TypeMap;
 	};
 } // namespace brk::ecs

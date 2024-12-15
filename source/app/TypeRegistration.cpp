@@ -8,8 +8,6 @@
 
 #include <entt/entity/registry.hpp>
 
-#include <editor/ui/ComponentWidgets.hpp>
-
 #include <rendering/Material.hpp>
 #include <rendering/Texture.hpp>
 
@@ -21,8 +19,8 @@ void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 {
 	auto& registry = ecs::ComponentRegistry::GetInstance();
 
-	registry.Register<TransformComponent>(&editor::TransformWidget);
-	registry.Register<MeshComponent>(&editor::MeshComponentWidget);
+	registry.Register<TransformComponent>();
+	registry.Register<MeshComponent>();
 
 	if (entryPoint.RegisterGameComponents)
 		entryPoint.RegisterGameComponents(registry);

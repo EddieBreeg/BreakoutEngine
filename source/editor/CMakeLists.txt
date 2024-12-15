@@ -3,7 +3,6 @@ file(GLOB_RECURSE EDITOR_HEADERS *.h *.hpp)
 add_library(BRK_EDITOR ${BRK_LIBTYPE}
 	${EDITOR_HEADERS}
 	Editor.cpp
-	ui/ComponentWidgets.cpp
 	ui/Inspector.cpp
 	ui/MenuBar.cpp
 	ui/Outliner.cpp

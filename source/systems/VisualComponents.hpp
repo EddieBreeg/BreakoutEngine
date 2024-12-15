@@ -3,6 +3,7 @@
 #include <PCH.hpp>
 #include <core/FieldList.hpp>
 #include <core/ResourceRef.hpp>
+#include <ecs/ComponentFwd.hpp>
 #include <rendering/Material.hpp>
 #include <rendering/Mesh.hpp>
 
@@ -12,7 +13,7 @@ namespace brk {
 	struct VisualComponent
 	{};
 
-	struct MeshComponent
+	struct BRK_SYSTEMS_API MeshComponent
 	{
 		ResourceRef<rdr::MaterialInstance> m_MaterialRef;
 		ResourceRef<rdr::Mesh> m_MeshRef;
@@ -30,6 +31,6 @@ namespace brk {
 					"meshId",
 				};
 
-		static constexpr StringView Name = "mesh";
+		static const ecs::ComponentInfo Info;
 	};
 } // namespace brk

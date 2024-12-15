@@ -5,6 +5,7 @@ EmbedAsset(${BRK_ROOT}/data/fonts/Montserrat-Regular.ttf Montserrat brk::editor:
 add_library(BRK_SYSTEMS ${BRK_LIBTYPE}
 	ImportFonts.cpp
 	TransformComponent.cpp
+	VisualComponents.cpp
 	VisualSystem.cpp
 	WindowSystem.cpp
 	${CMAKE_CURRENT_BINARY_DIR}/Montserrat.hpp

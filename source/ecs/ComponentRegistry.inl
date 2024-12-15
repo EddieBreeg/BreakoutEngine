@@ -1,63 +1,31 @@
 template <class C>
-const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register(bool (*widget)(C&))
+const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::Register()
 {
-	static_assert(meta::HasName<C>, "Component doesn't have a name");
-	static constexpr uint32 h = Hash<StringView>{}(C::Name);
-#ifdef BRK_DEV
+	static_assert(
+		_internal::HasComponentInfo<C>::value,
+		"Component types must declare a static const ComponentInfo Info member");
+	const ComponentInfo& info = C::Info;
+	const uint32 h = Hash<StringView>{}(info.m_Name);
+	DEBUG_CHECK(info.m_WidgetInfo.m_Create)
 	{
-		const auto it = m_TypeMap.find(h);
-		if (it != m_TypeMap.end())
-		{
-			BRK_LOG_WARNING("Trying to register component '{}' mutliple times!", C::Name);
-			return it->second;
-		}
+		BRK_LOG_WARNING("Component {} doesn't have a UI widget", info.m_Name);
 	}
-#endif
-	return m_TypeMap.emplace(h, CreateInfo<C>(widget)).first->second;
+
+	const std::pair res = m_TypeMap.emplace(h, &info);
+	return *(res.first->second);
 }
 
 template <class C>
 const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo() const
 {
-	static_assert(meta::HasName<C>, "Component doesn't have a name");
-	static constexpr uint32 h = Hash<StringView>{}(C::Name);
+	static_assert(
+		_internal::HasComponentInfo<C>::value,
+		"Component types must declare a static const ComponentInfo Info member");
+	static const uint32 h = Hash<StringView>{}(C::Info.m_Name);
 	const auto it = m_TypeMap.find(h);
 	BRK_ASSERT(
 		it != m_TypeMap.end(),
 		"Attempting to get ComponentInfo for component '{}', which wasn't registered",
 		C::Name);
-	return it->second;
-}
-
-template <class C>
-brk::ecs::ComponentInfo brk::ecs::ComponentRegistry::CreateInfo(bool (*widget)(C&))
-{
-	ComponentInfo info{
-		[](const nlohmann::json& json, entt::registry& world, const entt::entity entity) -> bool
-		{
-			C comp{};
-			if (JsonLoader<C>::Load(comp, json))
-			{
-				world.emplace<C>(entity, std::move(comp));
-				return true;
-			}
-			BRK_LOG_WARNING(
-				"Failed to load component {} for entity {}",
-				C::Name,
-				entt::id_type(entity));
-			return false;
-		},
-	};
-#ifdef BRK_DEV
-	if (widget)
-	{
-		info.m_UiWidget = [widget](entt::registry& reg, const entt::entity entity)
-		{
-			C& comp = reg.get<C>(entity);
-			return widget(comp);
-		};
-	}
-#endif
-	info.m_Name = C::Name.GetPtr();
-	return info;
+	return *it->second;
 }

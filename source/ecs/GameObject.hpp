@@ -15,6 +15,15 @@ namespace brk::ecs {
 		ULID m_Id;
 		std::string m_Name;
 		entt::entity m_Entity;
-		std::vector<const ComponentInfo*> m_Components;
+		struct Component
+		{
+			Component(const ComponentInfo& info, void* widget)
+				: m_Info{ &info }
+				, m_Widget{ widget }
+			{}
+			const ComponentInfo* m_Info = nullptr;
+			void* m_Widget = nullptr;
+		};
+		std::vector<Component> m_Components;
 	};
 } // namespace brk::ecs

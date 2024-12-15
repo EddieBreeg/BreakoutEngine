@@ -3,6 +3,7 @@
 #include <core/Assert.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/StringViewFormatter.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include "ECSManager.hpp"
@@ -43,8 +44,20 @@ namespace {
 		for (auto& comp : it->items())
 		{
 			const brk::ecs::ComponentInfo& info = registry.GetInfo(comp.key());
-			if (info.m_LoadJson(comp.value(), world, object.m_Entity))
-				object.m_Components.emplace_back(&info);
+			const void* componentPtr =
+				info.m_LoadJson(comp.value(), world, object.m_Entity);
+			if (!componentPtr)
+			{
+				BRK_LOG_WARNING(
+					"Failed to load component {} for object {}",
+					info.m_Name,
+					object.m_Name);
+				continue;
+			}
+			void* widget = info.m_WidgetInfo.m_Create
+							   ? info.m_WidgetInfo.m_Create(componentPtr)
+							   : nullptr;
+			object.m_Components.emplace_back(info, widget);
 		}
 		return object;
 	}
