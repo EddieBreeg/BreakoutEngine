@@ -6,7 +6,10 @@
 #include <fmt/core.h>
 
 namespace brk::_internal {
-	BRK_CORE_API void AssertImpl(std::string&& message, const char* file, const uint32 line);
+	[[noreturn]] BRK_CORE_API void AssertImpl(
+		std::string&& message,
+		const char* file,
+		const uint32 line);
 
 	template <class... Args>
 	void Assert(

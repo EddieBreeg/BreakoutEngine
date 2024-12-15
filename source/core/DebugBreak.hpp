@@ -3,5 +3,5 @@
 #include <core/brk_core_export.h>
 
 namespace brk::dbg {
-	BRK_CORE_API void Break();
+	[[noreturn]] BRK_CORE_API void Break();
 } // namespace brk::dbg
