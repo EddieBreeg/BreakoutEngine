@@ -6,7 +6,15 @@ namespace brk {
 			name,
 			[](const ULID id) -> Resource*
 			{
-				return new R{ id };
+				const ResourceAllocator<R> alloc;
+				R* ptr = alloc.Allocate();
+				return new (ptr) R{ id };
+			},
+			[](Resource* ptr)
+			{
+				ptr->~Resource();
+				const ResourceAllocator<R> alloc;
+				alloc.Deallocate(static_cast<R*>(ptr));
 			},
 		};
 #ifdef BRK_EDITOR

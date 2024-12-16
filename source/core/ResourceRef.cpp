@@ -20,7 +20,12 @@ void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 
 	switch (res->GetLoadingState())
 	{
-	case Resource::MarkedForDeletion: delete res; return;
+	case Resource::MarkedForDeletion:
+	{
+		auto* const destructor = res->GetTypeInfo().m_Destructor;
+		destructor(res);
+	}
+		return;
 	case Resource::Loaded:
 	case Resource::Loading:
 		res->SetLoadingState(Resource::Unloading);

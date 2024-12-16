@@ -78,7 +78,7 @@ namespace brk::editor::ui {
 		struct
 		{
 			ResourceTypeInfo m_Info = {};
-			std::unique_ptr<Resource> m_Resource = nullptr;
+			std::unique_ptr<Resource, ResourceDeleter> m_Resource;
 		} m_ResourceCreationData;
 
 		ULID m_SceneId;

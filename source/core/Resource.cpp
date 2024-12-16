@@ -32,13 +32,17 @@ void brk::JsonLoader<brk::Resource>::Save(const Resource& res, nlohmann::json& o
 		out_json["file"] = res.m_FilePath;
 }
 
-brk::Resource::~Resource() = default;
+brk::Resource::~Resource()
+{
+	DoUnload();
+}
 
 void brk::Resource::MarkForDeletion()
 {
 	if (!m_RefCount)
 	{
-		delete this;
+		auto* const destructor = GetTypeInfo().m_Destructor;
+		destructor(this);
 		return;
 	}
 	SetLoadingState(MarkedForDeletion);
