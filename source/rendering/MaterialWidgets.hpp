@@ -1,5 +1,5 @@
 #include <core/EnumFlags.hpp>
-#include <core/Resource.hpp>
+#include <core/ResourceFwd.hpp>
 #include <core/ULID.hpp>
 #include <imgui.h>
 #include <imgui/MiscWidgets.hpp>

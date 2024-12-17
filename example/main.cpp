@@ -1,4 +1,5 @@
 #include <app/Entry.hpp>
+#include <core/Resource.hpp>
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Material.hpp>

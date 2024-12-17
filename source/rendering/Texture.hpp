@@ -2,8 +2,8 @@
 
 #include <PCH.hpp>
 #include <core/EnumFlags.hpp>
-#include <core/Resource.hpp>
 #include <core/LoadersFwd.hpp>
+#include <core/ResourceFwd.hpp>
 
 #ifdef BRK_DX11
 #include "dx11/ResourceHandles.hpp"

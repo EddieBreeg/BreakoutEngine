@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 
 #ifdef BRK_EDITOR
-#include <core/Resource.hpp>
+#include <core/ResourceFwd.hpp>
 #include <core/ULID.hpp>
 #include <entt/entity/fwd.hpp>
 #include <imgui.h>

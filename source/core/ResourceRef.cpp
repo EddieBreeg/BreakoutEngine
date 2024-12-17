@@ -1,4 +1,5 @@
 #include "ResourceRef.hpp"
+#include "Resource.hpp"
 #include "ResourceLoader.hpp"
 
 void brk::RetainTraits<brk::Resource>::Increment(Resource* res)

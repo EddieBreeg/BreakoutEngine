@@ -77,3 +77,8 @@ brk::DynamicArrayStream brk::Resource::LoadFileContents()
 	}
 	return { std::move(buf) };
 }
+
+void brk::ResourceDeleter::operator()(Resource* ptr) const
+{
+	ptr->MarkForDeletion();
+}

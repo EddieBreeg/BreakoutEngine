@@ -4,6 +4,7 @@
 #include <core/IO.hpp>
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/Resource.hpp>
 #include <core/ResourceFormatter.hpp>
 #include <fstream>
 #include <vector>

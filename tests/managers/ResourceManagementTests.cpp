@@ -1,5 +1,6 @@
 #include <core/LogManager.hpp>
 #include <core/Loaders.hpp>
+#include <core/Resource.hpp>
 #include <core/ResourceLoader.hpp>
 #include <managers/ResourceManager.hpp>
 

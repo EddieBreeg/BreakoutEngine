@@ -1,4 +1,5 @@
 #include "Mesh.hpp"
+#include <core/Resource.hpp>
 #include <imgui/MiscWidgets.hpp>
 
 namespace brk::rdr {

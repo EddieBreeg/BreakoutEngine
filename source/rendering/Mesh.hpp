@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include "Buffer.hpp"
 #include "Vertex.hpp"
-#include <core/Resource.hpp>
+#include <core/ResourceFwd.hpp>
 
 namespace brk::rdr {
 	class BRK_RENDERING_API Mesh : public Resource

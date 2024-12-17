@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include <core/EnumFlags.hpp>
 #include <core/LoadersFwd.hpp>
-#include <core/Resource.hpp>
+#include <core/ResourceFwd.hpp>
 #include <core/ResourceRef.hpp>
 #include "Buffer.hpp"
 #include "Shaders.hpp"

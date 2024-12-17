@@ -1,3 +1,4 @@
+#include <core/Resource.hpp>
 #include <core/ResourceLoader.hpp>
 #include <editor/Editor.hpp>
 #include <managers/ECSManager.hpp>

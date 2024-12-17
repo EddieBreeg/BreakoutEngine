@@ -3,7 +3,7 @@
 #include <PCH.hpp>
 #include "Resource.hpp"
 #include <core/EnumFlags.hpp>
-#include <core/Resource.hpp>
+#include <core/ResourceFwd.hpp>
 
 namespace brk::rdr {
 	enum class EBufferOptions : uint8

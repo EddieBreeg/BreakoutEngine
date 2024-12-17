@@ -1,5 +1,6 @@
 #include <core/FieldList.hpp>
 #include <core/Loaders.hpp>
+#include <core/Resource.hpp>
 #include <core/ResourceLoader.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include <managers/SceneManager.hpp>

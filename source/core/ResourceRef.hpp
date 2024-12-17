@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Resource.hpp"
+#include "ResourceFwd.hpp"
 #include "RetainPtr.hpp"
 
 namespace brk {
