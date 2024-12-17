@@ -6,6 +6,7 @@ add_executable(CoreTests main.cpp
 	FunctionTests.cpp
 	HashTests.cpp
 	IO.cpp
+	Memory.cpp
 	RetainPtr.cpp
 	SignalTests.cpp
 	StringViewTests.cpp
