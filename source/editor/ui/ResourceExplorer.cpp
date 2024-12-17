@@ -100,7 +100,7 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 
 	if (!data.m_Resource)
 	{
-		data.m_Resource.reset(data.m_Info.m_Constructor(ULID::Generate()));
+		data.m_Resource.reset(data.m_Info.NewResource(ULID::Generate()));
 		data.m_Info.m_Widget->Init(*data.m_Resource);
 	}
 

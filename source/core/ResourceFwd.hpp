@@ -6,11 +6,14 @@
 #include "LoadersFwd.hpp"
 #include "ULID.hpp"
 
-#include <memory_resource>
 #include <string>
 
 namespace brk::editor::ui {
 	struct UiData;
+}
+
+namespace std::pmr {
+	class memory_resource;
 }
 
 namespace brk {
@@ -121,32 +124,16 @@ namespace brk {
 		static void Save(const Resource& res, nlohmann::json& out_json);
 	};
 
-	template <class R>
-	struct ResourceAllocator
-	{
-		R* Allocate() const;
-		void Deallocate(R*) const noexcept {}
-
-	private:
-		/**
-		 * #hack: with this, resources cannot be deallocated. this is only really a
-		 * "problem" when using the editor, as a game wouldn't delete resources until
-		 * shutdown anyway.
-		 */
-		using TProvider = std::pmr::monotonic_buffer_resource;
-		static inline TProvider s_Provider{ 100 * sizeof(R) };
-	};
-
 	struct BRK_CORE_API ResourceDeleter
 	{
 		void operator()(Resource* ptr) const;
 	};
 
-	struct ResourceTypeInfo
+	struct BRK_CORE_API ResourceTypeInfo
 	{
 		StringView m_TypeName;
-		Resource* (*m_Constructor)(const ULID) = nullptr;
-		void (*m_Destructor)(Resource*) = nullptr;
+		std::pmr::memory_resource* m_Pool = nullptr;
+		Resource* (*m_Constructor)(std::pmr::memory_resource&, const ULID&) = nullptr;
 #ifdef BRK_EDITOR
 		ResourceUiWidget* m_Widget = nullptr;
 #endif
@@ -155,6 +142,9 @@ namespace brk {
 
 		template <class R, class Widget = void>
 		static ResourceTypeInfo Create(StringView name);
+
+		Resource* NewResource(const ULID& id) const;
+		void DestroyResource(Resource*) const;
 	};
 
 	namespace _internal {

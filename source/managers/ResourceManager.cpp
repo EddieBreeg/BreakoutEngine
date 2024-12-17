@@ -51,7 +51,7 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 			resType);
 		const ResourceTypeInfo& info = *it->second;
 
-		Resource* res = info.m_Constructor(resId);
+		Resource* res = info.NewResource(resId);
 
 		if (!JsonLoader<Resource>::Load(*res, desc))
 		{

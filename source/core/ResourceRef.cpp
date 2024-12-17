@@ -23,8 +23,8 @@ void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 	{
 	case Resource::MarkedForDeletion:
 	{
-		auto* const destructor = res->GetTypeInfo().m_Destructor;
-		destructor(res);
+		const auto& info = res->GetTypeInfo();
+		info.DestroyResource(res);
 	}
 		return;
 	case Resource::Loaded:

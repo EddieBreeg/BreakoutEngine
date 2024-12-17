@@ -62,19 +62,14 @@ namespace brk {
 	template <class R, class Widget>
 	inline ResourceTypeInfo ResourceTypeInfo::Create(StringView name)
 	{
+		using TPool = TypedMemoryPool<R>;
 		ResourceTypeInfo info{
 			name,
-			[](const ULID id) -> Resource*
+			new TypedMemoryPool<R>{ 100 },
+			[](std::pmr::memory_resource& pool, const ULID& id) -> Resource*
 			{
-				const ResourceAllocator<R> alloc;
-				R* ptr = alloc.Allocate();
+				void* ptr = static_cast<TPool&>(pool).Allocate(1);
 				return new (ptr) R{ id };
-			},
-			[](Resource* ptr)
-			{
-				ptr->~Resource();
-				const ResourceAllocator<R> alloc;
-				alloc.Deallocate(static_cast<R*>(ptr));
 			},
 		};
 #ifdef BRK_EDITOR
@@ -95,11 +90,5 @@ namespace brk {
 			};
 		}
 		return info;
-	}
-
-	template <class R>
-	inline R* ResourceAllocator<R>::Allocate() const
-	{
-		return static_cast<R*>(s_Provider.allocate(sizeof(R), alignof(R)));
 	}
 } // namespace brk

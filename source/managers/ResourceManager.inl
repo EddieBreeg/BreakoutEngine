@@ -14,8 +14,8 @@ template <class R, class... Args>
 R& brk::ResourceManager::AddResource(Args&&... args)
 {
 	static_assert(std::is_base_of_v<Resource, R>, "R must inherit from Resource");
-	const ResourceAllocator<R> alloc;
-	R* res = alloc.Allocate();
+	std::pmr::memory_resource* pool = R::Info.m_Pool;
+	R* res = static_cast<R*>(pool->allocate(1));
 	new (res) R{ std::forward<Args>(args)... };
 	Resource* temp = static_cast<Resource*>(res);
 	BRK_ASSERT(temp->GetId(), "Newly created resource has invalid ULID");

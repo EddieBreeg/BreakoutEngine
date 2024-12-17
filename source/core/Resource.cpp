@@ -41,8 +41,7 @@ void brk::Resource::MarkForDeletion()
 {
 	if (!m_RefCount)
 	{
-		auto* const destructor = GetTypeInfo().m_Destructor;
-		destructor(this);
+		GetTypeInfo().DestroyResource(this);
 		return;
 	}
 	SetLoadingState(MarkedForDeletion);
@@ -81,4 +80,16 @@ brk::DynamicArrayStream brk::Resource::LoadFileContents()
 void brk::ResourceDeleter::operator()(Resource* ptr) const
 {
 	ptr->MarkForDeletion();
+}
+
+brk::Resource* brk::ResourceTypeInfo::NewResource(const ULID& id) const
+{
+	return m_Constructor(*m_Pool, id);
+}
+
+void brk::ResourceTypeInfo::DestroyResource(Resource* res) const
+{
+	res->~Resource();
+	// the 1 will get rounded up to the actual resource's size
+	m_Pool->deallocate(res, 1);
 }
