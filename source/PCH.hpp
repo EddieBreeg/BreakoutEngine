@@ -36,6 +36,10 @@ using uint32 = uint32_t;
 using int64 = int64_t;
 using uint64 = uint64_t;
 
+namespace brk {
+	using byte = uint8;
+}
+
 #ifdef BRK_DEBUG
 #define DEBUG_CHECK(test) if (!(test))
 #else
@@ -45,7 +49,7 @@ using uint64 = uint64_t;
 #endif
 
 #ifndef BRK_MAX_PATH
-#define BRK_MAX_PATH	1024
+#define BRK_MAX_PATH 1024
 #endif
 
 #define MARK_UNUSED(expr) (void)(expr)
