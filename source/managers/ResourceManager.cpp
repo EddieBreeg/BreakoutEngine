@@ -56,13 +56,13 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 		if (!JsonLoader<Resource>::Load(*res, desc))
 		{
 			BRK_LOG_WARNING("Loading resource '{}' failed", res->GetId());
-			delete res;
+			res->MarkForDeletion();
 			continue;
 		}
 		if (info.m_Load && !info.m_Load(*res, desc))
 		{
 			BRK_LOG_WARNING("Loading resource '{}' failed", res->GetId());
-			delete res;
+			res->MarkForDeletion();
 			continue;
 		}
 		std::unique_lock lock{ m_Mutex };
