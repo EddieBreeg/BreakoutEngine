@@ -1,7 +1,8 @@
+#include "Bitset.hpp"
 #define _LROT1(byte) (((byte) << 1) | ((byte) >> 7))
 
 namespace brk {
-	BitsetView::BitsetView(void* ptr, uint32 len)
+	inline BitsetView::BitsetView(void* ptr, uint32 len)
 		: m_Data{ static_cast<byte*>(ptr) }
 		, m_BitSize{ len }
 	{}
@@ -50,6 +51,40 @@ namespace brk {
 			m_Data[index++ / 8] |= bit;
 			bit = _LROT1(bit);
 		}
+	}
+
+	inline void BitsetView::Clear(uint32 index)
+	{
+		BRK_ASSERT(index < m_BitSize, "Index {} is out of range", index);
+		m_Data[index / 8] &= ~BIT(index % 8);
+	}
+
+	inline void BitsetView::Clear(uint32 index, uint32 count)
+	{
+		BRK_ASSERT(
+			(index + count) <= m_BitSize,
+			"Index {} is out of range",
+			index + count - 1);
+		byte bit = BIT(index % 8);
+		while (count--)
+		{
+			m_Data[index++ / 8] &= ~bit;
+			bit = _LROT1(bit);
+		}
+	}
+
+	inline void BitsetView::SetAll()
+	{
+		uint32 count = (m_BitSize - 1) / 8 + 1;
+		while (count--)
+			m_Data[count] = 0xff;
+	}
+
+	inline void BitsetView::ClearAll()
+	{
+		uint32 count = (m_BitSize - 1) / 8 + 1;
+		while (count--)
+			m_Data[count] = 0;
 	}
 
 	inline uint32 BitsetView::Find(bool val) const

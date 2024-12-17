@@ -35,5 +35,23 @@ namespace brk::bitset::ut {
 			assert(v.Find(false, 3) == BitsetView::NPos);
 			assert(v.Find(true, 3) == 3);
 		}
+		{
+			byte val = 0xff;
+			BitsetView v{ &val, 8 };
+			v.Clear(0);
+			assert(val == 0xfe);
+			v.Clear(1, 7);
+			assert(val == 0);
+		}
+		{
+			uint16 val = 0;
+			BitsetView v{ &val, 16 };
+
+			v.SetAll();
+			assert(val == 0xffff);
+
+			v.ClearAll();
+			assert(val == 0);
+		}
 	}
 } // namespace brk::bitset::ut

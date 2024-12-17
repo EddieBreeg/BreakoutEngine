@@ -21,6 +21,12 @@ namespace brk {
 		void Set(uint32 index);
 		void Set(uint32 index, uint32 count);
 
+		void Clear(uint32 index);
+		void Clear(uint32 index, uint32 count);
+
+		void SetAll();
+		void ClearAll();
+
 		static constexpr uint32 NPos = -1;
 
 		[[nodiscard]] uint32 Find(bool val) const;
