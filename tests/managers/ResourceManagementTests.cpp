@@ -23,7 +23,7 @@ namespace brk::resource_ref::ut {
 		void ResetRefCount() { m_RefCount = 0; }
 
 		static constexpr StringView Name = "Res1";
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		bool DoLoad()
 		{
@@ -37,7 +37,7 @@ namespace brk::resource_ref::ut {
 			: Resource(id)
 		{}
 		static constexpr StringView Name = "Res2";
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		int32 m_Value = 0;
 	};
@@ -56,7 +56,7 @@ namespace brk::resource_ref::ut {
 		}
 
 		static constexpr StringView Name = "res3";
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		uint32* m_Count = nullptr;
 	};

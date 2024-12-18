@@ -78,7 +78,7 @@ namespace brk::rdr {
 	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		using Resource::Resource;
 		/**

@@ -61,7 +61,7 @@ namespace brk::rdr {
 		bool DoLoad() noexcept override;
 		void DoUnload() noexcept override;
 
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		~Material() = default;
 
@@ -86,7 +86,7 @@ namespace brk::rdr {
 	class BRK_RENDERING_API MaterialInstance : public Resource
 	{
 	public:
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		MaterialInstance(const ULID& id, std::string name = {});
 		/**

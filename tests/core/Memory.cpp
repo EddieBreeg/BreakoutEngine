@@ -25,6 +25,8 @@ namespace brk::memory::ut {
 		}
 	};
 
+	void PolyPoolTests();
+
 	void PoolTests()
 	{
 		using TPool = MemoryPool<8, 4>;
@@ -79,5 +81,65 @@ namespace brk::memory::ut {
 		assert(temp.Allocate(10) == start2);
 		assert(temp.Allocate(1) == start1);
 		assert(temp.GetUpstream() == upstream);
+
+		PolyPoolTests();
+	}
+
+	void PolyPoolTests()
+	{
+		MemoryProvider upstream;
+		using TPool = MemoryPool<8, 8>;
+		{
+			const PolymorphicMemoryPool pool;
+			assert(!pool.IsValid());
+		}
+		{
+			PolymorphicMemoryPool pool{ InPlace<TPool>, 0, &upstream };
+			assert(pool.IsValid());
+			assert(upstream.m_TotalSize == 0);
+		}
+		{
+			PolymorphicMemoryPool pool{ InPlace<TPool>, 10, &upstream };
+			assert(pool.IsValid());
+			assert(upstream.m_TotalSize > 0);
+
+			pool.Clear();
+			assert(upstream.m_TotalSize > 0);
+
+			pool.Reset();
+			assert(upstream.m_TotalSize == 0);
+		}
+		{
+			PolymorphicMemoryPool p1{ InPlace<TPool>, 0, &upstream };
+			PolymorphicMemoryPool p2{ std::move(p1) };
+			assert(!p1.IsValid());
+			assert(p2.IsValid());
+		}
+		{
+			PolymorphicMemoryPool p1{ InPlace<TPool>, 1, &upstream };
+			const auto size = upstream.m_TotalSize;
+			assert(size);
+
+			PolymorphicMemoryPool p2;
+			p2 = std::move(p1);
+			assert(!p1.IsValid());
+			assert(p2.IsValid());
+			assert(upstream.m_TotalSize == size);
+		}
+		assert(!upstream.m_TotalSize);
+		{
+			TPool pool{ 1, &upstream };
+			PolymorphicMemoryPool poly{ std::move(pool) };
+			assert(poly.IsValid());
+			pool.Reset();
+			const auto size = upstream.m_TotalSize;
+			assert(size);
+
+			void* ptr = poly.Allocate(1);
+			assert(ptr);
+			assert(upstream.m_TotalSize == size);
+
+			poly.Deallocate(ptr, 1);
+		}
 	}
 } // namespace brk::memory::ut

@@ -5,7 +5,7 @@ void brk::ResourceManager::RegisterResourceType(const StringView name)
 {
 	static_assert(meta::IsResourceType<R>, "Invalid resource type");
 
-	const ResourceTypeInfo& info = ResourceTypeInfo::InitFor<R, W>(name);
+	ResourceTypeInfo& info = ResourceTypeInfo::InitFor<R, W>(name);
 	const uint32 h = Hash<StringView>{}(name);
 
 	m_TypeMap.emplace(h, &info);
@@ -16,7 +16,7 @@ R& brk::ResourceManager::AddResource(Args&&... args)
 {
 	static_assert(std::is_base_of_v<Resource, R>, "R must inherit from Resource");
 	ResourceTypeInfo& info = ResourceTypeInfo::GetFor<R>();
-	R* res = static_cast<R*>(info.m_Pool->allocate(sizeof(R), alignof(R)));
+	R* res = static_cast<R*>(info.m_Pool.Allocate(1));
 	new (res) R{ std::forward<Args>(args)... };
 	Resource* temp = static_cast<Resource*>(res);
 	BRK_ASSERT(temp->GetId(), "Newly created resource has invalid ULID");

@@ -10,8 +10,8 @@
 namespace {
 	static constexpr const char* s_DefaultResName = "Unnamed";
 
-	const brk::ResourceTypeInfo* ResourceTypeDropDown(
-		const brk::ResourceTypeInfo* current,
+	brk::ResourceTypeInfo* ResourceTypeDropDown(
+		brk::ResourceTypeInfo* current,
 		const brk::TResourceTypeMap& types)
 	{
 		const char* typeName = current ? current->m_TypeName.GetPtr() : "[none]";
@@ -89,7 +89,7 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 		goto RES_CREATION_END;
 	}
 
-	const auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
+	auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
 	if (info)
 	{
 		data.m_Info = info;

@@ -9,8 +9,7 @@
 #include <unordered_map>
 
 namespace brk {
-	using TResourceTypeMap =
-		std::unordered_map<uint32, const ResourceTypeInfo*, Hash<uint32>>;
+	using TResourceTypeMap = std::unordered_map<uint32, ResourceTypeInfo*, Hash<uint32>>;
 
 	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
 	{
@@ -38,8 +37,7 @@ namespace brk {
 		void CreateResources(const nlohmann::json& list);
 #endif
 
-		[[nodiscard]] const ResourceTypeInfo& GetResourceTypeInfo(
-			StringView typeName) const;
+		[[nodiscard]] ResourceTypeInfo& GetResourceTypeInfo(StringView typeName) const;
 #ifdef BRK_EDITOR
 		[[nodiscard]] const TResourceTypeMap& GetTypeMap() const noexcept
 		{

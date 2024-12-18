@@ -63,12 +63,11 @@ namespace brk {
 	template <class R, class W>
 	inline ResourceTypeInfo::ResourceTypeInfo(InPlaceType<R, W>, const StringView name)
 		: m_TypeName{ name }
-		, m_Pool{ new TypedMemoryPool<R>{ 100 } }
+		, m_Pool{ InPlace<TypedMemoryPool<R>>, 100 }
 	{
-		using TPool = TypedMemoryPool<R>;
-		m_Constructor = [](std::pmr::memory_resource& pool, const ULID& id) -> Resource*
+		m_Constructor = [](PolymorphicMemoryPool& pool, const ULID& id) -> Resource*
 		{
-			void* ptr = static_cast<TPool&>(pool).Allocate(1);
+			void* ptr = pool.Allocate(1);
 			return new (ptr) R{ id };
 		};
 		if constexpr (!std::is_void_v<W>)
@@ -87,11 +86,6 @@ namespace brk {
 			};
 		}
 	}
-
-	template <class R>
-	inline ResourceTypeInfo::ResourceTypeInfo(InPlaceType<R>, const StringView name)
-		: ResourceTypeInfo(InPlace<R, void>, name)
-	{}
 
 	template <class Res, class Widget>
 	inline ResourceTypeInfo& ResourceTypeInfo::InitFor(const StringView name)

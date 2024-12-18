@@ -1,3 +1,4 @@
+#include "MemoryPoolFwd.hpp"
 namespace brk {
 	template <uint32 B, uint32 A>
 	struct MemoryPool<B, A>::Header
@@ -190,4 +191,67 @@ namespace brk {
 		m_Used -= n;
 		GetBitset().Clear(index, n);
 	}
+
+	template <uint32 B, uint32 A>
+	inline PolymorphicMemoryPool::PolymorphicMemoryPool(
+		InPlaceType<MemoryPool<B, A>>,
+		uint32 initBlockCount,
+		std::pmr::memory_resource* upstream)
+		: m_BlockSize{ B }
+		, m_Alignment{ A }
+	{
+		using TPool = MemoryPool<B, A>;
+		new (m_Storage.m_Buf) TPool{ initBlockCount, upstream };
+
+		m_Allocate = [](void* pool, uint32 n)
+		{
+			return static_cast<TPool*>(pool)->Allocate(n);
+		};
+		m_Deallocate = [](void* pool, void* ptr, uint32 n)
+		{
+			return static_cast<TPool*>(pool)->Deallocate(ptr, n);
+		};
+		m_Clear = [](void* ptr, bool reset)
+		{
+			TPool* const pool = static_cast<TPool*>(ptr);
+			if (reset)
+			{
+				pool->Reset();
+			}
+			else
+			{
+				pool->Clear();
+			}
+		};
+	}
+
+	template <uint32 B, uint32 A>
+	inline brk::PolymorphicMemoryPool::PolymorphicMemoryPool(MemoryPool<B, A>&& pool)
+		: m_BlockSize{ B }
+		, m_Alignment{ A }
+	{
+		using TPool = MemoryPool<B, A>;
+		new (m_Storage.m_Buf) TPool{ std::move(pool) };
+		m_Allocate = [](void* pool, uint32 n)
+		{
+			return static_cast<TPool*>(pool)->Allocate(n);
+		};
+		m_Deallocate = [](void* pool, void* ptr, uint32 n)
+		{
+			return static_cast<TPool*>(pool)->Deallocate(ptr, n);
+		};
+		m_Clear = [](void* ptr, bool reset)
+		{
+			TPool* const pool = static_cast<TPool*>(ptr);
+			if (reset)
+			{
+				pool->Reset();
+			}
+			else
+			{
+				pool->Clear();
+			}
+		};
+	}
+
 } // namespace brk

@@ -14,7 +14,7 @@ namespace brk::resource_loader::ut {
 			m_State = state;
 		}
 
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		bool DoLoad() override
 		{

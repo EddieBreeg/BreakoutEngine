@@ -5,6 +5,7 @@ add_library(BRK_CORE ${BRK_LIBTYPE}
 	DebugBreak.cpp
 	IO.cpp
 	LogManager.cpp
+	MemoryPool.cpp
 	Resource.cpp
 	ResourceFormatter.cpp
 	ResourceLoader.cpp

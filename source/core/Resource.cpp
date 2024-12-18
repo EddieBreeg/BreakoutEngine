@@ -86,17 +86,16 @@ void brk::ResourceDeleter::operator()(Resource* ptr) const
 brk::ResourceTypeInfo::~ResourceTypeInfo()
 {
 	delete m_Widget;
-	delete m_Pool;
 }
 
-brk::Resource* brk::ResourceTypeInfo::NewResource(const ULID& id) const
+brk::Resource* brk::ResourceTypeInfo::NewResource(const ULID& id)
 {
-	return m_Constructor(*m_Pool, id);
+	return m_Constructor(m_Pool, id);
 }
 
-void brk::ResourceTypeInfo::DestroyResource(Resource* res) const
+void brk::ResourceTypeInfo::DestroyResource(Resource* res)
 {
 	res->~Resource();
 	// the 1 will get rounded up to the actual resource's size
-	m_Pool->deallocate(res, 1);
+	m_Pool.Deallocate(res, 1);
 }

@@ -31,7 +31,7 @@ namespace brk::rdr {
 			, m_NumIndices{ N2 }
 		{}
 
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
+		ResourceTypeInfo& GetTypeInfo() const override;
 
 		[[nodiscard]] Buffer& GetVertexBuffer() noexcept { return m_VertexBuffer; }
 		[[nodiscard]] const Buffer& GetVertexBuffer() const noexcept

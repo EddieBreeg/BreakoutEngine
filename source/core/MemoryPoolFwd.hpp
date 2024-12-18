@@ -112,4 +112,86 @@ namespace brk {
 	 */
 	template <class T>
 	using TypedMemoryPool = MemoryPool<sizeof(T), alignof(T)>;
+
+	/**
+	 * Opaque memory pool, using type erasure
+	 */
+	class BRK_CORE_API PolymorphicMemoryPool
+	{
+	public:
+		PolymorphicMemoryPool() noexcept = default;
+
+		PolymorphicMemoryPool(const PolymorphicMemoryPool&) = delete;
+		/**
+		 * After this call, other.IsValid() returns false
+		 */
+		PolymorphicMemoryPool(PolymorphicMemoryPool&& other);
+
+		PolymorphicMemoryPool& operator=(const PolymorphicMemoryPool&) = delete;
+		/**
+		 * Effectively swaps *this this other
+		 */
+		PolymorphicMemoryPool& operator=(PolymorphicMemoryPool&&);
+
+		/**
+		 * Calls Reset
+		 */
+		~PolymorphicMemoryPool();
+
+		/**
+		 * Constructs a pool of the provided type
+		 * \tparam B: The block size to use
+		 * \tparam A: The block alignment
+		 * \param initBlockCount: The initial block count to allocate. If 0, no chunk
+		 * will be allocated.
+		 * \param upstream: The upstream resource to use for additionnal allocations
+		 */
+		template <uint32 B, uint32 A>
+		PolymorphicMemoryPool(
+			InPlaceType<MemoryPool<B, A>>,
+			uint32 initBlockCount,
+			std::pmr::memory_resource* upstream = std::pmr::new_delete_resource());
+
+		/**
+		 * Constructs from a pool object. After this call,
+		 * pool is still valid and still holds a pointer the upstream resource
+		 * it was using before, but it will be empty.
+		 */
+		template <uint32 B, uint32 A>
+		PolymorphicMemoryPool(MemoryPool<B, A>&& pool);
+
+		/**
+		 * Allocates from the internal pool.
+		 * \warning Asserts if no pool is stored
+		 */
+		void* Allocate(uint32 n);
+		/**
+		 * Deallocates from the internal pool.
+		 * \warning Asserts if no pool is stored
+		 */
+		void Deallocate(void* ptr, uint32 n);
+
+		[[nodiscard]] bool IsValid() const noexcept { return m_BlockSize; }
+
+		/**
+		 * Clears the contents of the pool, without releasing the memory.
+		 * If no pool is actually stored, does nothing.
+		 */
+		void Clear();
+		/**
+		 * Releases all allocates blocks.
+		 * If no pool is actually stored, does nothing.
+		 */
+		void Reset();
+
+	private:
+		struct
+		{
+			void* m_Buf[3] = { nullptr };
+		} m_Storage;
+		uint32 m_BlockSize = 0, m_Alignment = 0;
+		void* (*m_Allocate)(void* pool, uint32 n) = nullptr;
+		void (*m_Deallocate)(void* pool, void* ptr, uint32 n) = nullptr;
+		void (*m_Clear)(void*, bool) = nullptr;
+	};
 } // namespace brk

@@ -4,6 +4,7 @@
 #include "FieldList.hpp"
 #include "IO.hpp"
 #include "LoadersFwd.hpp"
+#include "MemoryPool.hpp"
 #include "ULID.hpp"
 
 #include <string>
@@ -51,7 +52,7 @@ namespace brk {
 		 */
 		virtual ~Resource();
 
-		[[nodiscard]] virtual const ResourceTypeInfo& GetTypeInfo() const noexcept = 0;
+		[[nodiscard]] virtual ResourceTypeInfo& GetTypeInfo() const = 0;
 
 		/**
 		 * \return true if the resource was loaded succesfully, false otherwise.
@@ -141,16 +142,16 @@ namespace brk {
 		~ResourceTypeInfo();
 
 		StringView m_TypeName;
-		std::pmr::memory_resource* m_Pool = nullptr;
-		Resource* (*m_Constructor)(std::pmr::memory_resource&, const ULID&) = nullptr;
+		PolymorphicMemoryPool m_Pool;
+		Resource* (*m_Constructor)(PolymorphicMemoryPool&, const ULID&) = nullptr;
 #ifdef BRK_EDITOR
 		ResourceUiWidget* m_Widget = nullptr;
 #endif
 		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
 		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
 
-		Resource* NewResource(const ULID& id) const;
-		void DestroyResource(Resource*) const;
+		Resource* NewResource(const ULID& id);
+		void DestroyResource(Resource*);
 
 		template <class Res, class Widget>
 		static ResourceTypeInfo& InitFor(const StringView name);
@@ -163,9 +164,6 @@ namespace brk {
 	private:
 		template <class R, class W>
 		ResourceTypeInfo(InPlaceType<R, W>, const StringView name);
-
-		template <class R>
-		ResourceTypeInfo(InPlaceType<R>, const StringView name);
 
 		template <class R>
 		struct Impl
@@ -182,7 +180,7 @@ namespace brk {
  * \param Attr: Attributes for the implementation, like dll linkage
  */
 #define RES_INFO_IMPL(Type, Attr)                                                        \
-	inline const ResourceTypeInfo& Type::GetTypeInfo() const noexcept                    \
+	inline ResourceTypeInfo& Type::GetTypeInfo() const                          \
 	{                                                                                    \
 		return ResourceTypeInfo::GetFor<Type>();                                         \
 	}                                                                                    \
@@ -197,7 +195,7 @@ namespace brk {
  * Same as RES_INFO_IMPL, but without the attributes. Used in unit tests.
  */
 #define RES_INFO_IMPL_NO_ATTR(Type)                                                      \
-	inline const ResourceTypeInfo& Type::GetTypeInfo() const noexcept                    \
+	inline ResourceTypeInfo& Type::GetTypeInfo() const                          \
 	{                                                                                    \
 		return ResourceTypeInfo::GetFor<Type>();                                         \
 	}                                                                                    \
