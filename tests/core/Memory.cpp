@@ -57,6 +57,13 @@ namespace brk::memory::ut {
 		assert(temp.Allocate(10) == start2);
 		assert(temp.Allocate(1) == start1);
 		assert(temp.GetUpstream() == upstream);
+		temp.Reset();
+		assert(upstream.GetInfo().m_NumAllocs == 0);
+
+		temp.Allocate(1);
+		assert(upstream.GetInfo().m_NumAllocs == 1);
+		temp.Allocate(1);
+		assert(upstream.GetInfo().m_NumAllocs == 2);
 
 		PolyPoolTests();
 	}

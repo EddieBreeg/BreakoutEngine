@@ -53,6 +53,14 @@ namespace brk {
 	template <uint32 BlockSize, uint32 Alignment>
 	inline void* MemoryPool<BlockSize, Alignment>::Allocate(uint32 n)
 	{
+		if (!m_Head)
+		{
+			BitsetView bitset = AllocateNewChunk(n)->GetBitset();
+			bitset.SetAll();
+			m_Head->m_Used = n;
+			return m_Head->m_Buf;
+		}
+
 		for (Header* chunk = m_Head; chunk; chunk = chunk->m_Next)
 		{
 			if (void* ptr = chunk->TryAllocate(n))
