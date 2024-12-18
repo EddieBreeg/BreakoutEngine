@@ -1,5 +1,6 @@
 #pragma once
 #include <PCH.hpp>
+#include <core/AllocTracker.hpp>
 #include <core/Loaders.hpp>
 #include <core/ResourceRef.hpp>
 #include <core/Singleton.hpp>
@@ -49,6 +50,10 @@ namespace brk {
 		}
 #endif
 
+#ifdef BRK_DEV
+		[[nodiscard]] const AllocTracker& GetAllocTracker() const noexcept;
+#endif
+
 		/**
 		 * \short Manually adds a new resource to the map. The object is heap allocated
 		 * with new
@@ -94,6 +99,9 @@ namespace brk {
 		TULIDMap<Resource*> m_Resources;
 
 		TResourceTypeMap m_TypeMap;
+#ifdef BRK_DEV
+		AllocTracker m_AllocTracker;
+#endif
 		entt::registry& m_World;
 		std::shared_mutex m_Mutex;
 	};

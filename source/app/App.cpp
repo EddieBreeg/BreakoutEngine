@@ -94,7 +94,15 @@ namespace brk {
 		// for creating the renderer, which we may need to preload resources
 		InitWindowSystem(*this, m_ECSManager);
 
-		RegisterResources(entry);
+		ResourceManager& resManager = ResourceManager::GetInstance();
+		RegisterResources(entry, resManager);
+#ifdef BRK_DEV
+		const auto& allocInfo = resManager.GetAllocTracker().GetInfo();
+		BRK_LOG_TRACE(
+			"Resource Manager is using {} bytes ({} allocs)",
+			allocInfo.m_TotalSize,
+			allocInfo.m_NumAllocs);
+#endif
 
 		InitSystems(entry);
 		RegisterComponents(entry);

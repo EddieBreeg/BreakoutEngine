@@ -61,9 +61,12 @@ namespace brk {
 	}
 
 	template <class R, class W>
-	inline ResourceTypeInfo::ResourceTypeInfo(InPlaceType<R, W>, const StringView name)
+	inline ResourceTypeInfo::ResourceTypeInfo(
+		InPlaceType<R, W>,
+		const StringView name,
+		std::pmr::memory_resource* upstream)
 		: m_TypeName{ name }
-		, m_Pool{ InPlace<TypedMemoryPool<R>>, 100 }
+		, m_Pool{ InPlace<TypedMemoryPool<R>>, 100, upstream }
 	{
 		m_Constructor = [](PolymorphicMemoryPool& pool, const ULID& id) -> Resource*
 		{
@@ -88,12 +91,18 @@ namespace brk {
 	}
 
 	template <class Res, class Widget>
-	inline ResourceTypeInfo& ResourceTypeInfo::InitFor(const StringView name)
+	inline ResourceTypeInfo& ResourceTypeInfo::InitFor(
+		const StringView name,
+		std::pmr::memory_resource* upstream)
 	{
 		if (Impl<Res>::s_Info)
 			return *Impl<Res>::s_Info;
 
-		Impl<Res>::s_Info.reset(new ResourceTypeInfo{ InPlace<Res, Widget>, name });
+		Impl<Res>::s_Info.reset(new ResourceTypeInfo{
+			InPlace<Res, Widget>,
+			name,
+			upstream,
+		});
 		return *Impl<Res>::s_Info;
 	}
 

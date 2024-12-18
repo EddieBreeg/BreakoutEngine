@@ -154,7 +154,10 @@ namespace brk {
 		void DestroyResource(Resource*);
 
 		template <class Res, class Widget>
-		static ResourceTypeInfo& InitFor(const StringView name);
+		static ResourceTypeInfo& InitFor(
+			const StringView name,
+			std::pmr::memory_resource* upstreamAllocator =
+				std::pmr::new_delete_resource());
 		template <class Res>
 		static void ResetFor();
 
@@ -163,7 +166,10 @@ namespace brk {
 
 	private:
 		template <class R, class W>
-		ResourceTypeInfo(InPlaceType<R, W>, const StringView name);
+		ResourceTypeInfo(
+			InPlaceType<R, W>,
+			const StringView name,
+			std::pmr::memory_resource* allocator);
 
 		template <class R>
 		struct Impl

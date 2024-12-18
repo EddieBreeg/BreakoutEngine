@@ -4,6 +4,10 @@
 
 struct ImGuiContext;
 
+namespace brk {
+	class ResourceManager;
+}
+
 namespace brk::ecs {
 	class Manager;
 }
@@ -58,7 +62,7 @@ namespace brk {
 		void InitSystems(const EntryPoint& entryPoint);
 		void InitManagers();
 		void RegisterComponents(const EntryPoint& entryPoint);
-		void RegisterResources(const EntryPoint& entryPoint);
+		void RegisterResources(const EntryPoint& entryPoint, ResourceManager& resManager);
 		bool Update();
 
 		void Cleanup();

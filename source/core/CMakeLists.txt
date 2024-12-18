@@ -1,6 +1,7 @@
 file(GLOB CORE_HEADERS *.hpp)
 
 add_library(BRK_CORE ${BRK_LIBTYPE}
+	AllocTracker.cpp
 	Assert.cpp
 	DebugBreak.cpp
 	IO.cpp

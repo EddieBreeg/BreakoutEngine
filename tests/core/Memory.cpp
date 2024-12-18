@@ -1,49 +1,27 @@
+#include <core/AllocTracker.hpp>
 #include <core/MemoryPool.hpp>
 
 namespace brk::memory::ut {
-	struct MemoryProvider : public std::pmr::memory_resource
-	{
-		MemoryProvider() = default;
-		size_t m_TotalSize = 0;
-
-	protected:
-		bool do_is_equal(const std::pmr::memory_resource&) const noexcept override
-		{
-			return false;
-		}
-
-		void* do_allocate(size_t n, size_t) override
-		{
-			m_TotalSize += n;
-			return new byte[n];
-		}
-
-		void do_deallocate(void* ptr, size_t n, size_t) override
-		{
-			m_TotalSize -= n;
-			delete[] ptr;
-		}
-	};
-
 	void PolyPoolTests();
 
 	void PoolTests()
 	{
 		using TPool = MemoryPool<8, 4>;
 		using TBlock = TPool::Block;
-		MemoryProvider upstream;
+		AllocTracker upstream;
 
 		{
 			TPool pool{ 10, &upstream };
-			assert(upstream.m_TotalSize > 0);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 		}
-		assert(upstream.m_TotalSize == 0);
+		assert(upstream.GetInfo().m_NumAllocs == 0);
+		assert(upstream.GetInfo().m_TotalSize == 0);
+
 		{
 			TPool pool{ 10, &upstream };
-			auto total = upstream.m_TotalSize;
 			void* start1 = pool.Allocate(2);
 			assert(start1);
-			assert(total == upstream.m_TotalSize);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			pool.Deallocate(start1, 1);
 			void* ptr = pool.Allocate(1);
@@ -54,7 +32,6 @@ namespace brk::memory::ut {
 		TBlock *start1 = nullptr, *start2 = nullptr;
 		{
 			TPool pool{ 1, &upstream };
-			auto total = upstream.m_TotalSize;
 
 			start1 = static_cast<TBlock*>(pool.Allocate(1));
 			assert(start1);
@@ -62,21 +39,20 @@ namespace brk::memory::ut {
 			start2 = static_cast<TBlock*>(pool.Allocate(10));
 			assert(start2);
 
-			assert(upstream.m_TotalSize > total);
-			total = upstream.m_TotalSize;
+			assert(upstream.GetInfo().m_NumAllocs == 2);
 
 			pool.Clear();
 			assert(pool.Allocate(1) == start2);
-			assert(upstream.m_TotalSize == total);
+			assert(upstream.GetInfo().m_NumAllocs == 2);
 
 			assert(pool.Allocate(9) == (start2 + 1));
 			assert(pool.Allocate(1) == start1);
-			assert(upstream.m_TotalSize == total);
+			assert(upstream.GetInfo().m_NumAllocs == 2);
 
 			temp = std::move(pool);
 		}
 
-		assert(upstream.m_TotalSize);
+		assert(upstream.GetInfo().m_NumAllocs == 2);
 		temp.Clear();
 		assert(temp.Allocate(10) == start2);
 		assert(temp.Allocate(1) == start1);
@@ -87,7 +63,7 @@ namespace brk::memory::ut {
 
 	void PolyPoolTests()
 	{
-		MemoryProvider upstream;
+		AllocTracker upstream;
 		using TPool = MemoryPool<8, 8>;
 		{
 			const PolymorphicMemoryPool pool;
@@ -96,18 +72,18 @@ namespace brk::memory::ut {
 		{
 			PolymorphicMemoryPool pool{ InPlace<TPool>, 0, &upstream };
 			assert(pool.IsValid());
-			assert(upstream.m_TotalSize == 0);
+			assert(upstream.GetInfo().m_NumAllocs == 0);
 		}
 		{
 			PolymorphicMemoryPool pool{ InPlace<TPool>, 10, &upstream };
 			assert(pool.IsValid());
-			assert(upstream.m_TotalSize > 0);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			pool.Clear();
-			assert(upstream.m_TotalSize > 0);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			pool.Reset();
-			assert(upstream.m_TotalSize == 0);
+			assert(upstream.GetInfo().m_TotalSize == 0);
 		}
 		{
 			PolymorphicMemoryPool p1{ InPlace<TPool>, 0, &upstream };
@@ -117,27 +93,26 @@ namespace brk::memory::ut {
 		}
 		{
 			PolymorphicMemoryPool p1{ InPlace<TPool>, 1, &upstream };
-			const auto size = upstream.m_TotalSize;
-			assert(size);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			PolymorphicMemoryPool p2;
 			p2 = std::move(p1);
 			assert(!p1.IsValid());
 			assert(p2.IsValid());
-			assert(upstream.m_TotalSize == size);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 		}
-		assert(!upstream.m_TotalSize);
+		assert(upstream.GetInfo().m_TotalSize == 0);
+		assert(upstream.GetInfo().m_NumAllocs == 0);
 		{
 			TPool pool{ 1, &upstream };
 			PolymorphicMemoryPool poly{ std::move(pool) };
 			assert(poly.IsValid());
 			pool.Reset();
-			const auto size = upstream.m_TotalSize;
-			assert(size);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			void* ptr = poly.Allocate(1);
 			assert(ptr);
-			assert(upstream.m_TotalSize == size);
+			assert(upstream.GetInfo().m_NumAllocs == 1);
 
 			poly.Deallocate(ptr, 1);
 		}

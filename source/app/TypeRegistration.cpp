@@ -29,9 +29,8 @@ void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 		entryPoint.RegisterGameComponents(registry);
 }
 
-void brk::App::RegisterResources(const EntryPoint& entryPoint)
+void brk::App::RegisterResources(const EntryPoint& entryPoint, ResourceManager& manager)
 {
-	auto& manager = ResourceManager::GetInstance();
 	manager.RegisterResourceType<rdr::Material, rdr::MaterialWidget>("material");
 	manager.RegisterResourceType<rdr::MaterialInstance, rdr::MaterialInstanceWidget>(
 		"materialInstance");

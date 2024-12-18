@@ -13,6 +13,20 @@ brk::ResourceManager::~ResourceManager()
 	{
 		resource->MarkForDeletion();
 	}
+
+	for (auto&& [hash, info] : m_TypeMap)
+	{
+		info->m_Pool.Reset();
+	}
+#ifdef BRK_DEV
+	const auto& allocInfo = m_AllocTracker.GetInfo();
+	if (allocInfo.m_TotalSize)
+	{
+		BRK_LOG_WARNING(
+			"Resource manager is still using {} bytes on exit, check for leaks!",
+			allocInfo.m_TotalSize);
+	}
+#endif
 }
 
 #ifdef BRK_EDITOR
