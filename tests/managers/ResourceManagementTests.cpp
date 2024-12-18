@@ -23,8 +23,7 @@ namespace brk::resource_ref::ut {
 		void ResetRefCount() { m_RefCount = 0; }
 
 		static constexpr StringView Name = "Res1";
-		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res1>(Name);
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		bool DoLoad()
 		{
@@ -38,8 +37,7 @@ namespace brk::resource_ref::ut {
 			: Resource(id)
 		{}
 		static constexpr StringView Name = "Res2";
-		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res2>(Name);
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		int32 m_Value = 0;
 	};
@@ -56,12 +54,20 @@ namespace brk::resource_ref::ut {
 			if (m_Count)
 				--*m_Count;
 		}
-		static inline const auto Info = ResourceTypeInfo::Create<Res3>("res3");
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
+		static constexpr StringView Name = "res3";
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		uint32* m_Count = nullptr;
 	};
 } // namespace brk::resource_ref::ut
+
+namespace brk {
+	RES_INFO_IMPL_NO_ATTR(resource_ref::ut::Res1);
+	RES_INFO_IMPL_NO_ATTR(resource_ref::ut::Res2);
+	RES_INFO_IMPL_NO_ATTR(resource_ref::ut::Res3);
+} // namespace brk
+
 template <>
 struct brk::JsonLoader<brk::resource_ref::ut::Res2>
 {
@@ -92,6 +98,9 @@ namespace brk::resource_ref::ut {
 		{
 			ResourceLoader::Init();
 			LogManager::GetInstance().m_Level = LogManager::Trace;
+			m_Manager.RegisterResourceType<Res1>(Res1::Name);
+			m_Manager.RegisterResourceType<Res2>(Res2::Name);
+			m_Manager.RegisterResourceType<Res3>(Res3::Name);
 		}
 		~RAIIHelper()
 		{
@@ -108,7 +117,6 @@ namespace brk::resource_ref::ut {
 #ifdef BRK_DEV
 		{
 			RAIIHelper helper;
-			helper.m_Manager.RegisterResourceType<Res1>();
 			const std::vector<nlohmann::json> desc{
 				{
 					{ "type", Res1::Name },
@@ -147,7 +155,6 @@ namespace brk::resource_ref::ut {
 		}
 		{
 			RAIIHelper helper;
-			helper.m_Manager.RegisterResourceType<Res2>();
 			const nlohmann::json desc = {
 				{
 					// should fail, we didn't specify value key

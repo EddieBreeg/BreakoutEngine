@@ -22,8 +22,8 @@ namespace brk {
 		 * resource at runtime.
 		 * \details R must meet the requirements of IsResourceType (see Resource.hpp)
 		 */
-		template <class R>
-		void RegisterResourceType();
+		template <class R, class Widget = void>
+		void RegisterResourceType(const StringView name);
 
 #ifdef BRK_EDITOR
 		/**

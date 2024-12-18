@@ -33,9 +33,6 @@ namespace {
 
 } // namespace
 
-const brk::ResourceTypeInfo brk::rdr::Texture2d::Info =
-	brk::ResourceTypeInfo::Create<rdr::Texture2d, rdr::Texture2dWidget>("texture2d");
-
 brk::rdr::Texture2d::Texture2d(const Texture2dSettings& settings, const void* data)
 	: Resource(ULID::Generate())
 	, m_Settings{ settings }

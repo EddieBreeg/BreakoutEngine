@@ -61,8 +61,7 @@ namespace brk::rdr {
 		bool DoLoad() noexcept override;
 		void DoUnload() noexcept override;
 
-		static const ResourceTypeInfo Info;
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		~Material() = default;
 
@@ -87,8 +86,7 @@ namespace brk::rdr {
 	class BRK_RENDERING_API MaterialInstance : public Resource
 	{
 	public:
-		static const ResourceTypeInfo Info;
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		MaterialInstance(const ULID& id, std::string name = {});
 		/**
@@ -240,6 +238,9 @@ namespace brk {
 		static bool Load(rdr::MaterialInstance& out_mat, const nlohmann::json& json);
 		static void Save(const rdr::MaterialInstance& mat, nlohmann::json& out_json);
 	};
+
+	RES_INFO_IMPL(rdr::Material, BRK_RENDERING_API);
+	RES_INFO_IMPL(rdr::MaterialInstance, BRK_RENDERING_API);
 } // namespace brk
 
 #include "Material.inl"

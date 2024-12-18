@@ -31,8 +31,7 @@ namespace brk::rdr {
 			, m_NumIndices{ N2 }
 		{}
 
-		static const ResourceTypeInfo Info;
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		[[nodiscard]] Buffer& GetVertexBuffer() noexcept { return m_VertexBuffer; }
 		[[nodiscard]] const Buffer& GetVertexBuffer() const noexcept
@@ -58,4 +57,17 @@ namespace brk::rdr {
 		Buffer m_VertexBuffer, m_IndexBuffer;
 		uint32 m_NumIndices = 0;
 	};
+
+	class BRK_RENDERING_API MeshWidget : public ResourceUiWidget
+	{
+	public:
+		MeshWidget() = default;
+		void Init(const Resource& res) override;
+		bool CreationUi() override;
+		bool EditionUi(const Resource& res, bool& out_shouldReload) override;
+	};
 } // namespace brk::rdr
+
+namespace brk {
+	RES_INFO_IMPL(rdr::Mesh, BRK_RENDERING_API);
+}

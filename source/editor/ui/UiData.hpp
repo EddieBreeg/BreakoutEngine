@@ -58,7 +58,7 @@ namespace brk::editor::ui {
 
 		struct
 		{
-			ResourceTypeInfo m_Info = {};
+			const ResourceTypeInfo* m_Info = {};
 			Resource* m_Resource = nullptr;
 			bool m_ReloadRequested = false;
 			bool m_SaveRequested = false;
@@ -77,7 +77,7 @@ namespace brk::editor::ui {
 
 		struct
 		{
-			ResourceTypeInfo m_Info = {};
+			const ResourceTypeInfo* m_Info = {};
 			std::unique_ptr<Resource, ResourceDeleter> m_Resource;
 		} m_ResourceCreationData;
 

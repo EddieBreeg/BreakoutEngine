@@ -16,12 +16,15 @@ namespace brk::project_loading::ut {
 		uint32 Value = 0;
 		static constexpr StringView Name = "Res1";
 
-		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res1>(Name);
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		static constexpr meta::FieldList<&Res1::Value> Fields = { "value" };
 	};
 } // namespace brk::project_loading::ut
+
+namespace brk {
+	RES_INFO_IMPL_NO_ATTR(project_loading::ut::Res1);
+}
 
 namespace brk::project_loading::ut {
 	struct RAIIHelper
@@ -39,7 +42,7 @@ namespace brk::project_loading::ut {
 				  argc,
 				  argv) }
 		{
-			m_ResManager.RegisterResourceType<Res1>();
+			m_ResManager.RegisterResourceType<Res1>(Res1::Name);
 		}
 
 		ResourceLoader& m_ResLoader;

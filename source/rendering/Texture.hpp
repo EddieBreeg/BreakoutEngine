@@ -78,8 +78,7 @@ namespace brk::rdr {
 	class BRK_RENDERING_API Texture2d : public Resource
 	{
 	public:
-		static const ResourceTypeInfo Info;
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		using Resource::Resource;
 		/**
@@ -126,7 +125,7 @@ namespace brk::rdr {
 		Texture2dSettings m_Settings = {};
 	};
 
-	class Texture2dWidget : public ResourceUiWidget
+	class BRK_RENDERING_API Texture2dWidget : public ResourceUiWidget
 	{
 	public:
 		Texture2dWidget() = default;
@@ -146,3 +145,7 @@ struct BRK_RENDERING_API brk::JsonLoader<brk::rdr::Texture2d>
 	static bool Load(rdr::Texture2d& out_tex, const nlohmann::json& json);
 	static void Save(const rdr::Texture2d& tex, nlohmann::json& out_json);
 };
+
+namespace brk {
+	RES_INFO_IMPL(rdr::Texture2d, BRK_RENDERING_API);
+}

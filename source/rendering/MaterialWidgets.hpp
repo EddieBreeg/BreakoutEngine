@@ -12,6 +12,8 @@ namespace {
 }
 
 namespace brk::rdr {
+	class Material;
+
 	class MaterialWidget : public ResourceUiWidget
 	{
 	public:
@@ -147,14 +149,24 @@ namespace brk::rdr {
 		int32 stackId = 1;
 		if (ImGui::CollapsingHeader("Base Material"))
 		{
-			ResourceSelector("Materials", m_MatId, Material::Info, false, stackId);
+			ResourceSelector(
+				"Materials",
+				m_MatId,
+				ResourceTypeInfo::GetFor<Material>(),
+				false,
+				stackId);
 		}
 		char headerLabel[] = "Texture 0";
 		for (auto&& [id, index] : Enumerate(m_TexIds))
 		{
 			if (ImGui::CollapsingHeader(headerLabel))
 			{
-				ResourceSelector("Textures", id, Texture2d::Info, true, stackId);
+				ResourceSelector(
+					"Textures",
+					id,
+					ResourceTypeInfo::GetFor<Texture2d>(),
+					true,
+					stackId);
 			}
 			headerLabel[8]++;
 		}

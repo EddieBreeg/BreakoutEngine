@@ -16,8 +16,7 @@ namespace brk::scene_loading::ut {
 	struct Res : public Resource
 	{
 		using Resource::Resource;
-		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res>("res");
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 	};
 
 	class RAIIHelper
@@ -30,8 +29,10 @@ namespace brk::scene_loading::ut {
 			, m_ECSManager{ ecs::Manager::Init() }
 			, m_World{ m_ECSManager.GetWorld() }
 			, m_ResManager{ ResourceManager::Init(m_World) }
-			, m_Resource{ m_ResManager.AddResource<Res>(s_ResId1) }
-		{}
+		{
+			m_ResManager.RegisterResourceType<Res>("res");
+			m_Resource = &m_ResManager.AddResource<Res>(s_ResId1);
+		}
 
 		~RAIIHelper()
 		{
@@ -48,7 +49,7 @@ namespace brk::scene_loading::ut {
 		ecs::Manager& m_ECSManager;
 		entt::registry& m_World;
 		ResourceManager& m_ResManager;
-		Res& m_Resource;
+		Res* m_Resource;
 	};
 
 	struct C1
@@ -123,3 +124,7 @@ namespace brk::scene_loading::ut {
 		Test00();
 	}
 } // namespace brk::scene_loading::ut
+
+namespace brk {
+	RES_INFO_IMPL_NO_ATTR(scene_loading::ut::Res);
+}

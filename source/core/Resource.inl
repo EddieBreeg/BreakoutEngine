@@ -1,3 +1,4 @@
+#include "ResourceFwd.hpp"
 namespace brk {
 	inline bool Resource::DoLoad()
 	{
@@ -59,36 +60,59 @@ namespace brk {
 		return false;
 	}
 
-	template <class R, class Widget>
-	inline ResourceTypeInfo ResourceTypeInfo::Create(StringView name)
+	template <class R, class W>
+	inline ResourceTypeInfo::ResourceTypeInfo(InPlaceType<R, W>, const StringView name)
+		: m_TypeName{ name }
+		, m_Pool{ new TypedMemoryPool<R>{ 100 } }
 	{
 		using TPool = TypedMemoryPool<R>;
-		ResourceTypeInfo info{
-			name,
-			new TypedMemoryPool<R>{ 100 },
-			[](std::pmr::memory_resource& pool, const ULID& id) -> Resource*
-			{
-				void* ptr = static_cast<TPool&>(pool).Allocate(1);
-				return new (ptr) R{ id };
-			},
-		};
-#ifdef BRK_EDITOR
-		if constexpr (!std::is_void_v<Widget>)
+		m_Constructor = [](std::pmr::memory_resource& pool, const ULID& id) -> Resource*
 		{
-			info.m_Widget = new Widget{};
+			void* ptr = static_cast<TPool&>(pool).Allocate(1);
+			return new (ptr) R{ id };
+		};
+		if constexpr (!std::is_void_v<W>)
+		{
+			m_Widget = new W{};
 		}
-#endif
 		if constexpr (meta::IsComplete<JsonLoader<R>>)
 		{
-			info.m_Load = [](Resource& res, const nlohmann::json& json)
+			m_Load = [](Resource& res, const nlohmann::json& json)
 			{
 				return JsonLoader<R>::Load(static_cast<R&>(res), json);
 			};
-			info.m_Save = [](const Resource& res, nlohmann::json& json)
+			m_Save = [](const Resource& res, nlohmann::json& json)
 			{
 				JsonLoader<R>::Save(static_cast<const R&>(res), json);
 			};
 		}
-		return info;
+	}
+
+	template <class R>
+	inline ResourceTypeInfo::ResourceTypeInfo(InPlaceType<R>, const StringView name)
+		: ResourceTypeInfo(InPlace<R, void>, name)
+	{}
+
+	template <class Res, class Widget>
+	inline ResourceTypeInfo& ResourceTypeInfo::InitFor(const StringView name)
+	{
+		if (Impl<Res>::s_Info)
+			return *Impl<Res>::s_Info;
+
+		Impl<Res>::s_Info.reset(new ResourceTypeInfo{ InPlace<Res, Widget>, name });
+		return *Impl<Res>::s_Info;
+	}
+
+	template <class Res>
+	inline void ResourceTypeInfo::ResetFor()
+	{
+		Impl<Res>::s_Info.reset();
+	}
+
+	template <class R>
+	inline ResourceTypeInfo& ResourceTypeInfo::GetFor()
+	{
+		BRK_ASSERT(Impl<R>::s_Info, "Accessed unitialized resource type info");
+		return *Impl<R>::s_Info;
 	}
 } // namespace brk

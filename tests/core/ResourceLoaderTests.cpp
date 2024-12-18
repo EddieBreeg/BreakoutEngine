@@ -2,17 +2,6 @@
 #include <core/Resource.hpp>
 
 namespace brk::resource_loader::ut {
-	struct RAIIHelper
-	{
-		RAIIHelper()
-			: m_Loader{ ResourceLoader::Init() }
-		{}
-
-		~RAIIHelper() { ResourceLoader::Reset(); }
-
-		ResourceLoader& m_Loader;
-	};
-
 	struct Res : public Resource
 	{
 		Res(const ULID id)
@@ -24,8 +13,8 @@ namespace brk::resource_loader::ut {
 		{
 			m_State = state;
 		}
-		static inline const ResourceTypeInfo Info = ResourceTypeInfo::Create<Res>("res");
-		const ResourceTypeInfo& GetTypeInfo() const noexcept override { return Info; }
+
+		const ResourceTypeInfo& GetTypeInfo() const noexcept override;
 
 		bool DoLoad() override
 		{
@@ -36,6 +25,23 @@ namespace brk::resource_loader::ut {
 		void SetLoadState(Resource::EStateFlags state) { m_State = state; }
 
 		uint32 m_LoadCount = 0;
+	};
+
+	struct RAIIHelper
+	{
+		RAIIHelper()
+			: m_Loader{ ResourceLoader::Init() }
+		{
+			ResourceTypeInfo::InitFor<Res, void>("res");
+		}
+
+		~RAIIHelper()
+		{
+			ResourceLoader::Reset();
+			ResourceTypeInfo::ResetFor<Res>();
+		}
+
+		ResourceLoader& m_Loader;
 	};
 
 	void Tests()
@@ -89,3 +95,7 @@ namespace brk::resource_loader::ut {
 		}
 	}
 } // namespace brk::resource_loader::ut
+
+namespace brk {
+	RES_INFO_IMPL_NO_ATTR(resource_loader::ut::Res);
+}

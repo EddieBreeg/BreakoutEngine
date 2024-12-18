@@ -11,18 +11,19 @@ namespace {
 	static constexpr const char* s_DefaultResName = "Unnamed";
 
 	const brk::ResourceTypeInfo* ResourceTypeDropDown(
-		const brk::ResourceTypeInfo& current,
+		const brk::ResourceTypeInfo* current,
 		const brk::TResourceTypeMap& types)
 	{
-		const char* typeName =
-			current.m_TypeName.GetLen() ? current.m_TypeName.GetPtr() : "[none]";
+		const char* typeName = current ? current->m_TypeName.GetPtr() : "[none]";
 		if (!ImGui::BeginCombo("Resource Type", typeName))
 			return nullptr;
+
 		for (const auto& [hash, info] : types)
 		{
 			if (!info->m_Widget)
 				continue;
-			const bool isCurrent = info->m_Constructor == current.m_Constructor;
+
+			const bool isCurrent = info == current;
 			bool selected = isCurrent;
 			if (!ImGui::Selectable(info->m_TypeName.GetPtr(), &selected))
 				continue;
@@ -59,9 +60,9 @@ void brk::editor::ui::UiData::ResourceExplorer(const ResourceManager& resourceMa
 		if (selected && ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left))
 		{
 			m_ResourceEditorData.m_Resource = res;
-			m_ResourceEditorData.m_Info = res->GetTypeInfo();
-			if (m_ResourceEditorData.m_Info.m_Widget)
-				m_ResourceEditorData.m_Info.m_Widget->Init(*res);
+			m_ResourceEditorData.m_Info = &res->GetTypeInfo();
+			if (m_ResourceEditorData.m_Info->m_Widget)
+				m_ResourceEditorData.m_Info->m_Widget->Init(*res);
 		}
 		ImGui::SameLine();
 		ImGui::TextUnformatted(idStr, idStr + sizeof(idStr));
@@ -91,25 +92,25 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 	const auto* info = ResourceTypeDropDown(data.m_Info, resourceManager.GetTypeMap());
 	if (info)
 	{
-		data.m_Info = *info;
+		data.m_Info = info;
 		data.m_Resource.reset();
 	}
 
-	if (!data.m_Info.m_Constructor)
+	if (!data.m_Info)
 		goto RES_CREATION_END;
 
 	if (!data.m_Resource)
 	{
-		data.m_Resource.reset(data.m_Info.NewResource(ULID::Generate()));
-		data.m_Info.m_Widget->Init(*data.m_Resource);
+		data.m_Resource.reset(data.m_Info->NewResource(ULID::Generate()));
+		data.m_Info->m_Widget->Init(*data.m_Resource);
 	}
 
-	const bool ready = data.m_Info.m_Widget->CreationUi();
+	const bool ready = data.m_Info->m_Widget->CreationUi();
 
 	ImGui::BeginDisabled(!ready);
 	if (m_AddResourceRequested = ImGui::Button("Create"))
 	{
-		data.m_Info.m_Widget->Commit(*data.m_Resource);
+		data.m_Info->m_Widget->Commit(*data.m_Resource);
 	}
 	ImGui::EndDisabled();
 
@@ -138,8 +139,8 @@ void brk::editor::ui::UiData::ResourceEditor()
 
 	ImGui::Text(
 		"Type: %.*s",
-		m_ResourceEditorData.m_Info.m_TypeName.GetLen(),
-		m_ResourceEditorData.m_Info.m_TypeName.GetPtr());
+		m_ResourceEditorData.m_Info->m_TypeName.GetLen(),
+		m_ResourceEditorData.m_Info->m_TypeName.GetPtr());
 	ImGui::SameLine();
 
 	const bool disabled = resource->GetSavingDisabled();
@@ -184,26 +185,26 @@ void brk::editor::ui::UiData::ResourceEditor()
 		ImGui::EndPopup();
 	}
 
-	if (!m_ResourceEditorData.m_Info.m_Widget)
+	if (!m_ResourceEditorData.m_Info->m_Widget)
 		goto RES_EDITOR_END;
 
 	bool shouldReload = false;
 	ImGui::BeginDisabled(disabled);
 	const bool ready =
-		m_ResourceEditorData.m_Info.m_Widget->EditionUi(*resource, shouldReload);
+		m_ResourceEditorData.m_Info->m_Widget->EditionUi(*resource, shouldReload);
 	ImGui::EndDisabled();
 
 	ImGui::BeginDisabled(!ready);
 	if (ImGui::Button("Apply"))
 	{
-		m_ResourceEditorData.m_Info.m_Widget->Commit(*resource);
+		m_ResourceEditorData.m_Info->m_Widget->Commit(*resource);
 		m_ResourceEditorData.m_ReloadRequested = shouldReload;
 		m_ResourceEditorData.m_SaveRequested = !resource->GetSavingDisabled();
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Cancel"))
 	{
-		m_ResourceEditorData.m_Info.m_Widget->Init(*resource);
+		m_ResourceEditorData.m_Info->m_Widget->Init(*resource);
 	}
 	ImGui::EndDisabled();
 

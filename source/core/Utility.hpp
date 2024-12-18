@@ -89,4 +89,11 @@ namespace brk {
 		return static_cast<std::underlying_type_t<E>>(val);
 	}
 
+	template <class...>
+	struct InPlaceType
+	{};
+
+	template <class... T>
+	static constexpr InPlaceType<T...> InPlace = {};
+
 } // namespace brk

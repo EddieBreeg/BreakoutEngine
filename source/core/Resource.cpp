@@ -3,6 +3,7 @@
 #include "LogManager.hpp"
 #include "ResourceFormatter.hpp"
 #include <fstream>
+#include "ResourceFwd.hpp"
 
 brk::Resource::Resource(const ULID id)
 	: m_Id{ id }
@@ -80,6 +81,12 @@ brk::DynamicArrayStream brk::Resource::LoadFileContents()
 void brk::ResourceDeleter::operator()(Resource* ptr) const
 {
 	ptr->MarkForDeletion();
+}
+
+brk::ResourceTypeInfo::~ResourceTypeInfo()
+{
+	delete m_Widget;
+	delete m_Pool;
 }
 
 brk::Resource* brk::ResourceTypeInfo::NewResource(const ULID& id) const

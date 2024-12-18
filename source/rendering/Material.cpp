@@ -23,13 +23,6 @@ namespace {
 } // namespace
 
 namespace brk::rdr {
-	const ResourceTypeInfo Material::Info =
-		ResourceTypeInfo::Create<Material, MaterialWidget>("material");
-
-	const ResourceTypeInfo MaterialInstance::Info =
-		ResourceTypeInfo::Create<MaterialInstance, MaterialInstanceWidget>(
-			"materialInstance");
-
 	Material::Material(const ULID& id)
 		: Resource(id)
 		, m_VertexShader{ nullptr }

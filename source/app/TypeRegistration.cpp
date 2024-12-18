@@ -3,12 +3,15 @@
 #include <ecs/ComponentRegistry.hpp>
 
 #include <core/Loaders.hpp>
+#include <core/Resource.hpp>
 
 #include <managers/ResourceManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <rendering/Material.hpp>
+#include <rendering/MaterialWidgets.hpp>
+#include <rendering/Mesh.hpp>
 #include <rendering/Texture.hpp>
 
 #include <systems/TransformComponent.hpp>
@@ -29,9 +32,11 @@ void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 void brk::App::RegisterResources(const EntryPoint& entryPoint)
 {
 	auto& manager = ResourceManager::GetInstance();
-	manager.RegisterResourceType<rdr::Material>();
-	manager.RegisterResourceType<rdr::MaterialInstance>();
-	manager.RegisterResourceType<rdr::Texture2d>();
+	manager.RegisterResourceType<rdr::Material, rdr::MaterialWidget>("material");
+	manager.RegisterResourceType<rdr::MaterialInstance, rdr::MaterialInstanceWidget>(
+		"materialInstance");
+	manager.RegisterResourceType<rdr::Texture2d, rdr::Texture2dWidget>("texture2d");
+	manager.RegisterResourceType<rdr::Mesh, rdr::MeshWidget>("mesh");
 	if (entryPoint.RegisterGameResources)
 		entryPoint.RegisterGameResources(manager);
 }
