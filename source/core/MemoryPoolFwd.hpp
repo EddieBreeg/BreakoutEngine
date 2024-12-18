@@ -13,7 +13,7 @@ namespace brk {
 	 * geometrically.
 	 */
 	template <uint32 BlockSize, uint32 Alignment = alignof(std::max_align_t)>
-	class MemoryPool : public std::pmr::memory_resource
+	class MemoryPool
 	{
 	public:
 		static_assert(
@@ -100,11 +100,6 @@ namespace brk {
 	private:
 		std::pmr::memory_resource* m_Upstream = std::pmr::new_delete_resource();
 		Header* m_Head = nullptr;
-
-	protected:
-		void* do_allocate(size_t size, size_t alignment) override;
-		void do_deallocate(void* ptr, size_t size, size_t alignment) override;
-		bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override;
 	};
 
 	/**
@@ -114,9 +109,13 @@ namespace brk {
 	using TypedMemoryPool = MemoryPool<sizeof(T), alignof(T)>;
 
 	/**
-	 * Opaque memory pool, using type erasure
+	 * Opaque memory pool, using type erasure.
+	 * This class implements the standard std::pmr::memory_resource interface,
+	 * and thus inherits the allocate/deallocate functions.
+	 * \warning Don't use allocate/deallocate in non-polymorphic contexts!
+	 * Allocate/Deallocate should be preferred.
 	 */
-	class BRK_CORE_API PolymorphicMemoryPool
+	class BRK_CORE_API PolymorphicMemoryPool : public std::pmr::memory_resource
 	{
 	public:
 		PolymorphicMemoryPool() noexcept = default;
@@ -184,10 +183,15 @@ namespace brk {
 		 */
 		void Reset();
 
+	protected:
+		void* do_allocate(size_t size, size_t alignment) override;
+		void do_deallocate(void* ptr, size_t size, size_t alignment) override;
+		bool do_is_equal(const std::pmr::memory_resource& other) const noexcept override;
+
 	private:
 		struct
 		{
-			void* m_Buf[3] = { nullptr };
+			void* m_Buf[2] = { nullptr };
 		} m_Storage;
 		uint32 m_BlockSize = 0, m_Alignment = 0;
 		void* (*m_Allocate)(void* pool, uint32 n) = nullptr;

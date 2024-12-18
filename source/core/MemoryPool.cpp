@@ -60,3 +60,26 @@ void brk::PolymorphicMemoryPool::Reset()
 
 	m_Clear(m_Storage.m_Buf, true);
 }
+
+void* brk::PolymorphicMemoryPool::do_allocate(size_t size, size_t alignment)
+{
+	BRK_ASSERT(m_Allocate, "Called do_allocate on invalid pool");
+	BRK_ASSERT(
+		m_Alignment >= alignment,
+		"Alignment {} is too big: pool alignment is {}",
+		alignment,
+		m_Alignment);
+	return m_Allocate(m_Storage.m_Buf, (size - 1) / m_BlockSize + 1);
+}
+
+void brk::PolymorphicMemoryPool::do_deallocate(void* ptr, size_t size, size_t)
+{
+	BRK_ASSERT(m_Deallocate, "Called do_deallocate on invalid pool");
+	m_Deallocate(m_Storage.m_Buf, ptr, (size - 1) / m_BlockSize + 1);
+}
+
+bool brk::PolymorphicMemoryPool::do_is_equal(
+	const std::pmr::memory_resource& other) const noexcept
+{
+	return &other == this;
+}

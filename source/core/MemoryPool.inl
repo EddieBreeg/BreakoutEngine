@@ -1,4 +1,3 @@
-#include "MemoryPoolFwd.hpp"
 namespace brk {
 	template <uint32 B, uint32 A>
 	struct MemoryPool<B, A>::Header
@@ -140,28 +139,6 @@ namespace brk {
 		const uint32 size = sizeof(Header) + BlockSize * (chunk->m_Cap - 1) + bitsetSize;
 		m_Upstream->deallocate(chunk, size, alignof(Header));
 		return next;
-	}
-
-	template <uint32 BlockSize, uint32 Alignment>
-	inline void* MemoryPool<BlockSize, Alignment>::do_allocate(size_t size, size_t)
-	{
-		return Allocate(uint32((size - 1) / BlockSize) + 1);
-	}
-
-	template <uint32 BlockSize, uint32 Alignment>
-	inline void MemoryPool<BlockSize, Alignment>::do_deallocate(
-		void* ptr,
-		size_t size,
-		size_t alignment)
-	{
-		return Deallocate(ptr, uint32((size - 1) / BlockSize) + 1);
-	}
-
-	template <uint32 BlockSize, uint32 Alignment>
-	inline bool MemoryPool<BlockSize, Alignment>::do_is_equal(
-		const std::pmr::memory_resource& other) const noexcept
-	{
-		return &other == this;
 	}
 
 	template <uint32 BlockSize, uint32 Alignment>
