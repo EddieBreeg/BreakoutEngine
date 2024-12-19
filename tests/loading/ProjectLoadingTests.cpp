@@ -57,6 +57,7 @@ namespace brk::project_loading::ut {
 			m_ECSManager.Reset();
 			m_SceneManager.Reset();
 			m_ResManager.Reset();
+			ResourceTypeInfo::ResetFor<Res1>();
 			ResourceLoader::Reset();
 			ImGui::DestroyContext();
 		}

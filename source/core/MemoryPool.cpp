@@ -142,7 +142,11 @@ void* brk::MemoryPool::Allocate(uint32 n)
 			return ptr;
 	}
 
-	Header* newHeader = AllocateNewChunk(n, true);
+	uint32 allocSize = GrowSize(m_Head->m_Cap);
+	if (allocSize < n)
+		allocSize = n;
+
+	Header* newHeader = AllocateNewChunk(allocSize, true);
 	newHeader->m_Next = m_Head;
 	m_Head = newHeader;
 	return newHeader->GetChunkStart();
@@ -160,6 +164,16 @@ void brk::MemoryPool::Deallocate(void* ptr, uint32 n)
 	}
 	BRK_LOG_CRITICAL("Failed to deallocate: {} doesn't belong to this pool", ptr);
 	dbg::Break();
+}
+
+void* brk::MemoryPool::do_allocate(size_t n, size_t)
+{
+	return Allocate((n - 1) / m_BlockSize + 1);
+}
+
+void brk::MemoryPool::do_deallocate(void* ptr, size_t n, size_t)
+{
+	Deallocate(ptr, (n - 1) / m_BlockSize + 1);
 }
 
 brk::MemoryPool::Header* brk::MemoryPool::AllocateNewChunk(

@@ -105,6 +105,9 @@ namespace brk::resource_ref::ut {
 		~RAIIHelper()
 		{
 			m_Manager.Reset();
+			ResourceTypeInfo::ResetFor<Res1>();
+			ResourceTypeInfo::ResetFor<Res2>();
+			ResourceTypeInfo::ResetFor<Res3>();
 			ResourceLoader::Reset();
 		}
 
