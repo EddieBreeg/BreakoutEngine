@@ -16,7 +16,7 @@ brk::ResourceManager::~ResourceManager()
 
 	for (auto&& [hash, info] : m_TypeMap)
 	{
-		info->m_Pool.Reset();
+		info->m_Pool = MemoryPool{ 1 };
 	}
 #ifdef BRK_DEV
 	const auto& allocInfo = m_AllocTracker.GetInfo();

@@ -15,6 +15,8 @@ namespace brk::editor::ui {
 
 namespace std::pmr {
 	class memory_resource;
+
+	memory_resource* new_delete_resource() noexcept;
 }
 
 namespace brk {

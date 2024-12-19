@@ -4,6 +4,8 @@
 #include "DebugBreak.hpp"
 #include "LogManager.hpp"
 
+#include <memory_resource>
+
 #define PADDING(n, align) (((align) - ((n) % (align))) % (align))
 
 struct brk::MemoryPool::Header
@@ -142,7 +144,11 @@ void* brk::MemoryPool::Allocate(uint32 n)
 			return ptr;
 	}
 
-	Header* newHeader = AllocateNewChunk(n, true);
+	uint32 allocSize = GrowSize(m_Head->m_Cap);
+	if (allocSize < n)
+		allocSize = n;
+
+	Header* newHeader = AllocateNewChunk(allocSize, true);
 	newHeader->m_Next = m_Head;
 	m_Head = newHeader;
 	return newHeader->GetChunkStart();

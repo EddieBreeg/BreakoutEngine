@@ -40,6 +40,7 @@ namespace brk::scene_loading::ut {
 			m_Registry.Reset();
 			m_SceneManager.Reset();
 			m_ResManager.Reset();
+			ResourceTypeInfo::ResetFor<Res>();
 			ResourceLoader::Reset();
 		}
 

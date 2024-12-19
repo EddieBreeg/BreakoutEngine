@@ -1,5 +1,6 @@
 #include <core/ResourceLoader.hpp>
 #include <core/Resource.hpp>
+#include <memory_resource>
 
 namespace brk::resource_loader::ut {
 	struct Res : public Resource
