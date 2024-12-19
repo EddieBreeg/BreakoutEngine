@@ -2,23 +2,23 @@
 #include <core/MemoryPool.hpp>
 
 namespace brk::memory::ut {
-	void PolyPoolTests();
-
 	void PoolTests()
 	{
-		using TPool = MemoryPool<8, 4>;
-		using TBlock = TPool::Block;
+		struct Block
+		{
+			byte m_Buf[8];
+		};
 		AllocTracker upstream;
 
 		{
-			TPool pool{ 10, &upstream };
+			MemoryPool pool{ sizeof(Block), 10, upstream };
 			assert(upstream.GetInfo().m_NumAllocs == 1);
 		}
 		assert(upstream.GetInfo().m_NumAllocs == 0);
 		assert(upstream.GetInfo().m_TotalSize == 0);
 
 		{
-			TPool pool{ 10, &upstream };
+			MemoryPool pool{ sizeof(Block), 10, upstream };
 			void* start1 = pool.Allocate(2);
 			assert(start1);
 			assert(upstream.GetInfo().m_NumAllocs == 1);
@@ -28,15 +28,15 @@ namespace brk::memory::ut {
 			assert(ptr == start1);
 		}
 
-		TPool temp;
-		TBlock *start1 = nullptr, *start2 = nullptr;
+		MemoryPool temp{ sizeof(Block) };
+		Block *start1 = nullptr, *start2 = nullptr;
 		{
-			TPool pool{ 1, &upstream };
+			MemoryPool pool{ sizeof(Block), 1, upstream };
 
-			start1 = static_cast<TBlock*>(pool.Allocate(1));
+			start1 = static_cast<Block*>(pool.Allocate(1));
 			assert(start1);
 
-			start2 = static_cast<TBlock*>(pool.Allocate(10));
+			start2 = static_cast<Block*>(pool.Allocate(10));
 			assert(start2);
 
 			assert(upstream.GetInfo().m_NumAllocs == 2);
@@ -56,7 +56,7 @@ namespace brk::memory::ut {
 		temp.Clear();
 		assert(temp.Allocate(10) == start2);
 		assert(temp.Allocate(1) == start1);
-		assert(temp.GetUpstream() == upstream);
+		assert(temp.GetUpstream() == &upstream);
 		temp.Reset();
 		assert(upstream.GetInfo().m_NumAllocs == 0);
 
@@ -64,64 +64,5 @@ namespace brk::memory::ut {
 		assert(upstream.GetInfo().m_NumAllocs == 1);
 		temp.Allocate(1);
 		assert(upstream.GetInfo().m_NumAllocs == 2);
-
-		PolyPoolTests();
-	}
-
-	void PolyPoolTests()
-	{
-		AllocTracker upstream;
-		using TPool = MemoryPool<8, 8>;
-		{
-			const PolymorphicMemoryPool pool;
-			assert(!pool.IsValid());
-		}
-		{
-			PolymorphicMemoryPool pool{ InPlace<TPool>, 0, &upstream };
-			assert(pool.IsValid());
-			assert(upstream.GetInfo().m_NumAllocs == 0);
-		}
-		{
-			PolymorphicMemoryPool pool{ InPlace<TPool>, 10, &upstream };
-			assert(pool.IsValid());
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-
-			pool.Clear();
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-
-			pool.Reset();
-			assert(upstream.GetInfo().m_TotalSize == 0);
-		}
-		{
-			PolymorphicMemoryPool p1{ InPlace<TPool>, 0, &upstream };
-			PolymorphicMemoryPool p2{ std::move(p1) };
-			assert(!p1.IsValid());
-			assert(p2.IsValid());
-		}
-		{
-			PolymorphicMemoryPool p1{ InPlace<TPool>, 1, &upstream };
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-
-			PolymorphicMemoryPool p2;
-			p2 = std::move(p1);
-			assert(!p1.IsValid());
-			assert(p2.IsValid());
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-		}
-		assert(upstream.GetInfo().m_TotalSize == 0);
-		assert(upstream.GetInfo().m_NumAllocs == 0);
-		{
-			TPool pool{ 1, &upstream };
-			PolymorphicMemoryPool poly{ std::move(pool) };
-			assert(poly.IsValid());
-			pool.Reset();
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-
-			void* ptr = poly.Allocate(1);
-			assert(ptr);
-			assert(upstream.GetInfo().m_NumAllocs == 1);
-
-			poly.Deallocate(ptr, 1);
-		}
 	}
 } // namespace brk::memory::ut

@@ -142,8 +142,8 @@ namespace brk {
 		~ResourceTypeInfo();
 
 		StringView m_TypeName;
-		PolymorphicMemoryPool m_Pool;
-		Resource* (*m_Constructor)(PolymorphicMemoryPool&, const ULID&) = nullptr;
+		MemoryPool m_Pool;
+		Resource* (*m_Constructor)(MemoryPool&, const ULID&) = nullptr;
 #ifdef BRK_EDITOR
 		ResourceUiWidget* m_Widget = nullptr;
 #endif

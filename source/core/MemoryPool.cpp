@@ -1,85 +1,196 @@
-#include "MemoryPoolFwd.hpp"
+#include "MemoryPool.hpp"
 #include "Assert.hpp"
+#include "Bitset.hpp"
+#include "DebugBreak.hpp"
+#include "LogManager.hpp"
 
-brk::PolymorphicMemoryPool::PolymorphicMemoryPool(PolymorphicMemoryPool&& other)
-	: m_Storage{ other.m_Storage }
+#define PADDING(n, align) (((align) - ((n) % (align))) % (align))
+
+struct brk::MemoryPool::Header
+{
+	uint32 m_Cap = 0;
+	uint32 m_Used = 0;
+	Header* m_Next = nullptr;
+
+	static constexpr uint32 GetAllocOffset() noexcept
+	{
+		return sizeof(Header) + PADDING(sizeof(Header), alignof(std::max_align_t));
+	}
+
+	static uint32 CalculateAllocSize(uint32 numBlocks, uint32 blockSize) noexcept
+	{
+		const uint32 bitsetSize = (numBlocks - 1) / 8 + 1;
+		return GetAllocOffset() + (numBlocks * blockSize) + bitsetSize;
+	}
+
+	byte* GetChunkStart() noexcept
+	{
+		return reinterpret_cast<byte*>(this) + GetAllocOffset();
+	}
+
+	BitsetView GetBitset(uint32 blockSize)
+	{
+		return BitsetView{ GetChunkStart() + m_Cap * blockSize, m_Cap };
+	}
+
+	void* TryAllocate(uint32 n, uint32 blockSize)
+	{
+		BitsetView bitset = GetBitset(blockSize);
+		const uint32 index = bitset.Find(false, n);
+		if (index >= m_Cap)
+			return nullptr;
+
+		bitset.Set(index, n);
+		m_Used += n;
+		return GetChunkStart() + index * blockSize;
+	}
+
+	bool TryDeallocate(uint32 index, uint32 n, uint32 blockSize)
+	{
+		if ((index + n) > m_Cap)
+			return false;
+
+		BRK_ASSERT(
+			n <= m_Used,
+			"Tried to deallocate {} blocks, but chunk is only using {}",
+			n,
+			m_Used);
+		GetBitset(blockSize).Clear(index, n);
+		m_Used -= n;
+		return true;
+	}
+};
+
+#undef PADDING
+
+namespace {
+	uint32 GrowSize(uint32 size)
+	{
+		return (3 * size - 1) / 2 + 1;
+	}
+} // namespace
+
+brk::MemoryPool::MemoryPool(uint32 blockSize) noexcept
+	: MemoryPool(blockSize, 0, *std::pmr::new_delete_resource())
+{}
+
+brk::MemoryPool::MemoryPool(uint32 blockSize, uint32 initBlockCount)
+	: MemoryPool(blockSize, initBlockCount, *std::pmr::new_delete_resource())
+{}
+
+brk::MemoryPool::MemoryPool(
+	uint32 blockSize,
+	uint32 initBlockCount,
+	std::pmr::memory_resource& upstreamResource)
+	: m_Upstream{ &upstreamResource }
+	, m_BlockSize{ blockSize }
+{
+	BRK_ASSERT(blockSize, "Block size must be non 0");
+	if (initBlockCount)
+		m_Head = AllocateNewChunk(initBlockCount);
+}
+
+brk::MemoryPool::MemoryPool(MemoryPool&& other) noexcept
+	: m_Upstream{ other.m_Upstream }
+	, m_Head{ other.m_Head }
 	, m_BlockSize{ other.m_BlockSize }
-	, m_Alignment{ other.m_Alignment }
-	, m_Allocate{ other.m_Allocate }
-	, m_Deallocate{ other.m_Deallocate }
-	, m_Clear{ other.m_Clear }
 {
-	other.m_BlockSize = 0;
-	other.m_Alignment = 0;
-	other.m_Allocate = nullptr;
-	other.m_Deallocate = nullptr;
-	other.m_Clear = nullptr;
+	other.m_Head = nullptr;
 }
 
-brk::PolymorphicMemoryPool& brk::PolymorphicMemoryPool::operator=(
-	PolymorphicMemoryPool&& other)
-{
-	std::swap(m_Storage, other.m_Storage);
-	std::swap(m_BlockSize, other.m_BlockSize);
-	std::swap(m_Alignment, other.m_Alignment);
-	std::swap(m_Allocate, other.m_Allocate);
-	std::swap(m_Deallocate, other.m_Deallocate);
-	std::swap(m_Clear, other.m_Clear);
-	return *this;
-}
-
-brk::PolymorphicMemoryPool::~PolymorphicMemoryPool()
+brk::MemoryPool::~MemoryPool()
 {
 	Reset();
 }
 
-void* brk::PolymorphicMemoryPool::Allocate(uint32 n)
+brk::MemoryPool& brk::MemoryPool::operator=(MemoryPool&& other) noexcept
 {
-	BRK_ASSERT(m_Allocate, "Called Allocate on an invalid pool");
-	return m_Allocate(m_Storage.m_Buf, n);
+	std::swap(m_Upstream, other.m_Upstream);
+	std::swap(m_Head, other.m_Head);
+	std::swap(m_BlockSize, other.m_BlockSize);
+	return *this;
 }
 
-void brk::PolymorphicMemoryPool::Deallocate(void* ptr, uint32 n)
+void brk::MemoryPool::Reset()
 {
-	BRK_ASSERT(m_Deallocate, "Called Deallocate on an invalid pool");
-	return m_Deallocate(m_Storage.m_Buf, ptr, n);
+	while (m_Head)
+	{
+		m_Head = DeallocateChunk(m_Head);
+	}
 }
 
-void brk::PolymorphicMemoryPool::Clear()
+void brk::MemoryPool::Clear()
 {
-	if (!m_Clear)
-		return;
-
-	m_Clear(m_Storage.m_Buf, false);
+	for (Header* chunk = m_Head; chunk; chunk = chunk->m_Next)
+	{
+		chunk->m_Used = 0;
+		chunk->GetBitset(m_BlockSize).ClearAll();
+	}
 }
 
-void brk::PolymorphicMemoryPool::Reset()
+void* brk::MemoryPool::Allocate(uint32 n)
 {
-	if (!m_Clear)
-		return;
+	if (!m_Head)
+	{
+		m_Head = AllocateNewChunk(n, true);
+		return m_Head->GetChunkStart();
+	}
 
-	m_Clear(m_Storage.m_Buf, true);
+	for (Header* it = m_Head; it; it = it->m_Next)
+	{
+		if (void* ptr = it->TryAllocate(n, m_BlockSize))
+			return ptr;
+	}
+
+	Header* newHeader = AllocateNewChunk(n, true);
+	newHeader->m_Next = m_Head;
+	m_Head = newHeader;
+	return newHeader->GetChunkStart();
 }
 
-void* brk::PolymorphicMemoryPool::do_allocate(size_t size, size_t alignment)
+void brk::MemoryPool::Deallocate(void* ptr, uint32 n)
 {
-	BRK_ASSERT(m_Allocate, "Called do_allocate on invalid pool");
-	BRK_ASSERT(
-		m_Alignment >= alignment,
-		"Alignment {} is too big: pool alignment is {}",
-		alignment,
-		m_Alignment);
-	return m_Allocate(m_Storage.m_Buf, (size - 1) / m_BlockSize + 1);
+	for (Header* it = m_Head; it; it = it->m_Next)
+	{
+		const uint32 index =
+			(static_cast<byte*>(ptr) - it->GetChunkStart()) / m_BlockSize;
+
+		if (it->TryDeallocate(index, n, m_BlockSize))
+			return;
+	}
+	BRK_LOG_CRITICAL("Failed to deallocate: {} doesn't belong to this pool", ptr);
+	dbg::Break();
 }
 
-void brk::PolymorphicMemoryPool::do_deallocate(void* ptr, size_t size, size_t)
+brk::MemoryPool::Header* brk::MemoryPool::AllocateNewChunk(
+	uint32 capacity,
+	bool allocateBlocks)
 {
-	BRK_ASSERT(m_Deallocate, "Called do_deallocate on invalid pool");
-	m_Deallocate(m_Storage.m_Buf, ptr, (size - 1) / m_BlockSize + 1);
+	void* ptr = m_Upstream->allocate(
+		Header::CalculateAllocSize(capacity, m_BlockSize),
+		alignof(Header));
+	Header* chunk = new (ptr) Header{ capacity };
+	BitsetView bitset = chunk->GetBitset(m_BlockSize);
+
+	if (allocateBlocks)
+	{
+		bitset.SetAll();
+		chunk->m_Used = capacity;
+	}
+	else
+	{
+		bitset.ClearAll();
+	}
+
+	return chunk;
 }
 
-bool brk::PolymorphicMemoryPool::do_is_equal(
-	const std::pmr::memory_resource& other) const noexcept
+brk::MemoryPool::Header* brk::MemoryPool::DeallocateChunk(Header* chunk)
 {
-	return &other == this;
+	Header* next = chunk->m_Next;
+	m_Upstream->deallocate(
+		chunk,
+		Header::CalculateAllocSize(chunk->m_Cap, m_BlockSize),
+		alignof(Header));
+	return next;
 }

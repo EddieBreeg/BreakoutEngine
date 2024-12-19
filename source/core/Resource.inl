@@ -66,9 +66,9 @@ namespace brk {
 		const StringView name,
 		std::pmr::memory_resource* upstream)
 		: m_TypeName{ name }
-		, m_Pool{ InPlace<TypedMemoryPool<R>>, 100, upstream }
+		, m_Pool{ sizeof(R), 100, *upstream }
 	{
-		m_Constructor = [](PolymorphicMemoryPool& pool, const ULID& id) -> Resource*
+		m_Constructor = [](MemoryPool& pool, const ULID& id) -> Resource*
 		{
 			void* ptr = pool.Allocate(1);
 			return new (ptr) R{ id };
