@@ -94,7 +94,8 @@ namespace brk::resource_ref::ut {
 	{
 	public:
 		RAIIHelper()
-			: m_Manager{ ResourceManager::Init(m_EntityWorld) }
+			: m_EntityWorld{ TrackerAllocator<entt::entity>{ m_AllocTracker } }
+			, m_Manager{ ResourceManager::Init(m_EntityWorld) }
 		{
 			ResourceLoader::Init();
 			LogManager::GetInstance().m_Level = LogManager::Trace;
@@ -111,7 +112,8 @@ namespace brk::resource_ref::ut {
 			ResourceLoader::Reset();
 		}
 
-		entt::registry m_EntityWorld;
+		AllocTracker m_AllocTracker;
+		ecs::EntityWorld m_EntityWorld;
 		ResourceManager& m_Manager;
 	};
 

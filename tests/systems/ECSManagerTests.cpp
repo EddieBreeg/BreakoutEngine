@@ -27,7 +27,7 @@ namespace brk::ecs::ut::manager {
 		~RAIIHelper() { ecs::Manager::Reset(); }
 
 		ecs::Manager& m_Manager;
-		entt::registry& m_EntityWorld;
+		ecs::EntityWorld& m_EntityWorld;
 		TimeInfo m_Time;
 	};
 

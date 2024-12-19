@@ -48,7 +48,7 @@ namespace brk::scene_loading::ut {
 		SceneManager& m_SceneManager;
 		ecs::ComponentRegistry& m_Registry;
 		ecs::Manager& m_ECSManager;
-		entt::registry& m_World;
+		ecs::EntityWorld& m_World;
 		ResourceManager& m_ResManager;
 		Res* m_Resource;
 	};

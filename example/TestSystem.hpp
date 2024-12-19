@@ -24,7 +24,7 @@ namespace brk::sandbox {
 	public:
 		using World = ecs::WorldView<MeshComponent>;
 
-		TestSystem(ResourceManager& resourceManager, entt::registry& entityWorld);
+		TestSystem(ResourceManager& resourceManager, ecs::EntityWorld& entityWorld);
 		void Update(World&, const TimeInfo&);
 
 		~TestSystem();

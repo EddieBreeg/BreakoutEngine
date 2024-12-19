@@ -10,15 +10,21 @@ namespace brk::loading::ut {
 		int x = 0, y = 1;
 		static constexpr meta::FieldList<&C1::x, &C1::y> Fields{ "x", "y" };
 		static constexpr StringView Name = "C1";
-		static const inline ecs::ComponentInfo Info = ecs::ComponentInfo::Create<C1>("C1");
+		static const inline ecs::ComponentInfo Info =
+			ecs::ComponentInfo::Create<C1>("C1");
 	};
 
 	const nlohmann::json s_C1Json{ { "x", 1 }, { "y", 2 } };
 
 	struct RAIIHelper
 	{
+		RAIIHelper()
+			: m_Registry{ ecs::ComponentRegistry::Init() }
+			, m_World{ TrackerAllocator<entt::entity>{ m_AllocTracker } }
+		{}
 		ecs::ComponentRegistry& m_Registry = ecs::ComponentRegistry::Init();
-		entt::registry m_World;
+		AllocTracker m_AllocTracker;
+		ecs::EntityWorld m_World;
 
 		~RAIIHelper() { ecs::ComponentRegistry::Reset(); }
 	};

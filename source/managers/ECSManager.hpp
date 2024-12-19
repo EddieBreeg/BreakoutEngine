@@ -2,7 +2,6 @@
 
 #include <PCH.hpp>
 
-#include <core/AllocTracker.hpp>
 #include <core/Singleton.hpp>
 #include <core/TypeId.hpp>
 
@@ -33,6 +32,9 @@ namespace brk::ecs {
 		void Update(const TimeInfo& timeInfo);
 		[[nodiscard]] EntityWorld& GetWorld() noexcept { return m_EntityWorld; }
 
+		/**
+		 * Terminates all ECS systems, clears the entity world.
+		 */
 		void Clear();
 
 		~Manager();
@@ -45,6 +47,9 @@ namespace brk::ecs {
 		template <class T>
 		static inline uint32 s_SysIndex = -1;
 
+#ifdef BRK_DEV
+		AllocTracker m_AllocTracker;
+#endif
 		EntityWorld m_EntityWorld;
 		std::vector<SystemInstance> m_Systems;
 	};

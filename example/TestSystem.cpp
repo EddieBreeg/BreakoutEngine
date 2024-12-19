@@ -19,7 +19,7 @@ namespace {
 
 brk::sandbox::TestSystem::TestSystem(
 	ResourceManager& resManager,
-	entt::registry& entityWorld)
+	ecs::EntityWorld& entityWorld)
 {}
 
 brk::sandbox::TestSystem::~TestSystem() = default;
