@@ -16,7 +16,7 @@ namespace brk::ecs {
 	public:
 		using Access = meta::TypeList<Components...>;
 
-		WorldView(entt::registry& world);
+		WorldView(EntityWorld& world);
 		WorldView(const WorldView&) = delete;
 		WorldView(WorldView&&) = default;
 
@@ -44,7 +44,7 @@ namespace brk::ecs {
 			std::enable_if_t<(HasAccess<I> && ...)>> : std::true_type
 		{};
 
-		entt::registry& m_EntityWorld;
+		EntityWorld& m_EntityWorld;
 	};
 
 	namespace _internal {

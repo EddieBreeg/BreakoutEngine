@@ -2,7 +2,7 @@
 #include <managers/SceneManager.hpp>
 
 void brk::editor::ui::UiData::Display(
-	entt::registry& world,
+	ecs::EntityWorld& world,
 	ResourceManager& resourceManager,
 	SceneManager& sceneManager)
 {

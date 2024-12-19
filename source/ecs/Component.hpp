@@ -33,7 +33,7 @@ namespace brk::ecs {
 		ComponentInfo info{
 			name,
 			[](const nlohmann::json& json,
-			   entt::registry& world,
+			   EntityWorld& world,
 			   const entt::entity entity) -> void*
 			{
 				C comp{};
@@ -51,7 +51,7 @@ namespace brk::ecs {
 					const auto& comp = *static_cast<const C*>(ptr);
 					return new ComponentUiWidget<C>{ comp };
 				},
-				[](void* ptr, entt::registry& world, entt::entity entity)
+				[](void* ptr, EntityWorld& world, entt::entity entity)
 				{
 					auto& widget = *static_cast<ComponentUiWidget<C>*>(ptr);
 					return widget(world.get<C>(entity));

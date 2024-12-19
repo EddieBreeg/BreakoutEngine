@@ -7,6 +7,7 @@
 #include <editor/Editor.hpp>
 #include <imgui.h>
 #endif
+#include <entt/entity/registry.hpp>
 #include <rendering/Renderer.hpp>
 
 namespace brk {

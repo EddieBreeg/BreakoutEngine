@@ -1,5 +1,6 @@
 #include "TestSystem.hpp"
 #include <core/TimeInfo.hpp>
+#include <entt/entity/registry.hpp>
 #include <managers/ResourceManager.hpp>
 #include <math/Constants.hpp>
 #include <rendering/Material.hpp>

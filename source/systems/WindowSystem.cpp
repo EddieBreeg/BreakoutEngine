@@ -3,6 +3,7 @@
 #include <app/App.hpp>
 
 #include <core/Assert.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <imgui/DebugOverlay.hpp>
 #include <imgui/DevUiContext.hpp>
@@ -10,7 +11,6 @@
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
 #endif
-
 #include <rendering/Renderer.hpp>
 
 #include "private/ImGuiIncludes.hpp"

@@ -4,7 +4,7 @@
 #include <core/Loaders.hpp>
 #include <core/ResourceRef.hpp>
 #include <core/Singleton.hpp>
-#include <entt/entity/fwd.hpp>
+#include <ecs/WorldFwd.hpp>
 
 #include <shared_mutex>
 #include <unordered_map>
@@ -94,7 +94,7 @@ namespace brk {
 
 		friend struct RetainTraits<Resource>;
 
-		ResourceManager(entt::registry& world) noexcept;
+		ResourceManager(ecs::EntityWorld& world) noexcept;
 
 		TULIDMap<Resource*> m_Resources;
 
@@ -102,7 +102,7 @@ namespace brk {
 #ifdef BRK_DEV
 		AllocTracker m_AllocTracker;
 #endif
-		entt::registry& m_World;
+		ecs::EntityWorld& m_World;
 		std::shared_mutex m_Mutex;
 	};
 

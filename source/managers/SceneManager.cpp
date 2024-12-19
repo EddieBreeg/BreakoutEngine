@@ -13,7 +13,9 @@
 #include <nlohmann/json.hpp>
 
 namespace {
-	brk::ecs::GameObject LoadGameObject(const nlohmann::json& json, entt::registry& world)
+	brk::ecs::GameObject LoadGameObject(
+		const nlohmann::json& json,
+		brk::ecs::EntityWorld& world)
 	{
 		brk::ecs::GameObject object;
 
@@ -120,7 +122,7 @@ void brk::SceneManager::LoadScene(const ULID id)
 	if (!Visit("objects", json, objects))
 		return;
 
-	entt::registry& world = ecs::Manager::GetInstance().GetWorld();
+	ecs::EntityWorld& world = ecs::Manager::GetInstance().GetWorld();
 	uint32 nObjects = 0;
 	for (const nlohmann::json& objectDesc : objects)
 	{

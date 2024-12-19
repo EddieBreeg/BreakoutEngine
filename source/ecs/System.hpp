@@ -18,7 +18,7 @@ namespace brk::ecs {
 		/**
 		 * Updates the underlying system
 		 */
-		void Update(entt::registry& world, const TimeInfo& timeInfo);
+		void Update(EntityWorld& world, const TimeInfo& timeInfo);
 
 		/**
 		 * Creates an instance for the provided system type.
@@ -36,7 +36,7 @@ namespace brk::ecs {
 		SystemInstance() = default;
 
 		void* m_SystemPtr = nullptr;
-		void (*m_Update)(void* ptr, entt::registry&, const TimeInfo&) = nullptr;
+		void (*m_Update)(void* ptr, EntityWorld&, const TimeInfo&) = nullptr;
 		void (*m_Terminate)(void* ptr) = nullptr;
 	};
 

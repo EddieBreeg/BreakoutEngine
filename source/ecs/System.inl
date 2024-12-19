@@ -7,7 +7,7 @@ namespace brk::ecs
 
 		System* ptr = new System{ std::forward<Args>(args)... };
 		r.m_SystemPtr = ptr;
-		r.m_Update = [](void* ptr, entt::registry& world, const TimeInfo& timeInfo)
+		r.m_Update = [](void* ptr, EntityWorld& world, const TimeInfo& timeInfo)
 		{
 			static_assert(
 				IsWorldView<typename System::World>,

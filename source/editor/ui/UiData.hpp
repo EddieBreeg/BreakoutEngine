@@ -5,7 +5,7 @@
 #ifdef BRK_EDITOR
 #include <core/ResourceFwd.hpp>
 #include <core/ULID.hpp>
-#include <entt/entity/fwd.hpp>
+#include <ecs/WorldFwd.hpp>
 #include <imgui.h>
 
 namespace brk {
@@ -20,7 +20,7 @@ namespace brk::editor::ui {
 	struct BRK_EDITOR_API UiData
 	{
 		void Display(
-			entt::registry& world,
+			ecs::EntityWorld& world,
 			ResourceManager& resourceManager,
 			SceneManager& sceneManager);
 
@@ -30,7 +30,7 @@ namespace brk::editor::ui {
 		bool SceneCreation();
 
 		bool Outliner(SceneManager& sceneManager);
-		bool Inspector(entt::registry& entityWorld, SceneManager& sceneManager);
+		bool Inspector(ecs::EntityWorld& entityWorld, SceneManager& sceneManager);
 
 		void ResourceExplorer(const ResourceManager& resourceManager);
 		Resource* ResourceCreationWindow(ResourceManager& resourceManager);

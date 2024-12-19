@@ -115,6 +115,6 @@ void brk::ResourceManager::DeleteResource(Resource* res)
 	m_Resources.erase(res->GetId());
 }
 
-brk::ResourceManager::ResourceManager(entt::registry& world) noexcept
+brk::ResourceManager::ResourceManager(ecs::EntityWorld& world) noexcept
 	: m_World{ world }
 {}

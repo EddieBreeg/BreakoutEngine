@@ -1,6 +1,7 @@
 #include <PCH.hpp>
+#include "WorldFwd.hpp"
+
 #include <core/MetaLists.hpp>
-#include <entt/entity/registry.hpp>
 
 namespace brk::ecs {
 	template <class...>
@@ -53,13 +54,13 @@ namespace brk::ecs {
 	template <class... Include, class... Exclude>
 	class QueryWorld<QuerySpec<meta::TypeList<Include...>, meta::TypeList<Exclude...>>>
 	{
-		using TNativeView = decltype(std::declval<entt::registry>().view<Include...>(
+		using TNativeView = decltype(std::declval<EntityWorld>().view<Include...>(
 			entt::exclude_t<Exclude...>{}));
 
 		template <class...>
 		friend class WorldView;
 
-		QueryWorld(entt::registry& world);
+		QueryWorld(EntityWorld& world);
 		QueryWorld(const QueryWorld&) = delete;
 
 	public:

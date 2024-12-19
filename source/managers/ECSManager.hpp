@@ -2,10 +2,12 @@
 
 #include <PCH.hpp>
 
+#include <core/AllocTracker.hpp>
 #include <core/Singleton.hpp>
 #include <core/TypeId.hpp>
 
 #include <ecs/System.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <vector>
 
@@ -29,7 +31,7 @@ namespace brk::ecs {
 		 * Updates all systems
 		 */
 		void Update(const TimeInfo& timeInfo);
-		[[nodiscard]] entt::registry& GetWorld() noexcept { return m_EntityWorld; }
+		[[nodiscard]] EntityWorld& GetWorld() noexcept { return m_EntityWorld; }
 
 		void Clear();
 
@@ -43,7 +45,7 @@ namespace brk::ecs {
 		template <class T>
 		static inline uint32 s_SysIndex = -1;
 
-		entt::registry m_EntityWorld;
+		EntityWorld m_EntityWorld;
 		std::vector<SystemInstance> m_Systems;
 	};
 } // namespace brk::ecs

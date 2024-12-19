@@ -1,6 +1,7 @@
 #pragma once
 
 #include <PCH.hpp>
+#include "WorldFwd.hpp"
 #include <core/StringView.hpp>
 #include <core/Function.hpp>
 #include <entt/fwd.hpp>
@@ -20,13 +21,13 @@ namespace brk::ecs {
 		/**
 		 * This is called when loading a component from a scene file in the editor
 		 */
-		void* (*m_LoadJson)(const nlohmann::json&, entt::registry&, entt::entity) =
+		void* (*m_LoadJson)(const nlohmann::json&, EntityWorld&, entt::entity) =
 			nullptr;
 
 		struct WidgetInfo
 		{
 			void* (*m_Create)(const void*) = nullptr;
-			bool (*m_Display)(void*, entt::registry&, entt::entity) = nullptr;
+			bool (*m_Display)(void*, EntityWorld&, entt::entity) = nullptr;
 		} m_WidgetInfo;
 
 		template <class C>

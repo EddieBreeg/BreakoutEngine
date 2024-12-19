@@ -1,6 +1,6 @@
 namespace brk::ecs {
 	template <class... Components>
-	inline WorldView<Components...>::WorldView(entt::registry& world)
+	inline WorldView<Components...>::WorldView(EntityWorld& world)
 		: m_EntityWorld{ world }
 	{}
 

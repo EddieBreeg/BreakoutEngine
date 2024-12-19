@@ -1,16 +1,16 @@
 #include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <core/ULIDFormatter.hpp>
+#include <ecs/World.hpp>
 #include <imgui.h>
 #include <imgui/MiscWidgets.hpp>
 #include <imgui_macros.hpp>
 #include <imgui_stdlib.h>
 #include <imgui/GameObjectInfoComponent.hpp>
 #include <managers/SceneManager.hpp>
-#include <entt/entity/registry.hpp>
 
 bool brk::editor::ui::UiData::Inspector(
-	entt::registry& entityWorld,
+	ecs::EntityWorld& entityWorld,
 	SceneManager& sceneManager)
 {
 	ImGui::Begin("Inspector");

@@ -11,7 +11,7 @@ brk::ecs::SystemInstance::SystemInstance(SystemInstance&& other)
 	other.m_Terminate = nullptr;
 }
 
-void brk::ecs::SystemInstance::Update(entt::registry& world, const TimeInfo& timeInfo)
+void brk::ecs::SystemInstance::Update(EntityWorld& world, const TimeInfo& timeInfo)
 {
 	BRK_ASSERT(m_Update, "Tried to call Update on an invalid system instance");
 	m_Update(m_SystemPtr, world, timeInfo);
