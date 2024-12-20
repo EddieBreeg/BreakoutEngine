@@ -4,11 +4,12 @@
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
 #include <core/StringViewFormatter.hpp>
-#include <core/ULIDFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include "ECSManager.hpp"
 
 #ifdef BRK_DEV
+#include <core/ULIDFormatter.hpp>
+#include <fmt/format.h>
 #include <fstream>
 #include <nlohmann/json.hpp>
 
@@ -131,6 +132,7 @@ void brk::SceneManager::LoadScene(const ULID id)
 		++nObjects;
 	}
 	BRK_LOG_TRACE("Loaded {} game objects from scene file", nObjects);
+	m_CurrentSceneId = id;
 #endif
 }
 
@@ -144,4 +146,24 @@ brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id)
 {
 	const auto it = m_Objects.find(id);
 	return it == m_Objects.end() ? nullptr : &it->second;
+}
+
+brk::ecs::GameObject& brk::SceneManager::CreateObject()
+{
+	BRK_ASSERT(
+		m_CurrentSceneId,
+		"Tried to create object but no scene is currently loaded");
+	ecs::GameObject object{
+		ULID::Generate(),
+		fmt::format("Game Object {}", m_Objects.size()),
+	};
+	return m_Objects.emplace(object.m_Id, std::move(object)).first->second;
+}
+
+void brk::SceneManager::DeleteObject(const ULID id)
+{
+	DEBUG_CHECK(m_Objects.erase(id))
+	{
+		BRK_LOG_WARNING("Tried to delete non-existent game object {}", id);
+	}
 }

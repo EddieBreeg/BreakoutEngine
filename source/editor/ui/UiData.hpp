@@ -50,6 +50,13 @@ namespace brk::editor::ui {
 
 		const char* m_FilePath = nullptr;
 
+		struct {
+			ULID m_SelectedObjectId;
+			bool m_CreateObjectRequested = false;
+			bool m_ShowObjectDeleteWarning = false;
+			bool m_DeleteObjectRequested = false;
+		} m_InspectorData;
+
 		struct
 		{
 			ImGuiTextFilter m_ResourceNameFilter;
@@ -82,7 +89,6 @@ namespace brk::editor::ui {
 		} m_ResourceCreationData;
 
 		ULID m_SceneId;
-		ULID m_SelectedObjectId;
 	};
 
 } // namespace brk::editor::ui

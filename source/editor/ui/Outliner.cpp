@@ -12,23 +12,28 @@ bool brk::editor::ui::UiData::Outliner(SceneManager& sceneManager)
 		return false;
 	}
 
+	m_InspectorData.m_CreateObjectRequested = ImGui::Button("Create Object");
+
 	if (!ImGui::BeginListBox("Objects"))
-		return false;
+		goto OUTLINER_END;
+
 	bool result = false;
 
 	for (const auto& [id, obj] : sceneManager.GetGameObjects())
 	{
-		const bool isSelected = obj.m_Id == m_SelectedObjectId;
+		const bool isSelected = obj.m_Id == m_InspectorData.m_SelectedObjectId;
 
 		if (ImGui::Selectable(obj.m_Name.c_str(), isSelected))
 		{
 			result |= !isSelected;
-			m_SelectedObjectId = obj.m_Id;
+			m_InspectorData.m_SelectedObjectId = obj.m_Id;
 		}
 		if (isSelected)
 			ImGui::SetItemDefaultFocus();
 	}
 	ImGui::EndListBox();
+
+OUTLINER_END:
 
 	ImGui::End();
 	return result;

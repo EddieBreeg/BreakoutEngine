@@ -38,6 +38,8 @@ namespace brk {
 		{
 			return m_Objects;
 		}
+		ecs::GameObject& CreateObject();
+		void DeleteObject(const ULID id);
 		[[nodiscard]] TULIDMap<ecs::GameObject>& GetGameObjects() { return m_Objects; }
 
 		[[nodiscard]] const TULIDMap<SceneDescription>& GetSceneDesriptions()

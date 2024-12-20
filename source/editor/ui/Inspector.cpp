@@ -15,21 +15,38 @@ bool brk::editor::ui::UiData::Inspector(
 {
 	ImGui::Begin("Inspector");
 
-	if (!m_SelectedObjectId)
+	if (!m_InspectorData.m_SelectedObjectId)
 	{
 		ImGui::Text("No object selected");
 		ImGui::End();
 		return false;
 	}
 
-	ecs::GameObject* object = sceneManager.GetObject(m_SelectedObjectId);
+	ecs::GameObject* object = sceneManager.GetObject(m_InspectorData.m_SelectedObjectId);
 	DEBUG_CHECK(object)
 	{
 		BRK_LOG_WARNING(
 			"Object {} is selected but does not exist in the scene manager",
-			m_SelectedObjectId);
+			m_InspectorData.m_SelectedObjectId);
+		m_InspectorData.m_SelectedObjectId = {};
 		ImGui::End();
 		return false;
+	}
+
+	if (m_InspectorData.m_ShowObjectDeleteWarning |= ImGui::Button("Delete"))
+	{
+		ImGui::OpenPopup("Delete Game Object?");
+	}
+
+	if (ImGui::BeginPopupModal(
+			"Delete Game Object?",
+			&m_InspectorData.m_ShowObjectDeleteWarning))
+	{
+		m_InspectorData.m_DeleteObjectRequested = ImGui::Button("Confirm");
+		ImGui::SameLine();
+		m_InspectorData.m_ShowObjectDeleteWarning =
+			!(m_InspectorData.m_DeleteObjectRequested || ImGui::Button("Cancel"));
+		ImGui::EndPopup();
 	}
 
 	if (ImGui::TreeNode("Object Info"))

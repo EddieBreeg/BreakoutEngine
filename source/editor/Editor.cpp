@@ -146,6 +146,20 @@ void brk::editor::Editor::Update()
 		m_UiData->m_ResourceEditorData.m_Resource = nullptr;
 		SaveProjectFile();
 	}
+
+	if (m_UiData->m_InspectorData.m_CreateObjectRequested)
+	{
+		ecs::GameObject& object = m_SceneManager.CreateObject();
+		m_UiData->m_InspectorData.m_SelectedObjectId = object.m_Id;
+		m_UiData->m_InspectorData.m_CreateObjectRequested = false;
+	}
+
+	if (m_UiData->m_InspectorData.m_DeleteObjectRequested)
+	{
+		m_UiData->m_InspectorData.m_DeleteObjectRequested = false;
+		m_SceneManager.DeleteObject(m_UiData->m_InspectorData.m_SelectedObjectId);
+		m_UiData->m_InspectorData.m_SelectedObjectId = {};
+	}
 }
 
 void brk::editor::Editor::LoadProject(const char* filePath)

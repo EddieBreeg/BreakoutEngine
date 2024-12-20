@@ -42,6 +42,11 @@ namespace brk::ecs {
 				C& res = world.emplace<C>(entity, std::move(comp));
 				return &res;
 			},
+			[](EntityWorld& world, const entt::entity entity) -> void*
+			{
+				C& res = world.emplace<C>(entity);
+				return &res;
+			},
 		};
 		if constexpr (_internal::HasComponentWidget<C>::value)
 		{
@@ -55,7 +60,7 @@ namespace brk::ecs {
 				{
 					auto& widget = *static_cast<ComponentUiWidget<C>*>(ptr);
 					return widget(world.get<C>(entity));
-				}
+				},
 			};
 		}
 		return info;
