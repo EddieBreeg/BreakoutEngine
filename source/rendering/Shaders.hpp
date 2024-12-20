@@ -35,7 +35,7 @@ cbuffer ObjectTransform: register(b2)
 Fragment vs_main(Vertex v)
 {
 	Fragment result;
-	result.Position = mul(mul(Model, float4(v.Position, 1)), ViewProjection);
+	result.Position = mul(ViewProjection, mul(Model, float4(v.Position, 1)));
 	result.Normal = v.Normal;
 	result.Uv = v.Uv;
 	return result;

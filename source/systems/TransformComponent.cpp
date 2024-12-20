@@ -38,8 +38,14 @@ const brk::ecs::ComponentInfo brk::TransformComponent::Info =
 
 float4x4 brk::TransformComponent::GetMatrix() const
 {
-	return glm::scale(
-		glm::translate(glm::identity<float4x4>(), m_Translate) *
-			glm::mat4_cast(m_Rotation),
-		m_Scale);
+	// clang-format off
+	float4x4 transform = glm::mat4_cast(m_Rotation) *  float4x4 {
+		m_Scale.x, 0, 0, 0, 
+		0, m_Scale.y, 0, 0,
+		0, 0, m_Scale.z, 0,
+		0, 0, 0, 1,
+	};
+	// clang-format on
+	transform[3] = float4{ m_Translate, 1.0f };
+	return transform;
 }

@@ -10,6 +10,7 @@
 #include <core/TypeTraits.hpp>
 #include <core/Unassigned.hpp>
 #include <core/Utility.hpp>
+#include <math/Constants.hpp>
 #include <math/Quaternion.hpp>
 #include <math/Vector.hpp>
 
