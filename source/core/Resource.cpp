@@ -96,6 +96,5 @@ brk::Resource* brk::ResourceTypeInfo::NewResource(const ULID& id)
 void brk::ResourceTypeInfo::DestroyResource(Resource* res)
 {
 	res->~Resource();
-	// the 1 will get rounded up to the actual resource's size
 	m_Pool.Deallocate(res, 1);
 }
