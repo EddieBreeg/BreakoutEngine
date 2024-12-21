@@ -5,8 +5,13 @@
 #ifdef BRK_EDITOR
 #include <core/ResourceFwd.hpp>
 #include <core/ULID.hpp>
+#include <ecs/GameObject.hpp>
 #include <ecs/WorldFwd.hpp>
 #include <imgui.h>
+
+namespace {
+	static const char* s_StrDeleteComponent = "Delete Component?";
+}
 
 namespace brk {
 	class Resource;
@@ -20,8 +25,7 @@ namespace brk::ecs {
 	class ComponentRegistry;
 
 	struct ComponentInfo;
-	struct GameObject;
-}
+} // namespace brk::ecs
 
 namespace brk::editor::ui {
 	struct BRK_EDITOR_API UiData
@@ -68,14 +72,24 @@ namespace brk::editor::ui {
 			bool m_Show = false;
 		};
 
+		struct ComponentDeletePopup
+		{
+			bool m_Show = false;
+			ecs::GameObject::Component* m_Component = nullptr;
+
+			bool Display();
+		};
+
 		struct
 		{
 			ecs::GameObject* m_SelectedObject = nullptr;
 			ComponentTypeSelector m_TypeSelector;
+			ComponentDeletePopup m_CompDeletePopup;
 			bool m_AddComponentRequested = false;
 			bool m_CreateObjectRequested = false;
-			bool m_ShowObjectDeleteWarning = false;
+			bool m_ShowDeleteWarning = false;
 			bool m_DeleteObjectRequested = false;
+			bool m_DeleteComponentRequested = false;
 		} m_InspectorData;
 
 		struct

@@ -13,6 +13,8 @@
 namespace {
 	using TComponentTypeMap = brk::ecs::ComponentRegistry::TMap;
 
+	static const char* s_StrDeleteObject = "Delete Object?";
+
 	bool DisplayComponentSelector(
 		brk::editor::ui::UiData::ComponentTypeSelector& inout_selector,
 		const brk::ecs::GameObject& object,
@@ -95,33 +97,53 @@ bool brk::editor::ui::UiData::Inspector(
 	dev_ui::ULIDWidget("ULID", object->m_Id);
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Name", &object->m_Name);
 
-	if (m_InspectorData.m_ShowObjectDeleteWarning |= ImGui::Button("Delete Object"))
+	if (m_InspectorData.m_ShowDeleteWarning |= ImGui::Button("Delete Object"))
 	{
-		ImGui::OpenPopup("Delete Game Object?");
+		ImGui::OpenPopup(s_StrDeleteObject);
 	}
 
-	if (ImGui::BeginPopupModal(
-			"Delete Game Object?",
-			&m_InspectorData.m_ShowObjectDeleteWarning))
+	if (ImGui::BeginPopupModal(s_StrDeleteObject, &m_InspectorData.m_ShowDeleteWarning))
 	{
 		m_InspectorData.m_DeleteObjectRequested = ImGui::Button("Confirm");
 		ImGui::SameLine();
-		m_InspectorData.m_ShowObjectDeleteWarning =
+		m_InspectorData.m_ShowDeleteWarning =
 			!(m_InspectorData.m_DeleteObjectRequested || ImGui::Button("Cancel"));
 		ImGui::EndPopup();
+
+		ImGui::End();
+		return false;
 	}
 
 	ImGui::SeparatorText("Components");
 
+	uint32 stackId = 0;
+
 	bool result = false;
-	for (auto&& [info, widget] : object->m_Components)
+	for (auto& component : object->m_Components)
 	{
-		if (!ImGui::TreeNode(info->m_Name.GetPtr()))
+		if (!ImGui::TreeNode(component.m_Info->m_Name.GetPtr()))
 			continue;
 
-		result |= info->m_WidgetInfo.m_Display(widget, entityWorld, object->m_Entity);
+		result |= component.m_Info->m_WidgetInfo.m_Display(
+			component.m_Widget,
+			entityWorld,
+			object->m_Entity);
+
+		ImGui::PushID(stackId++);
+		if ((m_InspectorData.m_CompDeletePopup.m_Show |= ImGui::Button("Delete")))
+		{
+			m_InspectorData.m_CompDeletePopup.m_Component = &component;
+			ImGui::PopID();
+			ImGui::TreePop();
+			break;
+		}
+
+		ImGui::PopID();
 		ImGui::TreePop();
 	}
+
+	m_InspectorData.m_DeleteComponentRequested =
+		m_InspectorData.m_CompDeletePopup.Display();
 
 	if (m_InspectorData.m_TypeSelector.m_Show || ImGui::Button("Add Component"))
 	{

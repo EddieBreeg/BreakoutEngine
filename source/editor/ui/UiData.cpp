@@ -1,4 +1,5 @@
 #include "UiData.hpp"
+#include <ecs/ComponentFwd.hpp>
 #include <managers/SceneManager.hpp>
 
 void brk::editor::ui::UiData::Display(
@@ -52,4 +53,30 @@ void brk::editor::ui::UiData::ModalPopup::Display()
 		return;
 	ImGui::TextUnformatted(m_Content.c_str(), m_Content.c_str() + m_Content.length());
 	ImGui::EndPopup();
+}
+
+bool brk::editor::ui::UiData::ComponentDeletePopup::Display()
+{
+	if (!m_Show)
+		return false;
+
+	ImGui::OpenPopup(s_StrDeleteComponent);
+
+	if (!ImGui::BeginPopup(s_StrDeleteComponent))
+		return false;
+
+	ImGui::Text("Delete %s?", m_Component->m_Info->m_Name.GetPtr());
+
+	if (ImGui::Button("Delete"))
+	{
+		m_Show = false;
+		ImGui::EndPopup();
+		return true;
+	}
+
+	ImGui::SameLine();
+	m_Show = !ImGui::Button("Cancel");
+
+	ImGui::EndPopup();
+	return false;
 }

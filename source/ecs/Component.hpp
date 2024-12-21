@@ -47,6 +47,10 @@ namespace brk::ecs {
 				C& res = world.emplace<C>(entity);
 				return &res;
 			},
+			[](EntityWorld& world, const entt::entity entity)
+			{
+				world.remove<C>(entity);
+			},
 		};
 		if constexpr (_internal::HasComponentWidget<C>::value)
 		{

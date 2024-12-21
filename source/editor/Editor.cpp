@@ -176,6 +176,19 @@ void brk::editor::Editor::Update()
 
 		object->m_Components.emplace_back(*info, widget);
 	}
+
+	if (m_UiData->m_InspectorData.m_DeleteComponentRequested)
+	{
+		ecs::GameObject* object = m_UiData->m_InspectorData.m_SelectedObject;
+		ecs::GameObject::Component* comp =
+			m_UiData->m_InspectorData.m_CompDeletePopup.m_Component;
+
+		auto it = object->m_Components.begin() + (comp - object->m_Components.data());
+		object->m_Components.erase(it);
+		comp->m_Info->m_Remove(world, object->m_Entity);
+
+		m_UiData->m_InspectorData.m_CompDeletePopup = {};
+	}
 }
 
 void brk::editor::Editor::LoadProject(const char* filePath)

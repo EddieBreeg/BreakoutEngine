@@ -24,6 +24,7 @@ namespace brk::ecs {
 		void* (*m_LoadJson)(const nlohmann::json&, EntityWorld&, entt::entity) =
 			nullptr;
 		void* (*m_Add)(EntityWorld&, const entt::entity) = nullptr;
+		void (*m_Remove)(EntityWorld&, const entt::entity) = nullptr;
 
 		struct WidgetInfo
 		{
