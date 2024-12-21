@@ -14,10 +14,10 @@ bool brk::editor::ui::UiData::Outliner(SceneManager& sceneManager)
 
 	m_InspectorData.m_CreateObjectRequested = ImGui::Button("Create Object");
 
+	bool result = false;
 	if (!ImGui::BeginListBox("Objects"))
 		goto OUTLINER_END;
 
-	bool result = false;
 
 	for (auto&& [id, obj] : sceneManager.GetGameObjects())
 	{

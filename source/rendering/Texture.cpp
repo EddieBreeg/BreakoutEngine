@@ -168,7 +168,7 @@ void brk::rdr::Texture2dWidget::Commit(Resource& out_res) const
 	tex.m_Settings = m_Settings;
 }
 
-inline bool brk::JsonLoader<brk::rdr::Texture2d>::Load(
+bool brk::JsonLoader<brk::rdr::Texture2d>::Load(
 	rdr::Texture2d& out_tex,
 	const nlohmann::json& json)
 {

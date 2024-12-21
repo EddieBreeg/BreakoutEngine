@@ -54,7 +54,7 @@ namespace brk::rdr {
 		bool m_ShouldReload = false;
 	};
 
-	void MaterialWidget::Init(const Resource& res)
+	inline void MaterialWidget::Init(const Resource& res)
 	{
 		const auto& mat = static_cast<const Material&>(res);
 		m_Id = mat.m_Id;
@@ -65,7 +65,7 @@ namespace brk::rdr {
 		m_UseDefaultFragmentShader = mat.m_UseDefaultFragmentShader;
 	}
 
-	bool MaterialWidget::CreationUi()
+	inline bool MaterialWidget::CreationUi()
 	{
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Material Name", m_Name);
@@ -89,7 +89,9 @@ namespace brk::rdr {
 		return m_Name.size() && m_FilePath.length();
 	}
 
-	bool MaterialWidget::EditionUi(const Resource& resource, bool& out_shouldReload)
+	inline bool MaterialWidget::EditionUi(
+		const Resource& resource,
+		bool& out_shouldReload)
 	{
 		if (!CreationUi())
 			return false;
@@ -101,7 +103,7 @@ namespace brk::rdr {
 		return out_shouldReload || m_Name != mat.m_Name;
 	}
 
-	void MaterialWidget::Commit(Resource& out_resource) const
+	inline void MaterialWidget::Commit(Resource& out_resource) const
 	{
 		auto& mat = static_cast<Material&>(out_resource);
 		mat.m_Name = m_Name;
@@ -111,7 +113,7 @@ namespace brk::rdr {
 		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
 	}
 
-	void MaterialInstanceWidget::Init(const Resource& res)
+	inline void MaterialInstanceWidget::Init(const Resource& res)
 	{
 		if (!m_Resources)
 		{
@@ -141,7 +143,7 @@ namespace brk::rdr {
 		}
 	}
 
-	bool MaterialInstanceWidget::CreationUi()
+	inline bool MaterialInstanceWidget::CreationUi()
 	{
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Instance Name", m_Name);
@@ -213,7 +215,7 @@ namespace brk::rdr {
 		return out_shouldReload || m_Name != mat.m_Name;
 	}
 
-	void MaterialInstanceWidget::Commit(Resource& inout_res) const
+	inline void MaterialInstanceWidget::Commit(Resource& inout_res) const
 	{
 		auto& mat = static_cast<MaterialInstance&>(inout_res);
 		mat.m_Name = m_Name;
@@ -236,7 +238,7 @@ namespace brk::rdr {
 		}
 	}
 
-	bool MaterialInstanceWidget::ResourceSelector(
+	inline bool MaterialInstanceWidget::ResourceSelector(
 		const char* label,
 		ULID& current,
 		const ResourceTypeInfo& type,

@@ -297,7 +297,7 @@ namespace brk {
 			out_json["noFaceCulling"] = true;
 	}
 
-	inline bool JsonLoader<rdr::MaterialInstance>::Load(
+	bool JsonLoader<rdr::MaterialInstance>::Load(
 		rdr::MaterialInstance& out_mat,
 		const nlohmann::json& json)
 	{
