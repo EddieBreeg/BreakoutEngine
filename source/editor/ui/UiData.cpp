@@ -4,7 +4,8 @@
 void brk::editor::ui::UiData::Display(
 	ecs::EntityWorld& world,
 	ResourceManager& resourceManager,
-	SceneManager& sceneManager)
+	SceneManager& sceneManager,
+	const ecs::ComponentRegistry& componentRegistry)
 {
 	MenuBar();
 
@@ -27,7 +28,7 @@ void brk::editor::ui::UiData::Display(
 	}
 
 	Outliner(sceneManager);
-	Inspector(world, sceneManager);
+	Inspector(world, sceneManager, componentRegistry);
 	ResourceExplorer(resourceManager);
 	ResourceEditor();
 	if (m_ShowResourceCreationWindow)

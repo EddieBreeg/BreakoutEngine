@@ -2,11 +2,13 @@
 
 #include <PCH.hpp>
 #include <core/ULID.hpp>
-#include "ComponentRegistry.hpp"
+#include <entt/entity/fwd.hpp>
 #include <vector>
 #include <string>
 
 namespace brk::ecs {
+	struct ComponentInfo;
+
 	/**
 	 * Represents a game object with a scene
 	 */

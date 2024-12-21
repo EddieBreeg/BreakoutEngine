@@ -19,14 +19,15 @@ bool brk::editor::ui::UiData::Outliner(SceneManager& sceneManager)
 
 	bool result = false;
 
-	for (const auto& [id, obj] : sceneManager.GetGameObjects())
+	for (auto&& [id, obj] : sceneManager.GetGameObjects())
 	{
-		const bool isSelected = obj.m_Id == m_InspectorData.m_SelectedObjectId;
+		const bool isSelected = m_InspectorData.m_SelectedObject &&
+								(obj.m_Id == m_InspectorData.m_SelectedObject->m_Id);
 
 		if (ImGui::Selectable(obj.m_Name.c_str(), isSelected))
 		{
 			result |= !isSelected;
-			m_InspectorData.m_SelectedObjectId = obj.m_Id;
+			m_InspectorData.m_SelectedObject = &obj;
 		}
 		if (isSelected)
 			ImGui::SetItemDefaultFocus();

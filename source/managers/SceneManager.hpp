@@ -4,6 +4,7 @@
 #include <core/Singleton.hpp>
 #include <core/Scene.hpp>
 #include <ecs/GameObject.hpp>
+#include <ecs/WorldFwd.hpp>
 
 #ifdef BRK_EDITOR
 #include <nlohmann/json_fwd.hpp>
@@ -38,7 +39,7 @@ namespace brk {
 		{
 			return m_Objects;
 		}
-		ecs::GameObject& CreateObject();
+		ecs::GameObject& CreateObject(ecs::EntityWorld& world);
 		void DeleteObject(const ULID id);
 		[[nodiscard]] TULIDMap<ecs::GameObject>& GetGameObjects() { return m_Objects; }
 

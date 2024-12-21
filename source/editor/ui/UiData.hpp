@@ -16,13 +16,21 @@ namespace brk {
 	class SceneManager;
 } // namespace brk
 
+namespace brk::ecs {
+	class ComponentRegistry;
+
+	struct ComponentInfo;
+	struct GameObject;
+}
+
 namespace brk::editor::ui {
 	struct BRK_EDITOR_API UiData
 	{
 		void Display(
 			ecs::EntityWorld& world,
 			ResourceManager& resourceManager,
-			SceneManager& sceneManager);
+			SceneManager& sceneManager,
+			const ecs::ComponentRegistry& componentRegistry);
 
 		void MenuBar();
 		void StartupWindow();
@@ -30,7 +38,10 @@ namespace brk::editor::ui {
 		bool SceneCreation();
 
 		bool Outliner(SceneManager& sceneManager);
-		bool Inspector(ecs::EntityWorld& entityWorld, SceneManager& sceneManager);
+		bool Inspector(
+			ecs::EntityWorld& entityWorld,
+			SceneManager& sceneManager,
+			const ecs::ComponentRegistry& componentRegistry);
 
 		void ResourceExplorer(const ResourceManager& resourceManager);
 		Resource* ResourceCreationWindow(ResourceManager& resourceManager);
@@ -50,8 +61,18 @@ namespace brk::editor::ui {
 
 		const char* m_FilePath = nullptr;
 
-		struct {
-			ULID m_SelectedObjectId;
+		struct ComponentTypeSelector
+		{
+			const ecs::ComponentInfo* m_Selection = nullptr;
+			ImGuiTextFilter m_NameFilter;
+			bool m_Show = false;
+		};
+
+		struct
+		{
+			ecs::GameObject* m_SelectedObject = nullptr;
+			ComponentTypeSelector m_TypeSelector;
+			bool m_AddComponentRequested = false;
 			bool m_CreateObjectRequested = false;
 			bool m_ShowObjectDeleteWarning = false;
 			bool m_DeleteObjectRequested = false;

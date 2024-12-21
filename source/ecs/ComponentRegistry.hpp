@@ -18,6 +18,7 @@ namespace brk::ecs {
 	class ComponentRegistry : public Singleton<ComponentRegistry>
 	{
 	public:
+		using TMap = std::unordered_map<uint32, const ComponentInfo*, Hash<uint32>>;
 		~ComponentRegistry() = default;
 
 		/**
@@ -45,12 +46,13 @@ namespace brk::ecs {
 		 */
 		BRK_ECS_API const ComponentInfo& GetInfo(const StringView name) const;
 
+		[[nodiscard]] const TMap& GetTypeMap() const noexcept { return m_TypeMap; }
+
 	private:
 		friend class Singleton<ComponentRegistry>;
 		BRK_ECS_API static std::unique_ptr<ComponentRegistry> s_Instance;
 		ComponentRegistry() = default;
 
-		using TMap = std::unordered_map<uint32, const ComponentInfo*, Hash<uint32>>;
 		TMap m_TypeMap;
 	};
 } // namespace brk::ecs

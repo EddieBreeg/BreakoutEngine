@@ -10,6 +10,8 @@
 #include <core/ResourceLoader.hpp>
 #include <core/ULIDFormatter.hpp>
 
+#include <ecs/ComponentRegistry.hpp>
+
 #include <imgui.h>
 
 #include <managers/ECSManager.hpp>
@@ -97,6 +99,8 @@ void brk::editor::Editor::SaveProjectFile()
 
 void brk::editor::Editor::Update()
 {
+	ecs::EntityWorld& world = m_ECSManager.GetWorld();
+
 	if (m_UiData->m_ProjectLoadRequested)
 	{
 		m_UiData->m_ProjectLoadRequested = false;
@@ -149,16 +153,28 @@ void brk::editor::Editor::Update()
 
 	if (m_UiData->m_InspectorData.m_CreateObjectRequested)
 	{
-		ecs::GameObject& object = m_SceneManager.CreateObject();
-		m_UiData->m_InspectorData.m_SelectedObjectId = object.m_Id;
+		ecs::GameObject& object = m_SceneManager.CreateObject(world);
+		m_UiData->m_InspectorData.m_SelectedObject = &object;
 		m_UiData->m_InspectorData.m_CreateObjectRequested = false;
 	}
 
 	if (m_UiData->m_InspectorData.m_DeleteObjectRequested)
 	{
 		m_UiData->m_InspectorData.m_DeleteObjectRequested = false;
-		m_SceneManager.DeleteObject(m_UiData->m_InspectorData.m_SelectedObjectId);
-		m_UiData->m_InspectorData.m_SelectedObjectId = {};
+		m_SceneManager.DeleteObject(m_UiData->m_InspectorData.m_SelectedObject->m_Id);
+		m_UiData->m_InspectorData.m_SelectedObject = nullptr;
+	}
+
+	if (m_UiData->m_InspectorData.m_AddComponentRequested)
+	{
+		m_UiData->m_InspectorData.m_AddComponentRequested = false;
+		ecs::GameObject* object = m_UiData->m_InspectorData.m_SelectedObject;
+		const ecs::ComponentInfo* info =
+			m_UiData->m_InspectorData.m_TypeSelector.m_Selection;
+		const void* component = info->m_Add(world, object->m_Entity);
+		void* widget = info->m_WidgetInfo.m_Create(component);
+
+		object->m_Components.emplace_back(*info, widget);
 	}
 }
 
@@ -224,10 +240,15 @@ void brk::editor::Editor::LoadScene(ULID id)
 void brk::editor::Editor::ShowUI()
 {
 	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
+	const auto& componentRegistry = ecs::ComponentRegistry::GetInstance();
 
 	if (m_UiData->m_ShowStartupWindow = !m_Project.has_value())
 	{
-		m_UiData->Display(m_ECSManager.GetWorld(), m_ResourceManager, m_SceneManager);
+		m_UiData->Display(
+			m_ECSManager.GetWorld(),
+			m_ResourceManager,
+			m_SceneManager,
+			componentRegistry);
 		return;
 	}
 
@@ -236,7 +257,11 @@ void brk::editor::Editor::ShowUI()
 		m_UiData->OpenSceneCreationWindow();
 	}
 
-	m_UiData->Display(m_ECSManager.GetWorld(), m_ResourceManager, m_SceneManager);
+	m_UiData->Display(
+		m_ECSManager.GetWorld(),
+		m_ResourceManager,
+		m_SceneManager,
+		componentRegistry);
 }
 
 #endif

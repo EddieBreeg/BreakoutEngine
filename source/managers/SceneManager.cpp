@@ -5,6 +5,7 @@
 #include <core/LogManager.hpp>
 #include <core/StringViewFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>
+#include <entt/entity/registry.hpp>
 #include "ECSManager.hpp"
 
 #ifdef BRK_DEV
@@ -148,7 +149,7 @@ brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id)
 	return it == m_Objects.end() ? nullptr : &it->second;
 }
 
-brk::ecs::GameObject& brk::SceneManager::CreateObject()
+brk::ecs::GameObject& brk::SceneManager::CreateObject(ecs::EntityWorld& world)
 {
 	BRK_ASSERT(
 		m_CurrentSceneId,
@@ -156,6 +157,7 @@ brk::ecs::GameObject& brk::SceneManager::CreateObject()
 	ecs::GameObject object{
 		ULID::Generate(),
 		fmt::format("Game Object {}", m_Objects.size()),
+		world.create(),
 	};
 	return m_Objects.emplace(object.m_Id, std::move(object)).first->second;
 }
