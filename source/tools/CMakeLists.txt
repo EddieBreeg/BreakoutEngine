@@ -17,4 +17,12 @@ set_target_properties(AssetEmbedder PROPERTIES
 	OUTPUT_NAME EmbedAsset
 )
 
+add_executable(ImGuiDemo ImGuiDemo.cpp)
+target_link_libraries(ImGuiDemo PRIVATE
+	Breakout::Core
+	Breakout::Rendering
+	ImGui::ImGui
+	SDL3::SDL3
+)
+
 add_library(Breakout::EmbedLib ALIAS DataEmbedLib)

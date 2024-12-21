@@ -53,7 +53,8 @@ brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& setti
 	BRK_ASSERT(m_WinPtr, "Failed to create window: {}", SDL_GetError());
 
 #if defined(BRK_DEV)
-	ImGui::SetCurrentContext(&m_App.GetImGuiContext());
+	ImGuiContext& context = m_App.GetImGuiContext();
+	ImGui::SetCurrentContext(&context);
 	ImGuiIO& io = ImGui::GetIO();
 	io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 					  ImGuiConfigFlags_DockingEnable | ImGuiConfigFlags_ViewportsEnable;
@@ -68,7 +69,7 @@ brk::WindowSystem::WindowSystem(App& app, const brk::WindowSystemSettings& setti
 	style.ScaleAllSizes(uiScale);
 #endif
 
-	rdr::Renderer::s_Instance.Init(app, m_WinPtr);
+	rdr::Renderer::s_Instance.Init(context, m_WinPtr);
 	rdr::Renderer::s_Instance.m_ClearColor = m_Settings.m_ClearColor;
 }
 

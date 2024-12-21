@@ -406,12 +406,12 @@ void brk::rdr::RendererData::UpdateDynamicResource(
 
 brk::rdr::RendererData::~RendererData() = default;
 
-void brk::rdr::Renderer::Init(App& app, SDL_Window* window)
+void brk::rdr::Renderer::Init(ImGuiContext& ctx, SDL_Window* window)
 {
 	m_Window = window;
 	BRK_ASSERT(m_Window, "Trying to initialize renderer with invalid window pointer!");
 #ifdef BRK_DEV
-	ImGui::SetCurrentContext(&app.GetImGuiContext());
+	ImGui::SetCurrentContext(&ctx);
 #endif
 	m_Data = new RendererData{ *window };
 }

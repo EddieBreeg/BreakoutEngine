@@ -5,9 +5,7 @@
 
 struct SDL_Window;
 
-namespace brk {
-	class App;
-}
+struct ImGuiContext;
 
 namespace brk::rdr {
 	class Buffer;
@@ -21,7 +19,7 @@ namespace brk::rdr {
 	public:
 		~Renderer();
 
-		void Init(App& app, SDL_Window* window);
+		void Init(ImGuiContext& context, SDL_Window* window);
 		void Shutdown();
 
 #ifdef BRK_DEV
