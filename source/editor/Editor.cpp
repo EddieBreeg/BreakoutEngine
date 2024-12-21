@@ -161,6 +161,7 @@ void brk::editor::Editor::Update()
 	if (m_UiData->m_InspectorData.m_DeleteObjectRequested)
 	{
 		m_UiData->m_InspectorData.m_DeleteObjectRequested = false;
+		world.destroy(m_UiData->m_InspectorData.m_SelectedObject->m_Entity);
 		m_SceneManager.DeleteObject(m_UiData->m_InspectorData.m_SelectedObject->m_Id);
 		m_UiData->m_InspectorData.m_SelectedObject = nullptr;
 	}
