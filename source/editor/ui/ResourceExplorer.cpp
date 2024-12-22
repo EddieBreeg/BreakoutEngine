@@ -39,7 +39,7 @@ namespace {
 
 void brk::editor::ui::UiData::ResourceExplorer(const ResourceManager& resourceManager)
 {
-	ImGui::Begin("Resource Explorer");
+	ImGui::Begin(s_StrResourceExplorer);
 
 	m_ShowResourceCreationWindow |= ImGui::Button("Create Resource");
 

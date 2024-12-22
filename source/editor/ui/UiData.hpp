@@ -10,7 +10,7 @@
 #include <imgui.h>
 
 namespace {
-	static const char* s_StrDeleteComponent = "Delete Component?";
+	static constexpr const char* s_StrDeleteComponent = "Delete Component?";
 }
 
 namespace brk {
@@ -28,6 +28,10 @@ namespace brk::ecs {
 } // namespace brk::ecs
 
 namespace brk::editor::ui {
+	static constexpr const char* s_StrInspector = "Inspector";
+	static constexpr const char* s_StrOutliner = "Outliner";
+	static constexpr const char* s_StrResourceExplorer = "Resource Explorer";
+
 	struct BRK_EDITOR_API UiData
 	{
 		void Display(
@@ -62,6 +66,8 @@ namespace brk::editor::ui {
 		bool m_SceneLoadRequested = false;
 		bool m_NewSceneRequested = false;
 		bool m_AddResourceRequested = false;
+
+		bool m_LayoutResetRequested = false;
 
 		const char* m_FilePath = nullptr;
 

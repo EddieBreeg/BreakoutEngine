@@ -13,6 +13,7 @@
 #include <ecs/ComponentRegistry.hpp>
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
@@ -22,6 +23,27 @@
 #include <filesystem>
 #include <fstream>
 #include <system_error>
+
+namespace {
+	void InitUiLayout()
+	{
+		using namespace brk::editor;
+
+		const ImGuiID dockspaceId = 1;
+		ImGuiID node1 = dockspaceId, node2 = 0;
+
+		ImGui::DockBuilderSplitNode(node1, ImGuiDir_Left, .25f, &node1, &node2);
+		ImGui::DockBuilderDockWindow(ui::s_StrOutliner, node1);
+
+		ImGui::DockBuilderSplitNode(node2, ImGuiDir_Right, .33f, &node1, nullptr);
+		ImGui::DockBuilderSplitNode(node1, ImGuiDir_Up, .67f, &node1, &node2);
+
+		ImGui::DockBuilderDockWindow(ui::s_StrInspector, node1);
+		ImGui::DockBuilderDockWindow(ui::s_StrResourceExplorer, node2);
+
+		ImGui::DockBuilderFinish(dockspaceId);
+	}
+} // namespace
 
 std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
 
@@ -38,6 +60,10 @@ brk::editor::Editor::Editor(
 	, m_SceneManager{ sceneManager }
 {
 	ImGui::SetCurrentContext(&ctx);
+
+	m_UiData->m_LayoutResetRequested =
+		!std::filesystem::is_regular_file(ImGui::GetIO().IniFilename);
+
 	if (argc < 2)
 		return;
 	m_UiData->m_ProjectLoadRequested = true;
@@ -253,6 +279,12 @@ void brk::editor::Editor::LoadScene(ULID id)
 
 void brk::editor::Editor::ShowUI()
 {
+	if (m_UiData->m_LayoutResetRequested)
+	{
+		InitUiLayout();
+		m_UiData->m_LayoutResetRequested = false;
+	}
+
 	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
 	const auto& componentRegistry = ecs::ComponentRegistry::GetInstance();
 

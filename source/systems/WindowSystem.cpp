@@ -86,7 +86,7 @@ void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
 {
 #if defined(BRK_DEV)
 	rdr::Renderer::s_Instance.NewImGuiFrame();
-	ImGui::DockSpaceOverViewport(0, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+	ImGui::DockSpaceOverViewport(1, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
 #endif
 
 	ProcessEvents(world);

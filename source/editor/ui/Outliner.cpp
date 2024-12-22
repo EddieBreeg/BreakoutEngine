@@ -6,7 +6,7 @@
 
 bool brk::editor::ui::UiData::Outliner(SceneManager& sceneManager)
 {
-	if (!ImGui::Begin("Outliner"))
+	if (!ImGui::Begin(s_StrOutliner))
 	{
 		ImGui::End();
 		return false;

@@ -82,7 +82,7 @@ bool brk::editor::ui::UiData::Inspector(
 	SceneManager& sceneManager,
 	const ecs::ComponentRegistry& componentRegistry)
 {
-	ImGui::Begin("Inspector");
+	ImGui::Begin(s_StrInspector);
 
 	if (!m_InspectorData.m_SelectedObject)
 	{
