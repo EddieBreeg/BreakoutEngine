@@ -18,9 +18,11 @@ namespace brk {
 		constexpr BasicStringView() noexcept = default;
 		constexpr BasicStringView(const Char* str, const uint32 len);
 		constexpr BasicStringView(const Char* str);
-		constexpr BasicStringView(const std::string& str);
+		constexpr BasicStringView(const std::basic_string<Char>& str);
 		constexpr BasicStringView(const BasicStringView&) = default;
 		constexpr BasicStringView& operator=(const BasicStringView&) = default;
+
+		[[nodiscard]] operator std::basic_string<Char>() const;
 
 		[[nodiscard]] constexpr bool operator==(
 			const BasicStringView& other) const noexcept;

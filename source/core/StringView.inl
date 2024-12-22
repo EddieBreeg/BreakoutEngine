@@ -14,10 +14,16 @@ constexpr brk::BasicStringView<Char>::BasicStringView(const Char* str)
 }
 
 template <class Char>
-constexpr brk::BasicStringView<Char>::BasicStringView(const std::string& str)
+constexpr brk::BasicStringView<Char>::BasicStringView(const std::basic_string<Char>& str)
 	: m_Ptr{ str.c_str() }
 	, m_Len{ (uint32)str.length() }
 {}
+
+template <class Char>
+inline brk::BasicStringView<Char>::operator std::basic_string<Char>() const
+{
+	return { m_Ptr, m_Len };
+}
 
 template <class Char>
 inline constexpr bool brk::BasicStringView<Char>::operator==(
