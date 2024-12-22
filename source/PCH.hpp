@@ -59,6 +59,8 @@ namespace brk {
 #define BIT(n) (1ull << (n))
 #endif
 
+#include "PlatformMacros.hpp"
+
 #include <core/brk_core_export.h>
 #include <imgui/brk_dev_ui_export.h>
 #include <ecs/brk_ecs_export.h>

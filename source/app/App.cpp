@@ -17,6 +17,7 @@
 #include <editor/Editor.hpp>
 #endif
 #ifdef BRK_DEV
+#include <filesystem>
 #include <imgui.h>
 #endif
 
@@ -42,6 +43,18 @@ namespace {
 	void DestroySingletons()
 	{
 		(S::Reset(), ...);
+	}
+
+	const std::filesystem::path& GetAppDataPath()
+	{
+		static const auto path = std::filesystem::path{ std::getenv(APPDATA) } / "BreakoutEngine";
+		return path;
+	}
+
+	const char* GetImGuiIniFilePath()
+	{
+		static const std::string path = (GetAppDataPath() / "imgui.ini").string();
+		return path.c_str();
 	}
 } // namespace
 
@@ -86,7 +99,15 @@ namespace brk {
 		, m_ResourceLoader{ ResourceLoader::Init() }
 	{
 		std::locale::global(std::locale("en_US", std::locale::all));
+
+		const auto& appDataPath = GetAppDataPath();
+		if (!std::filesystem::is_directory(appDataPath))
+		{
+			std::filesystem::create_directory(appDataPath);
+		}
+
 #ifdef BRK_DEV
+		ImGui::GetIO().IniFilename = GetImGuiIniFilePath();
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 		InitManagers();
