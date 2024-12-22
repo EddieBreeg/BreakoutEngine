@@ -49,6 +49,8 @@ namespace brk {
 			return m_Descriptions;
 		}
 
+		void SaveCurrentSceneToFile(const ecs::EntityWorld& world) const;
+
 	private:
 		static std::unique_ptr<SceneManager> s_Instance;
 		friend class Singleton<SceneManager>;

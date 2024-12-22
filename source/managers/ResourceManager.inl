@@ -1,4 +1,5 @@
 #include <core/ULIDFormatter.hpp>
+#include "ResourceManager.hpp"
 
 #ifdef BRK_DEV
 inline const brk::AllocTracker& brk::ResourceManager::GetAllocTracker() const noexcept
@@ -72,4 +73,18 @@ inline bool brk::JsonLoader<brk::ResourceRef<R>>::Load(
 	}
 	out_ref = ResourceManager::GetInstance().GetRef<R>(id);
 	return (bool)out_ref;
+}
+
+template <class R>
+inline void brk::JsonLoader<brk::ResourceRef<R>>::Save(
+	const ResourceRef<R>& ref,
+	nlohmann::json& out_json)
+{
+	if (!ref)
+	{
+		out_json = nullptr;
+		return;
+	}
+
+	out_json = ref->GetId();
 }

@@ -32,7 +32,7 @@ void brk::editor::ui::UiData::MenuBar()
 			OpenSceneCreationWindow();
 		}
 
-		ImGui::MenuItem("Save", "Ctrl+S", nullptr, false);
+		m_SceneSaveRequested = ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_SceneId);
 		ImGui::EndMenu();
 	}
 

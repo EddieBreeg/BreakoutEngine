@@ -110,6 +110,7 @@ namespace brk {
 	struct JsonLoader<ResourceRef<R>>
 	{
 		static bool Load(ResourceRef<R>& out_ref, const nlohmann::json& json);
+		static void Save(const ResourceRef<R>& ref, nlohmann::json& out_json);
 	};
 } // namespace brk
 

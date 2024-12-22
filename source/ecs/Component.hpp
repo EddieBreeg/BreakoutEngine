@@ -42,6 +42,10 @@ namespace brk::ecs {
 				C& res = world.emplace<C>(entity, std::move(comp));
 				return &res;
 			},
+			[](nlohmann::json& out_json, const EntityWorld& world, entt::entity entity)
+			{
+				JsonLoader<C>::Save(world.get<const C>(entity), out_json);
+			},
 			[](EntityWorld& world, const entt::entity entity) -> void*
 			{
 				C& res = world.emplace<C>(entity);

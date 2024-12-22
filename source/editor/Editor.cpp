@@ -146,6 +146,13 @@ void brk::editor::Editor::Update()
 		CreateNewScene(m_UiData->m_FilePath);
 		SaveProjectFile();
 	}
+
+	if (m_UiData->m_SceneSaveRequested)
+	{
+		m_UiData->m_SceneSaveRequested = false;
+		m_SceneManager.SaveCurrentSceneToFile(world);
+	}
+
 	if (m_UiData->m_AddResourceRequested)
 	{
 		m_ResourceManager.AddResource(

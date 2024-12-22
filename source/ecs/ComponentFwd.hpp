@@ -21,8 +21,8 @@ namespace brk::ecs {
 		/**
 		 * This is called when loading a component from a scene file in the editor
 		 */
-		void* (*m_LoadJson)(const nlohmann::json&, EntityWorld&, entt::entity) =
-			nullptr;
+		void* (*m_LoadJson)(const nlohmann::json&, EntityWorld&, entt::entity) = nullptr;
+		void (*m_SaveJson)(nlohmann::json&, const EntityWorld&, entt::entity) = nullptr;
 		void* (*m_Add)(EntityWorld&, const entt::entity) = nullptr;
 		void (*m_Remove)(EntityWorld&, const entt::entity) = nullptr;
 

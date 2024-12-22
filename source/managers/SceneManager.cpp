@@ -169,3 +169,41 @@ void brk::SceneManager::DeleteObject(const ULID id)
 		BRK_LOG_WARNING("Tried to delete non-existent game object {}", id);
 	}
 }
+
+void brk::SceneManager::SaveCurrentSceneToFile(const ecs::EntityWorld& world) const
+{
+	BRK_ASSERT(
+		m_CurrentSceneId,
+		"Called SaveCurrentSceneToFile() with no scene selected");
+
+	const SceneDescription& desc = m_Descriptions.find(m_CurrentSceneId)->second;
+	nlohmann::json json;
+	json["id"] = m_CurrentSceneId;
+	json["name"] = desc.GetName();
+	auto& objectsArray = json["objects"] = nlohmann::json::array();
+
+	nlohmann::json objJson;
+
+	for (const auto& [id, object] : m_Objects)
+	{
+		objJson["id"] = id;
+		objJson["name"] = object.m_Name;
+		auto& components = objJson["components"] = nlohmann::json::object();
+
+		for (const auto& [info, widget] : object.m_Components)
+		{
+			auto& tmp = components[info->m_Name] = nlohmann::json::object();
+			info->m_SaveJson(tmp, world, object.m_Entity);
+		}
+
+		objectsArray.emplace_back(std::move(objJson));
+	}
+
+	std::ofstream file{ desc.GetPath() };
+	BRK_ASSERT(
+		file.is_open(),
+		"Failed to save scene to {}: {}",
+		desc.GetPath(),
+		std::strerror(errno));
+	file << json.dump(4);
+}

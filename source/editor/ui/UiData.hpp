@@ -65,6 +65,7 @@ namespace brk::editor::ui {
 		bool m_ProjectLoadRequested = false;
 		bool m_SceneLoadRequested = false;
 		bool m_NewSceneRequested = false;
+		bool m_SceneSaveRequested = false;
 		bool m_AddResourceRequested = false;
 
 		bool m_LayoutResetRequested = false;
