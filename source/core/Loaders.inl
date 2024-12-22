@@ -180,7 +180,7 @@ namespace brk {
 		}
 		else
 		{
-			out_json[name] = JsonLoader<F>::Save(field);
+			JsonLoader<F>::Save(field, out_json[name]);
 		}
 	}
 
@@ -190,13 +190,13 @@ namespace brk {
 		const auto it = json.find(std::forward<K>(key));
 		if (it == json.end())
 			return false;
-		
-		if constexpr(_internal::IsNativeJsonCompatible<V>::value)
+
+		if constexpr (_internal::IsNativeJsonCompatible<V>::value)
 		{
 			it->get_to(out_value);
 			return true;
 		}
-		else if constexpr(std::is_same_v<V, nlohmann::json>)
+		else if constexpr (std::is_same_v<V, nlohmann::json>)
 		{
 			out_value = *it;
 		}
@@ -206,7 +206,7 @@ namespace brk {
 		}
 	}
 
-	template<>
+	template <>
 	struct JsonLoader<float3>
 	{
 		static bool Load(float3& out_vec, const nlohmann::json& json)
@@ -225,7 +225,7 @@ namespace brk {
 		}
 	};
 
-	template<>
+	template <>
 	struct JsonLoader<math::Quaternion>
 	{
 		static bool Load(math::Quaternion& out_quat, const nlohmann::json& json)
