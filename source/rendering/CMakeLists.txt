@@ -10,9 +10,7 @@ if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	target_compile_definitions(BRK_RENDERING PUBLIC BRK_DX11=1)
 	target_link_libraries(BRK_RENDERING PRIVATE d3d11 dxgi)
 elseif(${BRK_RENDER_BACKEND} STREQUAL "OpenGL")
-	target_link_libraries(BRK_RENDERING PRIVATE 
-		glslang::glslang
-		glslang::glslang-default-resource-limits)
+	message(FATAL_ERROR "OpenGL isn't supported right now")
 else()
 	message(FATAL_ERROR "Unsupported render backend: ${BRK_RENDER_BACKEND}")
 endif()
