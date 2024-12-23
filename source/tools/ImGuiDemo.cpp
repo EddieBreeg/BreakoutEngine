@@ -1,12 +1,14 @@
+#include <PCH.hpp>
+
+#ifndef BRK_DEV
+int main(int argc, char const* argv[]) {}
+#else
+
 #include <backends/imgui_impl_sdl3.h>
 #include <core/Assert.hpp>
 #include <imgui.h>
 #include <rendering/Renderer.hpp>
 #include <SDL3/SDL.h>
-
-#ifndef BRK_DEV
-#error "Dev not enabled"
-#endif
 
 namespace ImGui {
 	void ShowDemoWindow(bool* p_open);
@@ -82,3 +84,5 @@ int main(int argc, char const* argv[])
 	brk::rdr::Renderer::s_Instance.Shutdown();
 	return 0;
 }
+
+#endif
