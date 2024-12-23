@@ -3,6 +3,7 @@
 #include <editor/Editor.hpp>
 #include <array>
 #include <imgui.h>
+#include <imgui/DebugOverlay.hpp>
 #include <imgui/DevUiContext.hpp>
 #include <SDL3/SDL_dialog.h>
 
@@ -21,22 +22,21 @@ namespace {
 		data->m_FilePath = filelist[0];
 		data->m_SceneSaveRequested = true;
 	}
-} // namespace
 
-void brk::editor::ui::UiData::MenuBar()
-{
-	if (!ImGui::BeginMainMenuBar())
-		return;
-
-	SDL_Window* const window = dev_ui::Context::s_Instance.GetWindow();
-
-	if (ImGui::BeginMenu("File"))
+	void FileMenu(brk::editor::ui::UiData& data)
 	{
+		using namespace brk;
+
+		if (!ImGui::BeginMenu("File"))
+			return;
+
+		SDL_Window* const window = dev_ui::Context::s_Instance.GetWindow();
+
 		if (ImGui::MenuItem("Open Project", "Ctrl+Shift+O"))
 		{
 			SDL_ShowOpenFileDialog(
-				OpenProjectCallback,
-				this,
+				editor::ui::OpenProjectCallback,
+				&data,
 				window,
 				&s_ProjectFileFilter,
 				1,
@@ -44,20 +44,20 @@ void brk::editor::ui::UiData::MenuBar()
 				false);
 		}
 
-		m_ShowSceneSelector = ImGui::MenuItem("Open Scene", "Ctrl+O");
-		m_NewSceneRequested = ImGui::MenuItem("New Scene", "Ctrl+N");
+		data.m_ShowSceneSelector = ImGui::MenuItem("Open Scene", "Ctrl+O");
+		data.m_NewSceneRequested = ImGui::MenuItem("New Scene", "Ctrl+N");
 
 		if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 		{
-			if (m_SceneId)
+			if (data.m_SceneId)
 			{
-				m_SceneSaveRequested = true;
+				data.m_SceneSaveRequested = true;
 			}
 			else
 			{
 				SDL_ShowSaveFileDialog(
 					SceneSaveCallback,
-					this,
+					&data,
 					window,
 					&s_SceneFileFilter,
 					1,
@@ -67,6 +67,27 @@ void brk::editor::ui::UiData::MenuBar()
 
 		ImGui::EndMenu();
 	}
+
+	void ViewMenu(brk::editor::ui::UiData& data)
+	{
+		if (!ImGui::BeginMenu("View"))
+			return;
+
+		using brk::dbg::Overlay;
+
+		ImGui::MenuItem("Debug Overlay", nullptr, &Overlay::s_Instance.m_Enabled);
+
+		ImGui::EndMenu();
+	}
+} // namespace
+
+void brk::editor::ui::UiData::MenuBar()
+{
+	if (!ImGui::BeginMainMenuBar())
+		return;
+
+	FileMenu(*this);
+	ViewMenu(*this);
 
 	ImGui::EndMainMenuBar();
 }
