@@ -1,9 +1,8 @@
-add_library(BRK_APP STATIC 
+AddBrkModule(APP ALIAS App LIB_TYPE STATIC
+SOURCES 
 	App.cpp 
 	Entry.cpp 
-	TypeRegistration.cpp
-	App.hpp 
-	Entry.hpp)
+	TypeRegistration.cpp)
 
 target_link_libraries(BRK_APP PRIVATE
 	Breakout::Core
@@ -12,8 +11,5 @@ target_link_libraries(BRK_APP PRIVATE
 	Breakout::Managers
 	Breakout::Systems
 	ImGui::ImGui
-)
-target_link_libraries(BRK_APP PRIVATE
 	SDL3::SDL3
 )
-add_library(Breakout::App ALIAS BRK_APP)

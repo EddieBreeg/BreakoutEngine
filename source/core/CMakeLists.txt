@@ -1,6 +1,4 @@
-file(GLOB CORE_HEADERS *.hpp)
-
-add_library(BRK_CORE ${BRK_LIBTYPE}
+AddBrkModule(CORE ALIAS Core SOURCES
 	AllocTracker.cpp
 	Assert.cpp
 	DebugBreak.cpp
@@ -19,9 +17,7 @@ add_library(BRK_CORE ${BRK_LIBTYPE}
 	TimeInfo.cpp
 	ULID.cpp
 	ULIDFormatter.cpp
-	${CORE_HEADERS}
 )
-CreateExports(BRK_CORE)
 
 if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_DX11)
@@ -34,17 +30,13 @@ elseif(${BRK_RENDER_BACKEND} STREQUAL "SDL2")
 	target_compile_definitions(BRK_CORE PUBLIC BRK_SDL2_RENDERER)
 endif(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 
-target_compile_features(BRK_CORE PUBLIC cxx_std_17)
-add_library(Breakout::Core ALIAS BRK_CORE)
-
-target_link_libraries(BRK_CORE PUBLIC 
+target_link_libraries(BRK_CORE
+PUBLIC 
 	BRK_INCLUDES
 	nlohmann_json::nlohmann_json
 	fmt::fmt
 	BRK_MATH
-)
-	
-target_link_libraries(BRK_CORE PRIVATE
+PRIVATE
 	EnTT::EnTT
 	SDL3::SDL3
 )

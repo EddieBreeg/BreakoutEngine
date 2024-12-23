@@ -1,7 +1,4 @@
-file(GLOB RENDERING_HEADERS *.h *.hpp)
-
-add_library(BRK_RENDERING ${BRK_LIBTYPE}
-	${RENDERING_HEADERS}
+AddBrkModule(RENDERING ALIAS Rendering SOURCES
 	Material.cpp
 	Mesh.cpp
 	Renderer.cpp
@@ -20,18 +17,14 @@ else()
 	message(FATAL_ERROR "Unsupported render backend: ${BRK_RENDER_BACKEND}")
 endif()
 
-file(GLOB BACKEND_HEADERS ${IMPL_DIR}/*.h ${IMPL_DIR}/*.hpp)
-
 target_sources(BRK_RENDERING PRIVATE
 	${IMPL_DIR}/Buffer.cpp
 	${IMPL_DIR}/Renderer.cpp
 	${IMPL_DIR}/ResourceHandles.cpp
 	${IMPL_DIR}/Shaders.cpp
 	${IMPL_DIR}/Texture.cpp
-	${BACKEND_HEADERS}
 )
 
-target_compile_features(BRK_RENDERING PUBLIC cxx_std_17)
 target_link_libraries(BRK_RENDERING PRIVATE
 	BRK_INCLUDES
 	Breakout::Core
@@ -41,7 +34,3 @@ target_link_libraries(BRK_RENDERING PRIVATE
 	SDL3::SDL3
 	STB::Image
 )
-
-CreateExports(BRK_RENDERING)
-
-add_library(Breakout::Rendering ALIAS BRK_RENDERING)

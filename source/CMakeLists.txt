@@ -2,12 +2,32 @@ include(GenerateExportHeader)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
-function(CreateExports LIBNAME)
-	target_compile_definitions(${LIBNAME} PRIVATE ${LIBNAME}_EXPORTS=1)
-	generate_export_header(${LIBNAME}
-		EXPORT_MACRO_NAME ${LIBNAME}_API
+function(AddBrkModule MOD_NAME)
+	cmake_parse_arguments(MOD "" "ALIAS;LIB_TYPE" "SOURCES" ${ARGN})
+	set(MOD_LIB_NAME BRK_${MOD_NAME})
+	if(NOT DEFINED MOD_LIB_TYPE)
+		set(MOD_LIB_TYPE ${BRK_LIBTYPE})
+	endif(NOT DEFINED MOD_LIB_TYPE)
+
+	add_library(${MOD_LIB_NAME} ${MOD_LIB_TYPE} ${MOD_SOURCES})
+	file(GLOB_RECURSE MOD_HEADERS *.h *.hpp)
+	target_sources(${MOD_LIB_NAME} PUBLIC
+		FILE_SET HEADERS
+		TYPE HEADERS
+		FILES ${MOD_HEADERS}
 	)
-endfunction(CreateExports LIBNAME)
+	target_compile_features(${MOD_LIB_NAME} PUBLIC cxx_std_17)
+	target_compile_definitions(${MOD_LIB_NAME} PRIVATE ${MOD_LIB_NAME}_EXPORTS=1)
+	generate_export_header(${MOD_LIB_NAME}
+		EXPORT_MACRO_NAME ${MOD_LIB_NAME}_API
+	)
+
+	if(DEFINED MOD_ALIAS)
+		add_library(Breakout::${MOD_ALIAS} ALIAS ${MOD_LIB_NAME})
+	else()
+		add_library(Breakout::${MOD_NAME} ALIAS ${MOD_LIB_NAME})
+	endif(DEFINED MOD_ALIAS)
+endfunction(AddBrkModule MOD_NAME)
 
 add_library(BRK_INCLUDES INTERFACE)
 target_include_directories(BRK_INCLUDES INTERFACE
@@ -32,12 +52,12 @@ function(EmbedAsset AssetFile AssetName NamespaceName)
 	set(Flags USE_BASE85)
 	set(Args)
 	set(ListArgs)
-	cmake_parse_arguments(arg "${Flags}" "${Args}" "${ListArgs}" ${ARGN})
+	cmake_parse_arguments(EMBED "${Flags}" "${Args}" "${ListArgs}" ${ARGN})
 	set(CommandArgs "${AssetFile}" "${AssetName}" "${NamespaceName}")
 
-	if (${arg_USE_BASE85})
+	if (${EMBED_USE_BASE85})
 		list(APPEND CommandArgs "-b")
-	endif(${arg_USE_BASE85})
+	endif(${EMBED_USE_BASE85})
 	
 	add_custom_command(OUTPUT ${OutputFile} 
 		COMMAND $<TARGET_FILE:AssetEmbedder> ${CommandArgs} > "${OutputFile}"

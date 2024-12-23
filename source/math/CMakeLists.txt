@@ -1,10 +1,11 @@
-file(GLOB MATH_H *.h *.hpp)
+file(GLOB MATH_HEADERS *.hpp)
 
 add_library(BRK_MATH INTERFACE)
+add_library(Breakout::Math ALIAS BRK_MATH)
 
 target_sources(BRK_MATH INTERFACE
-	${MATH_H}
+	FILE_SET HEADERS
+	FILES ${MATH_HEADERS}
 )
-target_compile_features(BRK_MATH INTERFACE cxx_std_17)
-add_library(Breakout::Math ALIAS BRK_MATH)
+
 target_link_libraries(BRK_MATH INTERFACE BRK_INCLUDES glm::glm)
