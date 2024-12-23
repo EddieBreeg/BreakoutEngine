@@ -6,3 +6,4 @@ lib/
 imgui.ini
 *.afdesign
 *.cap
+install/
