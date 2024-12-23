@@ -61,3 +61,18 @@ void brk::editor::ui::UiData::ModalPopup::Display()
 
 	ImGui::EndPopup();
 }
+
+void brk::editor::ui::OpenProjectCallback(
+	void* ptr,
+	const char* const* filelist,
+	int filter)
+{
+	using brk::editor::ui::UiData;
+
+	if (!filelist || !filelist[0])
+		return;
+
+	UiData* data = static_cast<UiData*>(ptr);
+	data->m_FilePath = filelist[0];
+	data->m_ProjectLoadRequested = true;
+}

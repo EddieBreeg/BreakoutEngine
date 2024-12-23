@@ -19,7 +19,6 @@ target_link_libraries(BRK_EDITOR PRIVATE
 	Breakout::DevUi
 	Breakout::Managers
 	ImGui::ImGui
-	TinyFileDialogs
 	BRK_INCLUDES
 	nlohmann_json::nlohmann_json
 	SDL3::SDL3

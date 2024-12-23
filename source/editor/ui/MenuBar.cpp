@@ -1,15 +1,13 @@
 #include "UiData.hpp"
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
-#include <tinyfiledialogs.h>
 #include <array>
 #include <imgui.h>
 #include <imgui/DevUiContext.hpp>
 #include <SDL3/SDL_dialog.h>
 
 namespace {
-	constexpr const char* s_BrkExt = "*.brk";
-
+	constexpr SDL_DialogFileFilter s_ProjectFileFilter{ "Project File", "brk" };
 	constexpr SDL_DialogFileFilter s_SceneFileFilter{ "Scene File", "brkscn" };
 
 	void SceneSaveCallback(void* ptr, const char* const* filelist, int filter)
@@ -23,7 +21,6 @@ namespace {
 		data->m_FilePath = filelist[0];
 		data->m_SceneSaveRequested = true;
 	}
-
 } // namespace
 
 void brk::editor::ui::UiData::MenuBar()
@@ -31,17 +28,20 @@ void brk::editor::ui::UiData::MenuBar()
 	if (!ImGui::BeginMainMenuBar())
 		return;
 
+	SDL_Window* const window = dev_ui::Context::s_Instance.GetWindow();
+
 	if (ImGui::BeginMenu("File"))
 	{
 		if (ImGui::MenuItem("Open Project", "Ctrl+Shift+O"))
 		{
-			const char* filePath =
-				tinyfd_openFileDialog("Open Project", "", 1, &s_BrkExt, nullptr, 0);
-			if (filePath)
-			{
-				m_FilePath = filePath;
-				m_ProjectLoadRequested = true;
-			}
+			SDL_ShowOpenFileDialog(
+				OpenProjectCallback,
+				this,
+				window,
+				&s_ProjectFileFilter,
+				1,
+				nullptr,
+				false);
 		}
 
 		m_ShowSceneSelector = ImGui::MenuItem("Open Scene", "Ctrl+O");
@@ -55,7 +55,6 @@ void brk::editor::ui::UiData::MenuBar()
 			}
 			else
 			{
-				SDL_Window* const window = dev_ui::Context::s_Instance.GetWindow();
 				SDL_ShowSaveFileDialog(
 					SceneSaveCallback,
 					this,

@@ -1,14 +1,13 @@
 #include "UiData.hpp"
 #ifdef BRK_EDITOR
 
-#include <tinyfiledialogs.h>
-#include <array>
 #include <editor/Editor.hpp>
 #include <imgui.h>
-#include <filesystem>
+#include <imgui/DevUiContext.hpp>
+#include <SDL3/SDL_dialog.h>
 
 namespace {
-	const char* s_BrkExt = "*.brk";
+	constexpr SDL_DialogFileFilter s_ProjectFileFilter{ "Project File", "brk" };
 }
 
 void brk::editor::ui::UiData::StartupWindow()
@@ -18,14 +17,14 @@ void brk::editor::ui::UiData::StartupWindow()
 				"project or load an existing one.");
 	if (ImGui::Button("Load Project"))
 	{
-		const char* filePath =
-			tinyfd_openFileDialog("Open Project", "", 1, &s_BrkExt, nullptr, 0);
-
-		if (filePath)
-		{
-			m_ProjectLoadRequested = true;
-			m_FilePath = filePath;
-		}
+		SDL_ShowOpenFileDialog(
+			OpenProjectCallback,
+			this,
+			dev_ui::Context::s_Instance.GetWindow(),
+			&s_ProjectFileFilter,
+			1,
+			nullptr,
+			false);
 	}
 	ImGui::End();
 }

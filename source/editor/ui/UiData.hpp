@@ -33,6 +33,8 @@ namespace brk::editor::ui {
 	static constexpr const char* s_StrOutliner = "Outliner";
 	static constexpr const char* s_StrResourceExplorer = "Resource Explorer";
 
+	void OpenProjectCallback(void* ptr, const char* const* filelist, int filter);
+
 	struct BRK_EDITOR_API UiData
 	{
 		void Display(
@@ -63,10 +65,10 @@ namespace brk::editor::ui {
 		bool m_ShowOutliner = false;
 		bool m_ShowResourceCreationWindow = false;
 
-		bool m_ProjectLoadRequested = false;
-		bool m_SceneLoadRequested = false;
-		bool m_NewSceneRequested = false;
 		bool m_AddResourceRequested = false;
+		bool m_NewSceneRequested = false;
+		bool m_SceneLoadRequested = false;
+		std::atomic_bool m_ProjectLoadRequested = false;
 		std::atomic_bool m_SceneSaveRequested = false;
 
 		bool m_LayoutResetRequested = false;
