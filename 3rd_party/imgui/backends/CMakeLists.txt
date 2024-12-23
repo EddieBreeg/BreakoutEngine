@@ -1,6 +1,9 @@
 function(ImGuiBackend backendName)
 	string(TOUPPER "IMGUI_${backendName}" LIBNAME)
-	add_library(${LIBNAME} STATIC "imgui_impl_${backendName}.cpp")
+	add_library(${LIBNAME} STATIC 
+		"imgui_impl_${backendName}.cpp"
+		"imgui_impl_${backendName}.h"
+	)
 	target_include_directories(${LIBNAME} PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/..)
 endfunction(ImGuiBackend)
 

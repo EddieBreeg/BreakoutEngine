@@ -9,6 +9,7 @@ add_library(BZLib2 STATIC
 	decompress.c
 	huffman.c
 	randtable.c
+	bzlib.h
 )
 target_include_directories(BZLib2 PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
 add_library(BZip2::BZLib ALIAS BZLib2)

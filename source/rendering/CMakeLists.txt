@@ -12,6 +12,10 @@ if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dx11)
 	target_compile_definitions(BRK_RENDERING PUBLIC BRK_DX11=1)
 	target_link_libraries(BRK_RENDERING PRIVATE d3d11 dxgi)
+elseif(${BRK_RENDER_BACKEND} STREQUAL "OpenGL")
+	target_link_libraries(BRK_RENDERING PRIVATE 
+		glslang::glslang
+		glslang::glslang-default-resource-limits)
 else()
 	message(FATAL_ERROR "Unsupported render backend: ${BRK_RENDER_BACKEND}")
 endif()
