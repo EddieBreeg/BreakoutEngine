@@ -9,6 +9,7 @@
 
 namespace {
 	static constexpr const char* s_DefaultResName = "Unnamed";
+	static constexpr const char* s_StrDeleteResource = "Delete Resource?";
 
 	brk::ResourceTypeInfo* ResourceTypeDropDown(
 		brk::ResourceTypeInfo* current,
@@ -152,38 +153,35 @@ void brk::editor::ui::UiData::ResourceEditor()
 	ImGui::BeginDisabled(disabled);
 	m_ResourceEditorData.m_ReloadRequested = ImGui::Button("Reload");
 	ImGui::SameLine();
-	if (m_ResourceEditorData.m_ShowDeletionWarning |= ImGui::Button("Delete"))
-	{
-		ImGui::OpenPopup("Delete Resource?");
-	}
-	ImGui::EndDisabled();
-
-	if (ImGui::BeginPopupModal(
-			"Delete Resource?",
-			&m_ResourceEditorData.m_ShowDeletionWarning))
+	if (ImGui::Button("Delete"))
 	{
 		const uint32 refCount = resource->GetRefCount();
+		std::string warning;
 		if (refCount)
 		{
-			ImGui::Text(
-				"Are you sure you want to delete %s?\nIt is currently referenced"
-				"%u time(s), all references will become invalid and will have to\n"
-				"be fixed manually.",
-				resource->GetName().c_str(),
+			warning = fmt::format(
+				// clang-format off
+R"(Are you sure you want to delete {}?
+It is currently referenced {} time(s),
+all references will become invalid and
+will have to be fixed manually.)",
+				// clang-format on
+				resource->GetName(),
 				refCount);
 		}
 		else
 		{
-			ImGui::Text(
-				"Are you sure you want to delete %s?",
-				resource->GetName().c_str());
+			warning =
+				fmt::format("Are you sure you want to delete {}?", resource->GetName());
 		}
-		m_ResourceEditorData.m_DeletionRequested = ImGui::Button("Confirm");
-		ImGui::SameLine();
-		m_ResourceEditorData.m_ShowDeletionWarning =
-			!ImGui::Button("Cancel") && !m_ResourceEditorData.m_DeletionRequested;
-		ImGui::EndPopup();
+
+		m_ModalPopup.Open(
+			s_StrDeleteResource,
+			std::move(warning),
+			&m_ResourceEditorData.m_DeletionRequested);
 	}
+
+	ImGui::EndDisabled();
 
 	if (!m_ResourceEditorData.m_Info->m_Widget)
 		goto RES_EDITOR_END;

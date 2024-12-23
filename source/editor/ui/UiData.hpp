@@ -80,22 +80,13 @@ namespace brk::editor::ui {
 			bool m_Show = false;
 		};
 
-		struct ComponentDeletePopup
-		{
-			bool m_Show = false;
-			ecs::GameObject::Component* m_Component = nullptr;
-
-			bool Display();
-		};
-
 		struct
 		{
 			ecs::GameObject* m_SelectedObject = nullptr;
 			ComponentTypeSelector m_TypeSelector;
-			ComponentDeletePopup m_CompDeletePopup;
+			uint32 m_DeletedComponent = ~0u;
 			bool m_AddComponentRequested = false;
 			bool m_CreateObjectRequested = false;
-			bool m_ShowDeleteWarning = false;
 			bool m_DeleteObjectRequested = false;
 			bool m_DeleteComponentRequested = false;
 		} m_InspectorData;
@@ -112,16 +103,16 @@ namespace brk::editor::ui {
 			Resource* m_Resource = nullptr;
 			bool m_ReloadRequested = false;
 			bool m_SaveRequested = false;
-			bool m_ShowDeletionWarning = false;
 			bool m_DeletionRequested = false;
 		} m_ResourceEditorData;
 
 		struct ModalPopup
 		{
 			bool m_Show = false;
+			bool* m_Confirmed = nullptr;
 			const char* m_Title = nullptr;
 			std::string m_Content;
-			void Open(const char* title, std::string content);
+			void Open(const char* title, std::string content, bool* confirmed = nullptr);
 			void Display();
 		} m_ModalPopup;
 

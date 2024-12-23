@@ -1,5 +1,6 @@
 #include "UiData.hpp"
 #ifdef BRK_EDITOR
+#include <core/StringViewFormatter.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>
 #include <ecs/World.hpp>
@@ -97,21 +98,12 @@ bool brk::editor::ui::UiData::Inspector(
 	dev_ui::ULIDWidget("ULID", object->m_Id);
 	IMGUI_LEFT_LABEL(ImGui::InputText, "Name", &object->m_Name);
 
-	if (m_InspectorData.m_ShowDeleteWarning |= ImGui::Button("Delete Object"))
+	if (ImGui::Button("Delete Object"))
 	{
-		ImGui::OpenPopup(s_StrDeleteObject);
-	}
-
-	if (ImGui::BeginPopupModal(s_StrDeleteObject, &m_InspectorData.m_ShowDeleteWarning))
-	{
-		m_InspectorData.m_DeleteObjectRequested = ImGui::Button("Confirm");
-		ImGui::SameLine();
-		m_InspectorData.m_ShowDeleteWarning =
-			!(m_InspectorData.m_DeleteObjectRequested || ImGui::Button("Cancel"));
-		ImGui::EndPopup();
-
-		ImGui::End();
-		return false;
+		m_ModalPopup.Open(
+			s_StrDeleteObject,
+			fmt::format("Delete {}?", object->m_Name),
+			&m_InspectorData.m_DeleteObjectRequested);
 	}
 
 	ImGui::SeparatorText("Components");
@@ -119,7 +111,7 @@ bool brk::editor::ui::UiData::Inspector(
 	uint32 stackId = 0;
 
 	bool result = false;
-	for (auto& component : object->m_Components)
+	for (auto&& [component, index] : Enumerate(object->m_Components))
 	{
 		if (!ImGui::TreeNode(component.m_Info->m_Name.GetPtr()))
 			continue;
@@ -130,9 +122,13 @@ bool brk::editor::ui::UiData::Inspector(
 			object->m_Entity);
 
 		ImGui::PushID(stackId++);
-		if ((m_InspectorData.m_CompDeletePopup.m_Show |= ImGui::Button("Delete")))
+		if (ImGui::Button("Delete"))
 		{
-			m_InspectorData.m_CompDeletePopup.m_Component = &component;
+			m_ModalPopup.Open(
+				s_StrDeleteComponent,
+				fmt::format("Delete {} component?", component.m_Info->m_Name),
+				&m_InspectorData.m_DeleteComponentRequested);
+			m_InspectorData.m_DeletedComponent = index;
 			ImGui::PopID();
 			ImGui::TreePop();
 			break;
@@ -141,9 +137,6 @@ bool brk::editor::ui::UiData::Inspector(
 		ImGui::PopID();
 		ImGui::TreePop();
 	}
-
-	m_InspectorData.m_DeleteComponentRequested =
-		m_InspectorData.m_CompDeletePopup.Display();
 
 	if (m_InspectorData.m_TypeSelector.m_Show || ImGui::Button("Add Component"))
 	{

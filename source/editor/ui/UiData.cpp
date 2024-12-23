@@ -30,9 +30,13 @@ void brk::editor::ui::UiData::Display(
 	m_ModalPopup.Display();
 }
 
-void brk::editor::ui::UiData::ModalPopup::Open(const char* title, std::string content)
+void brk::editor::ui::UiData::ModalPopup::Open(
+	const char* title,
+	std::string content,
+	bool* confirmed)
 {
 	m_Title = title;
+	m_Confirmed = confirmed;
 	m_Content = std::move(content);
 	m_Show = true;
 }
@@ -41,35 +45,19 @@ void brk::editor::ui::UiData::ModalPopup::Display()
 {
 	if (!m_Show)
 		return;
+
 	ImGui::OpenPopup(m_Title);
 	if (!ImGui::BeginPopupModal(m_Title, &m_Show))
 		return;
+
 	ImGui::TextUnformatted(m_Content.c_str(), m_Content.c_str() + m_Content.length());
-	ImGui::EndPopup();
-}
-
-bool brk::editor::ui::UiData::ComponentDeletePopup::Display()
-{
-	if (!m_Show)
-		return false;
-
-	ImGui::OpenPopup(s_StrDeleteComponent);
-
-	if (!ImGui::BeginPopup(s_StrDeleteComponent))
-		return false;
-
-	ImGui::Text("Delete %s?", m_Component->m_Info->m_Name.GetPtr());
-
-	if (ImGui::Button("Delete"))
+	if (m_Confirmed)
 	{
-		m_Show = false;
-		ImGui::EndPopup();
-		return true;
+		bool confirmed = ImGui::Button("Confirm");
+		ImGui::SameLine();
+		m_Show = !(confirmed || ImGui::Button("Cancel"));
+		*m_Confirmed = confirmed;
 	}
 
-	ImGui::SameLine();
-	m_Show = !ImGui::Button("Cancel");
-
 	ImGui::EndPopup();
-	return false;
 }
