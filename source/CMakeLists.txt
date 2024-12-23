@@ -44,7 +44,7 @@ add_library(Breakout::Includes ALIAS BRK_INCLUDES)
 add_subdirectory(math)
 add_subdirectory(core)
 
-set(CMAKE_FOLDER "Engine/Tools")
+set(CMAKE_FOLDER "Breakout Engine/Tools")
 add_subdirectory(tools)
 
 function(EmbedAsset AssetFile AssetName NamespaceName)
@@ -65,7 +65,7 @@ function(EmbedAsset AssetFile AssetName NamespaceName)
 	)
 endfunction(EmbedAsset AssetFile AssetName NamespaceName)
 
-set(CMAKE_FOLDER "Engine")
+set(CMAKE_FOLDER "Breakout Engine")
 
 add_subdirectory(rendering)
 add_subdirectory(ecs)
