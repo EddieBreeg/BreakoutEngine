@@ -43,6 +43,26 @@ namespace {
 
 		ImGui::DockBuilderFinish(dockspaceId);
 	}
+
+	brk::ULID CreateScene(brk::SceneManager& manager, std::filesystem::path path)
+	{
+		using namespace brk;
+		const std::string pathStr = std::filesystem::relative(path).u8string();
+
+		const uint32 nameEnd = Min(pathStr.rfind('.'), pathStr.length());
+		const char* nameStart = pathStr.c_str() + nameEnd;
+		{
+			const char* end = pathStr.c_str();
+			while (nameStart != end)
+			{
+				if (nameStart[-1] == '/' || nameStart[-1] == '\\')
+					break;
+				--nameStart;
+			}
+		}
+		std::string name{ nameStart, pathStr.c_str() + nameEnd };
+		return manager.CreateNewScene(std::move(name), std::move(pathStr)).GetId();
+	}
 } // namespace
 
 std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
@@ -68,25 +88,6 @@ brk::editor::Editor::Editor(
 		return;
 	m_UiData->m_ProjectLoadRequested = true;
 	m_UiData->m_FilePath = argv[1];
-}
-
-void brk::editor::Editor::CreateNewScene(const char* path)
-{
-	const std::filesystem::path scenePath = std::filesystem::relative(path);
-	const std::string name = scenePath.filename().stem().u8string();
-
-	const SceneDescription& sceneDesc =
-		SceneManager::GetInstance().CreateNewScene(std::move(name), scenePath.u8string());
-
-	std::ofstream outFile{ scenePath };
-	BRK_ASSERT(outFile.is_open(), "Couldn't create {}", sceneDesc.GetPath());
-
-	nlohmann::json json{
-		{ "name", sceneDesc.GetName() },
-		{ "id", sceneDesc.GetId() },
-	};
-
-	outFile << json.dump(4);
 }
 
 void brk::editor::Editor::SaveProjectFile()
@@ -130,12 +131,14 @@ void brk::editor::Editor::Update()
 	if (m_UiData->m_ProjectLoadRequested)
 	{
 		m_UiData->m_ProjectLoadRequested = false;
-		LoadProject(m_UiData->m_FilePath);
+		LoadProject(std::move(m_UiData->m_FilePath));
+		m_UiData->m_ShowSceneSelector = true;
 		return;
 	}
 	if (m_UiData->m_SceneLoadRequested)
 	{
 		m_UiData->m_SceneLoadRequested = false;
+		m_UiData->m_ShowSceneSelector = false;
 		LoadScene(m_UiData->m_SceneId);
 		return;
 	}
@@ -143,12 +146,20 @@ void brk::editor::Editor::Update()
 	if (m_UiData->m_NewSceneRequested)
 	{
 		m_UiData->m_NewSceneRequested = false;
-		CreateNewScene(m_UiData->m_FilePath);
-		SaveProjectFile();
+		m_UiData->m_InspectorData.m_SelectedObject = nullptr;
+		m_UiData->m_SceneId = {};
+		world.clear();
+		m_SceneManager.ClearCurrentScene();
 	}
 
 	if (m_UiData->m_SceneSaveRequested)
 	{
+		if (!m_UiData->m_SceneId)
+		{
+			m_UiData->m_SceneId =
+				CreateScene(m_SceneManager, std::move(m_UiData->m_FilePath));
+			SaveProjectFile();
+		}
 		m_UiData->m_SceneSaveRequested = false;
 		m_SceneManager.SaveCurrentSceneToFile(world);
 	}
@@ -225,10 +236,10 @@ void brk::editor::Editor::Update()
 	}
 }
 
-void brk::editor::Editor::LoadProject(const char* filePath)
+void brk::editor::Editor::LoadProject(const std::filesystem::path filePath)
 {
-	m_ProjectFilePath = filePath;
-	std::ifstream projectFile{ m_ProjectFilePath };
+	m_ProjectFilePath = filePath.u8string();
+	std::ifstream projectFile{ filePath };
 	if (!projectFile.is_open())
 	{
 		BRK_LOG_WARNING(
@@ -240,7 +251,7 @@ void brk::editor::Editor::LoadProject(const char* filePath)
 	}
 	BRK_LOG_TRACE("Loading project '{}'", m_ProjectFilePath);
 	Project proj;
-	proj.m_ProjectDir = std::filesystem::path(m_ProjectFilePath).parent_path();
+	proj.m_ProjectDir = filePath.parent_path();
 	if (proj.m_ProjectDir.empty())
 	{
 		proj.m_ProjectDir = ".";
@@ -303,11 +314,6 @@ void brk::editor::Editor::ShowUI()
 			m_SceneManager,
 			componentRegistry);
 		return;
-	}
-
-	if (scenes.empty())
-	{
-		m_UiData->OpenSceneCreationWindow();
 	}
 
 	m_UiData->Display(

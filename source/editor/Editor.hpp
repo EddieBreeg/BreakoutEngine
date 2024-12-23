@@ -43,9 +43,8 @@ namespace brk::editor {
 			int argc,
 			const char** argv);
 
-		void LoadProject(const char* path);
+		void LoadProject(const std::filesystem::path filePath);
 		void LoadScene(ULID id);
-		void CreateNewScene(const char* path);
 
 		void SaveProjectFile();
 

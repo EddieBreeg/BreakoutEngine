@@ -7,7 +7,8 @@
 
 void brk::editor::ui::UiData::SceneSelection(const TULIDMap<SceneDescription>& scenes)
 {
-	ImGui::Begin("Select a scene", nullptr);
+	if (!ImGui::Begin("Select a scene", &m_ShowSceneSelector))
+		return;
 
 	for (const auto& [id, descr] : scenes)
 	{

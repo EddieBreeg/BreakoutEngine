@@ -7,6 +7,7 @@
 #include <core/ULID.hpp>
 #include <ecs/GameObject.hpp>
 #include <ecs/WorldFwd.hpp>
+#include <filesystem>
 #include <imgui.h>
 
 namespace {
@@ -58,19 +59,19 @@ namespace brk::editor::ui {
 		void OpenSceneCreationWindow();
 
 		bool m_ShowStartupWindow = false;
-		bool m_ShowSceneCreationWindow = false;
+		bool m_ShowSceneSelector = false;
 		bool m_ShowOutliner = false;
 		bool m_ShowResourceCreationWindow = false;
 
 		bool m_ProjectLoadRequested = false;
 		bool m_SceneLoadRequested = false;
 		bool m_NewSceneRequested = false;
-		bool m_SceneSaveRequested = false;
 		bool m_AddResourceRequested = false;
+		std::atomic_bool m_SceneSaveRequested = false;
 
 		bool m_LayoutResetRequested = false;
 
-		const char* m_FilePath = nullptr;
+		std::filesystem::path m_FilePath;
 
 		struct ComponentTypeSelector
 		{

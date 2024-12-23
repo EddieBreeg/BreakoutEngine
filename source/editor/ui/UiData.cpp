@@ -16,16 +16,9 @@ void brk::editor::ui::UiData::Display(
 		return;
 	}
 
-	if (m_ShowSceneCreationWindow)
-	{
-		SceneCreation();
-		return;
-	}
-
-	if (!m_SceneId)
+	if (m_ShowSceneSelector)
 	{
 		SceneSelection(sceneManager.GetSceneDesriptions());
-		return;
 	}
 
 	Outliner(sceneManager);

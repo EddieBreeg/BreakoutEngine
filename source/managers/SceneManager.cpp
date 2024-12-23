@@ -98,6 +98,7 @@ const brk::SceneDescription& brk::SceneManager::CreateNewScene(
 	std::string path)
 {
 	SceneDescription desc{ std::move(name), std::move(path) };
+	m_CurrentSceneId = desc.GetId();
 	return m_Descriptions.emplace(desc.GetId(), std::move(desc)).first->second;
 }
 #endif
@@ -137,6 +138,12 @@ void brk::SceneManager::LoadScene(const ULID id)
 #endif
 }
 
+void brk::SceneManager::ClearCurrentScene()
+{
+	m_Objects.clear();
+	m_CurrentSceneId = {};
+}
+
 const brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id) const
 {
 	const auto it = m_Objects.find(id);
@@ -151,9 +158,6 @@ brk::ecs::GameObject* brk::SceneManager::GetObject(const ULID id)
 
 brk::ecs::GameObject& brk::SceneManager::CreateObject(ecs::EntityWorld& world)
 {
-	BRK_ASSERT(
-		m_CurrentSceneId,
-		"Tried to create object but no scene is currently loaded");
 	ecs::GameObject object{
 		ULID::Generate(),
 		fmt::format("Game Object {}", m_Objects.size()),

@@ -8,7 +8,6 @@ add_library(BRK_EDITOR ${BRK_LIBTYPE}
 	ui/Outliner.cpp
 	ui/ResourceExplorer.cpp
 	ui/StartupWindow.cpp
-	ui/SceneCreation.cpp
 	ui/SceneSelection.cpp
 	ui/UiData.cpp
 )
@@ -23,6 +22,7 @@ target_link_libraries(BRK_EDITOR PRIVATE
 	TinyFileDialogs
 	BRK_INCLUDES
 	nlohmann_json::nlohmann_json
+	SDL3::SDL3
 )
 
 add_library(Breakout::Editor ALIAS BRK_EDITOR)

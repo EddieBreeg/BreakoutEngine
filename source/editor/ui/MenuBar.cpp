@@ -4,9 +4,26 @@
 #include <tinyfiledialogs.h>
 #include <array>
 #include <imgui.h>
+#include <imgui/DevUiContext.hpp>
+#include <SDL3/SDL_dialog.h>
 
 namespace {
-	const char* s_BrkExt = "*.brk";
+	constexpr const char* s_BrkExt = "*.brk";
+
+	constexpr SDL_DialogFileFilter s_SceneFileFilter{ "Scene File", "brkscn" };
+
+	void SceneSaveCallback(void* ptr, const char* const* filelist, int filter)
+	{
+		using brk::editor::ui::UiData;
+
+		if (!filelist || !filelist[0])
+			return;
+
+		UiData* data = static_cast<UiData*>(ptr);
+		data->m_FilePath = filelist[0];
+		data->m_SceneSaveRequested = true;
+	}
+
 } // namespace
 
 void brk::editor::ui::UiData::MenuBar()
@@ -27,12 +44,28 @@ void brk::editor::ui::UiData::MenuBar()
 			}
 		}
 
-		if (ImGui::MenuItem("New Scene", "Ctrl+N"))
+		m_ShowSceneSelector = ImGui::MenuItem("Open Scene", "Ctrl+O");
+		m_NewSceneRequested = ImGui::MenuItem("New Scene", "Ctrl+N");
+
+		if (ImGui::MenuItem("Save Scene", "Ctrl+S"))
 		{
-			OpenSceneCreationWindow();
+			if (m_SceneId)
+			{
+				m_SceneSaveRequested = true;
+			}
+			else
+			{
+				SDL_Window* const window = dev_ui::Context::s_Instance.GetWindow();
+				SDL_ShowSaveFileDialog(
+					SceneSaveCallback,
+					this,
+					window,
+					&s_SceneFileFilter,
+					1,
+					nullptr);
+			}
 		}
 
-		m_SceneSaveRequested = ImGui::MenuItem("Save Scene", "Ctrl+S", false, m_SceneId);
 		ImGui::EndMenu();
 	}
 

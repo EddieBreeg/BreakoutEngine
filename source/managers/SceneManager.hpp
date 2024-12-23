@@ -32,6 +32,7 @@ namespace brk {
 		 * Attemps to get a scene description and load all the corresponding game objects
 		 */
 		void LoadScene(const ULID sceneId);
+		void ClearCurrentScene();
 
 		[[nodiscard]] const ecs::GameObject* GetObject(const ULID id) const;
 		[[nodiscard]] ecs::GameObject* GetObject(const ULID id);
