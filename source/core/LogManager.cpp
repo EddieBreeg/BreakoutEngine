@@ -1,9 +1,10 @@
-#include <core/LogManager.hpp>
+#include "LogManager.hpp"
 
 #include <math/Vector.hpp>
 
 #include <fmt/ostream.h>
 #include <iostream>
+#include <string.h>
 
 namespace {
 	std::ostream& operator<<(std::ostream& os, const brk::StringView str)
@@ -18,9 +19,17 @@ namespace {
 		"\033[1;31m",
 		"\033[1;41;37m",
 	};
+
+	thread_local char s_ErrorBuffer[2048];
 } // namespace
 
 namespace brk {
+	const char* brk::StrError(int code)
+	{
+		strerror_s(s_ErrorBuffer, sizeof(s_ErrorBuffer), code);
+		return s_ErrorBuffer;
+	}
+
 	LogManager LogManager::s_Instance;
 
 	void LogManager::Log(
@@ -40,5 +49,4 @@ namespace brk {
 			s_Styles[level],
 			message);
 	}
-
 } // namespace brk

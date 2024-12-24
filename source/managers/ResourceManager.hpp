@@ -12,10 +12,10 @@
 namespace brk {
 	using TResourceTypeMap = std::unordered_map<uint32, ResourceTypeInfo*, Hash<uint32>>;
 
-	class BRK_MANAGERS_API ResourceManager : public Singleton<ResourceManager>
+	class ResourceManager : public Singleton<ResourceManager>
 	{
 	public:
-		~ResourceManager();
+		BRK_MANAGERS_API ~ResourceManager();
 
 		/**
 		 * Registers a new resource type. This is required in order to instanciate this
@@ -35,7 +35,7 @@ namespace brk {
 		 * RegisterResourceType before calling this function. Will assert if this
 		 * condition isn't met.
 		 */
-		void CreateResources(const nlohmann::json& list);
+		BRK_MANAGERS_API void CreateResources(const nlohmann::json& list);
 #endif
 
 		[[nodiscard]] ResourceTypeInfo& GetResourceTypeInfo(StringView typeName) const;
@@ -72,14 +72,14 @@ namespace brk {
 		 * pointer that was passed in; the object will be freed when the manager shuts
 		 * down.
 		 */
-		void AddResource(Resource* res);
+		BRK_MANAGERS_API void AddResource(Resource* res);
 		/**
 		 * Deletes a resource. The resource is marked for deletion, meaning it will be
 		 * deleted when the last reference to it is destroyed, or immediately if no such
 		 * reference exists. In either case, it is removed from the resource map
 		 * immediately.
 		 */
-		void DeleteResource(Resource* res);
+		BRK_MANAGERS_API void DeleteResource(Resource* res);
 
 		/**
 		 * \return A reference to the resource with the corresponding ID, or a null
@@ -89,12 +89,12 @@ namespace brk {
 		ResourceRef<R> GetRef(const ULID id);
 
 	private:
-		static std::unique_ptr<ResourceManager> s_Instance;
+		BRK_MANAGERS_API static inline std::unique_ptr<ResourceManager> s_Instance;
 		friend class Singleton<ResourceManager>;
 
 		friend struct RetainTraits<Resource>;
 
-		ResourceManager(ecs::EntityWorld& world) noexcept;
+		BRK_MANAGERS_API ResourceManager(ecs::EntityWorld& world) noexcept;
 
 		TULIDMap<Resource*> m_Resources;
 

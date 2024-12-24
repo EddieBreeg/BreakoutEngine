@@ -13,7 +13,7 @@ namespace brk
 }
 
 namespace brk::editor {
-	class BRK_EDITOR_API Project
+	class Project
 	{
 	public:
 		Project() = default;
@@ -26,10 +26,11 @@ namespace brk::editor {
 		[[nodiscard]] const std::string& GetName() const noexcept { return m_Name; }
 
 	private:
-		std::filesystem::path m_ProjectDir;
-		std::string m_Name;
 		friend class Editor;
 		friend struct JsonLoader<Project, void>;
+
+		std::filesystem::path m_ProjectDir;
+		std::string m_Name;
 
 	public:
 		static constexpr meta::FieldList<&Project::m_Name> Fields{

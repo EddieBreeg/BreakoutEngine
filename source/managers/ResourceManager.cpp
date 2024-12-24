@@ -1,10 +1,9 @@
 #include "ResourceManager.hpp"
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/Resource.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <entt/entity/registry.hpp>
-
-std::unique_ptr<brk::ResourceManager> brk::ResourceManager::s_Instance;
 
 brk::ResourceManager::~ResourceManager()
 {

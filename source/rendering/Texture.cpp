@@ -1,3 +1,5 @@
+#define _CRT_SECURE_NO_WARNINGS
+
 #include "Texture.hpp"
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
@@ -66,7 +68,7 @@ bool brk::rdr::Texture2d::DoLoad()
 			"Cannot load texture {} from file {}: {}",
 			static_cast<const Resource&>(*this),
 			m_FilePath,
-			std::strerror(errno));
+			StrError(errno));
 		return false;
 	}
 
@@ -119,17 +121,17 @@ bool brk::rdr::Texture2dWidget::CreationUi()
 	dev_ui::EnumDropDown(
 		"Pixel Format",
 		s_PixelFormatNames,
-		ArraySize(s_PixelFormatNames),
+		(uint32)ArraySize(s_PixelFormatNames),
 		m_Settings.m_Format);
 	dev_ui::EnumDropDown(
 		"Filter Mode",
 		s_FilterModeNames,
-		ArraySize(s_FilterModeNames),
+		(uint32)ArraySize(s_FilterModeNames),
 		m_Settings.m_FilterMode);
 	dev_ui::EnumDropDown(
 		"UV Address Mode",
 		s_AddressModeNames,
-		ArraySize(s_AddressModeNames),
+		(uint32)ArraySize(s_AddressModeNames),
 		m_Settings.m_UvAddressMode);
 	if (m_Settings.m_UvAddressMode == EAddressMode::Border)
 	{

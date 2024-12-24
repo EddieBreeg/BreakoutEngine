@@ -22,7 +22,7 @@ void brk::editor::ui::UiData::Display(
 	}
 
 	Outliner(sceneManager);
-	Inspector(world, sceneManager, componentRegistry);
+	Inspector(world, componentRegistry);
 	ResourceExplorer(resourceManager);
 	ResourceEditor();
 	if (m_ShowResourceCreationWindow)
@@ -65,7 +65,7 @@ void brk::editor::ui::UiData::ModalPopup::Display()
 void brk::editor::ui::OpenProjectCallback(
 	void* ptr,
 	const char* const* filelist,
-	int filter)
+	int)
 {
 	using brk::editor::ui::UiData;
 

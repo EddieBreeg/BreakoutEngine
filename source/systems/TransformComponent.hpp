@@ -8,15 +8,16 @@
 #include <math/Transform.hpp>
 
 namespace brk {
-	struct BRK_SYSTEMS_API TransformComponent
+	struct TransformComponent
 	{
 		float3 m_Translate = { 0, 0, 0 };
 		float3 m_Scale = { 1, 1, 1 };
 		math::Quaternion m_Rotation = glm::identity<math::Quaternion>();
 
-		[[nodiscard]] float4x4 GetMatrix() const;
+		BRK_SYSTEMS_API [[nodiscard]] float4x4 GetMatrix() const;
 
-		static const ecs::ComponentInfo Info;
+		BRK_SYSTEMS_API static const ecs::ComponentInfo Info;
+
 		static constexpr meta::FieldList<
 			&TransformComponent::m_Translate,
 			&TransformComponent::m_Scale,

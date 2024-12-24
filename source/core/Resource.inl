@@ -1,4 +1,3 @@
-#include "ResourceFwd.hpp"
 namespace brk {
 	inline bool Resource::DoLoad()
 	{
@@ -55,7 +54,7 @@ namespace brk {
 		return false;
 	}
 
-	inline bool ResourceUiWidget::EditionUi(const Resource& res, bool& out_shouldReload)
+	inline bool ResourceUiWidget::EditionUi(const Resource&, bool&)
 	{
 		return false;
 	}

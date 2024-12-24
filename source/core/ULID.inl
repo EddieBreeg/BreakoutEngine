@@ -1,7 +1,7 @@
 #include <array>
 #include "ULID.hpp"
 
-constexpr brk::ULID::ULID(
+inline constexpr brk::ULID::ULID(
 	const uint64 timestamp,
 	const uint16 rand1,
 	const uint64 rand2) noexcept
@@ -45,7 +45,7 @@ inline constexpr char* brk::ULID::ToChars(char (&out_buf)[N]) const noexcept
 	return out_buf + 26;
 }
 
-constexpr brk::ULID brk::ULID::FromString(const StringView str) noexcept
+inline constexpr brk::ULID brk::ULID::FromString(const StringView str) noexcept
 {
 	if (str.GetLen() < 26)
 		return {};
@@ -85,12 +85,12 @@ constexpr brk::ULID brk::ULID::FromString(const StringView str) noexcept
 	return res;
 }
 
-constexpr bool brk::ULID::operator==(const ULID other) const noexcept
+inline constexpr bool brk::ULID::operator==(const ULID other) const noexcept
 {
 	return m_Left == other.m_Left && m_Right == other.m_Right;
 }
 
-constexpr uint64 brk::Hash<brk::ULID>::operator()(const ULID id) const noexcept
+inline constexpr uint64 brk::Hash<brk::ULID>::operator()(const ULID id) const noexcept
 {
 	return CombineHash(id.m_Left, id.m_Right);
 }

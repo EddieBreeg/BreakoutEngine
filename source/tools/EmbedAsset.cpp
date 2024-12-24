@@ -1,5 +1,6 @@
 #include "DataEmbed.hpp"
 #include <core/IO.hpp>
+#include <core/LogManager.hpp>
 #include <fstream>
 
 namespace {
@@ -79,7 +80,7 @@ int main(int argc, char const* argv[])
 			stderr,
 			"Failed to open %s: %s\n",
 			settings.m_AssetFilePath,
-			std::strerror(errno));
+			brk::StrError(errno));
 		return 1;
 	}
 	std::vector<char> contents(inFile.tellg());
@@ -90,7 +91,7 @@ int main(int argc, char const* argv[])
 			stderr,
 			"Failed to read %s: %s\n",
 			settings.m_AssetFilePath,
-			std::strerror(errno));
+			brk::StrError(errno));
 		return 1;
 	}
 	if (contents.empty())

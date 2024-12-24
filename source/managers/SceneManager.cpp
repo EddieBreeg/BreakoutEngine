@@ -67,8 +67,6 @@ namespace {
 	}
 } // namespace
 
-std::unique_ptr<brk::SceneManager> brk::SceneManager::s_Instance;
-
 void brk::SceneManager::LoadSceneDescriptions(const nlohmann::json& descriptions)
 {
 	BRK_ASSERT(
@@ -208,6 +206,6 @@ void brk::SceneManager::SaveCurrentSceneToFile(const ecs::EntityWorld& world) co
 		file.is_open(),
 		"Failed to save scene to {}: {}",
 		desc.GetPath(),
-		std::strerror(errno));
+		StrError(errno));
 	file << json.dump(4);
 }

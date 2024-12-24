@@ -57,7 +57,7 @@ void brk::ResourceLoader::ProcessBatch()
 		if (m_ActiveRequests)
 			return;
 
-		m_ActiveRequests = m_PendingRequests = m_Jobs.size();
+		m_ActiveRequests = m_PendingRequests = static_cast<uint32>(m_Jobs.size());
 	}
 	m_Cv.notify_all();
 }
@@ -65,7 +65,7 @@ void brk::ResourceLoader::ProcessBatch()
 uint32 brk::ResourceLoader::GetQueueSize()
 {
 	std::unique_lock lock{ m_Mutex };
-	return m_Jobs.size();
+	return static_cast<uint32>(m_Jobs.size());
 }
 
 brk::ResourceLoader::ResourceLoader()

@@ -6,12 +6,12 @@
 #include <core/ResourceFwd.hpp>
 
 namespace brk::rdr {
-	class BRK_RENDERING_API Mesh : public Resource
+	class Mesh : public Resource
 	{
 	public:
 		using Resource::Resource;
 
-		Mesh(
+		BRK_RENDERING_API Mesh(
 			const Vertex3d* vertices,
 			const uint32 nVertices,
 			const uint32* indices,
@@ -46,8 +46,8 @@ namespace brk::rdr {
 
 		[[nodiscard]] uint32 GetNumIndices() const noexcept { return m_NumIndices; }
 
-		bool DoLoad() override;
-		void DoUnload() override;
+		BRK_RENDERING_API bool DoLoad() override;
+		BRK_RENDERING_API void DoUnload() override;
 
 		~Mesh() = default;
 
@@ -58,13 +58,14 @@ namespace brk::rdr {
 		uint32 m_NumIndices = 0;
 	};
 
-	class BRK_RENDERING_API MeshWidget : public ResourceUiWidget
+	class MeshWidget : public ResourceUiWidget
 	{
 	public:
 		MeshWidget() = default;
-		void Init(const Resource& res) override;
-		bool CreationUi() override;
-		bool EditionUi(const Resource& res, bool& out_shouldReload) override;
+		BRK_RENDERING_API void Init(const Resource& res) override;
+		BRK_RENDERING_API bool CreationUi() override;
+		BRK_RENDERING_API bool EditionUi(const Resource& res, bool& out_shouldReload)
+			override;
 	};
 } // namespace brk::rdr
 

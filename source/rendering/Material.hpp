@@ -37,10 +37,10 @@ namespace brk::rdr {
 	 * Generic Material class. The material contains all the information to define the
 	 * rendering pipeline, i.e. shaders, rasterizer settings etc...
 	 */
-	class BRK_RENDERING_API Material : public Resource
+	class Material : public Resource
 	{
 	public:
-		Material(const ULID& id);
+		BRK_RENDERING_API Material(const ULID& id);
 		/**
 		 * Manually creates a shader
 		 * \param settings: The material's settings. If source code is provided, the
@@ -52,14 +52,14 @@ namespace brk::rdr {
 		 * used if shader compilation fails, or if the material gets unloaded and reloaded
 		 * at a later point.
 		 */
-		Material(
+		BRK_RENDERING_API Material(
 			const MaterialSettings& settings,
 			const ULID& id = ULID::Generate(),
 			std::string name = {},
 			std::string filePath = {});
 
-		bool DoLoad() noexcept override;
-		void DoUnload() noexcept override;
+		BRK_RENDERING_API bool DoLoad() noexcept override;
+		BRK_RENDERING_API void DoUnload() noexcept override;
 
 		ResourceTypeInfo& GetTypeInfo() const override;
 
@@ -83,19 +83,19 @@ namespace brk::rdr {
 	 * This is meant to be subclassed, because it is unaware of the actual type of
 	 * parameters to upload to the GPU, and therefore can't be loaded from a file
 	 */
-	class BRK_RENDERING_API MaterialInstance : public Resource
+	class MaterialInstance : public Resource
 	{
 	public:
 		ResourceTypeInfo& GetTypeInfo() const override;
 
-		MaterialInstance(const ULID& id, std::string name = {});
+		BRK_RENDERING_API MaterialInstance(const ULID& id, std::string name = {});
 		/**
 		 * Initializes the material instance, without a null param buffer
 		 * \param baseMat: The material this instance is based on
 		 * \param id: The resource id (passed to the Resource constructor)
 		 * \param name: The resource name (passed to the Resource constructor)
 		 */
-		MaterialInstance(
+		BRK_RENDERING_API MaterialInstance(
 			ResourceRef<Material> baseMat,
 			const ULID& id = ULID::Generate(),
 			std::string name = {});
@@ -113,7 +113,7 @@ namespace brk::rdr {
 			const ULID& id = ULID::Generate(),
 			std::string name = {});
 
-		~MaterialInstance();
+		BRK_RENDERING_API ~MaterialInstance();
 
 		static constexpr uint32 s_MaxTextureCount = 8;
 
@@ -123,7 +123,7 @@ namespace brk::rdr {
 		 * \warning This function requires the material instance to be valid (i.e. holding
 		 * a valid material reference), and will assert otherwise
 		 */
-		void SetTexture(uint32 slot, ResourceRef<Texture2d> texture);
+		BRK_RENDERING_API void SetTexture(uint32 slot, ResourceRef<Texture2d> texture);
 		/** Binds a texture references to a texture slot of the material instance
 		 * The textures will be accessible from all shader stages. Valid slot indices
 		 * range from 0 to s_MaxTextureCount - 1.
@@ -133,7 +133,7 @@ namespace brk::rdr {
 		 * \warning This function requires the material instance to be valid, and will
 		 * assert otherwise
 		 */
-		void SetTextures(
+		BRK_RENDERING_API void SetTextures(
 			const ResourceRef<Texture2d>* textures,
 			uint32 numTextures,
 			uint32 startSlot = 0);
@@ -150,14 +150,17 @@ namespace brk::rdr {
 		 * the texture will be fetched directly from the resource manager. Otherwise,
 		 * the id will be stored, and the texture will be retrieved when DoLoad is called.
 		 */
-		void SetTextureId(uint32 slot, const ULID& id);
+		BRK_RENDERING_API void SetTextureId(uint32 slot, const ULID& id);
 		/**
 		 * Sets the texture id for a specific slot. If the material instance is valid,
 		 * the textures will be fetched directly from the resource manager. Otherwise,
 		 * the ids will be stored, and the textures will be retrieved when DoLoad is
 		 * called.
 		 */
-		void SetTextureIds(const ULID* ids, uint32 numIds, uint32 startSlot = 0);
+		BRK_RENDERING_API void SetTextureIds(
+			const ULID* ids,
+			uint32 numIds,
+			uint32 startSlot = 0);
 		template <uint32 N>
 		void SetTextureIds(const ULID (&ids)[N], uint32 startSlot = 0)
 		{
@@ -169,8 +172,8 @@ namespace brk::rdr {
 			return m_Textures;
 		}
 
-		bool DoLoad() override;
-		void DoUnload() override;
+		BRK_RENDERING_API bool DoLoad() override;
+		BRK_RENDERING_API void DoUnload() override;
 
 		[[nodiscard]] const VertexShader& GetVertexShader() const
 		{
@@ -193,7 +196,7 @@ namespace brk::rdr {
 		}
 
 		[[nodiscard]] bool IsValid() const noexcept { return m_IsValid; }
-		[[nodiscard]] bool IsLoaded() const noexcept;
+		BRK_RENDERING_API [[nodiscard]] bool IsLoaded() const noexcept;
 		/**
 		 * Updates the parameter buffer with the provided object
 		 * \param params: This object will be directly uploaded to the GPU, and made

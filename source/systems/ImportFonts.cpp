@@ -21,7 +21,7 @@ namespace brk::editor {
 		io.Fonts->AddFontFromMemoryTTF(
 			data.data(),
 			int32(data.size()),
-			int32(16 * dpiScale),
+			float(int32(16 * dpiScale)),
 			&config);
 	}
 } // namespace brk::editor

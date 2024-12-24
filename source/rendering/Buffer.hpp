@@ -15,7 +15,7 @@ namespace brk::rdr {
 							 updated. Imples CpuWrite */
 	};
 
-	class BRK_RENDERING_API Buffer : public BasicResource<Buffer>
+	class Buffer : public BasicResource<Buffer>
 	{
 	public:
 		enum EType : int8
@@ -31,7 +31,7 @@ namespace brk::rdr {
 
 		using BasicResource<Buffer>::BasicResource;
 
-		Buffer(
+		BRK_RENDERING_API Buffer(
 			EType type,
 			uint32 size,
 			const void* data = nullptr,
@@ -72,7 +72,7 @@ namespace brk::rdr {
 			return *this;
 		}
 
-		void SetData(const void* data, uint32 size);
+		BRK_RENDERING_API void SetData(const void* data, uint32 size);
 		template <class T>
 		void SetData(const T* data, uint32 n)
 		{
@@ -85,7 +85,7 @@ namespace brk::rdr {
 			SetData((const void*)&data, sizeof(T));
 		}
 
-		~Buffer();
+		~Buffer() = default;
 
 	private:
 		EType m_Type = EType::Invalid;

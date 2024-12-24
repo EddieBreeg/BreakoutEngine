@@ -13,26 +13,26 @@ namespace brk {
 	/**
 	 * Pool of threads capable of running jobs concurrently
 	 */
-	class BRK_CORE_API ThreadPool
+	class ThreadPool
 	{
 	public:
-		explicit ThreadPool(const uint32 threadCount);
-		~ThreadPool();
+		BRK_CORE_API explicit ThreadPool(const uint32 threadCount);
+		BRK_CORE_API ~ThreadPool();
 
 		/**
 		 * Starts the threads. This has no effect if the thread pool has been previously
 		 * stopped.
 		 */
-		void Start();
+		BRK_CORE_API void Start();
 		/**
 		 * Waits for all tasks in the queue to be completed.
 		 */
-		void Wait();
+		BRK_CORE_API void Wait();
 		/**
 		 * Stops all running threads, and clears the queue. If a thread is currently
 		 * executing a task, it will stop after finishing said task.
 		 */
-		void Stop();
+		BRK_CORE_API void Stop();
 
 		/**
 		 * Creates a new task that will be picked up by a thread, provided the pool has
@@ -42,7 +42,7 @@ namespace brk {
 		void EnqueueTask(Cbk&& callback, Args&&... args);
 
 	private:
-		void Loop();
+		BRK_CORE_API void Loop();
 
 		template <class F, class... Args, size_t... I>
 		static void Apply(

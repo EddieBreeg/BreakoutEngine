@@ -71,7 +71,4 @@ namespace brk::rdr {
 		std::memcpy(map.pData, data, size);
 		ctx->Unmap(m_Handle, 0);
 	}
-
-	Buffer::~Buffer() = default;
-
 } // namespace brk::rdr

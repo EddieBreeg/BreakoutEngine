@@ -13,5 +13,3 @@ brk::TimeInfo::Duration brk::TimeInfo::Update()
 	m_LastUpdate = t;
 	return m_Delta;
 }
-
-brk::TimeInfo::~TimeInfo() = default;

@@ -12,11 +12,11 @@
 namespace brk {
 	class Resource;
 
-	class BRK_CORE_API ResourceLoader : public Singleton<ResourceLoader>
+	class ResourceLoader : public Singleton<ResourceLoader>
 	{
 	public:
 		/** Stops and joins the threads */
-		~ResourceLoader();
+		BRK_CORE_API ~ResourceLoader();
 		/**
 		 * Clears the internal queue, and notifies the threads. All available threads exit
 		 * as soon they receive the notification. Currently working threads will exit when
@@ -24,11 +24,11 @@ namespace brk {
 		 * Unblocks on current calls to Wait.
 		 * \warning After calling this function, AddJob and ProcessBatch are no-ops.
 		 */
-		void StopDeferred();
+		BRK_CORE_API void StopDeferred();
 		/**
 		 * Blocks until either all active jobs have been completed, or Stop is called.
 		 */
-		void Wait();
+		BRK_CORE_API void Wait();
 
 		enum EJobType : int8
 		{
@@ -46,7 +46,7 @@ namespace brk {
 		 * \param load: Whether the resource should be loaded (true) or unloaded (false)
 		 * \warning This function has no effect if the loader is stopped
 		 */
-		void AddJob(Resource* res, EJobType action = EJobType::Load);
+		BRK_CORE_API void AddJob(Resource* res, EJobType action = EJobType::Load);
 
 		/**
 		 * Starts processing all jobs currently in the queue, and returns without
@@ -55,19 +55,20 @@ namespace brk {
 		 * called anew.
 		 * \warning This has no effect if the loader is stopped
 		 */
-		void ProcessBatch();
+		BRK_CORE_API void ProcessBatch();
 
 		/**
 		 * Returns the total number of jobs currently in the queue
 		 */
-		[[nodiscard]] uint32 GetQueueSize();
+		BRK_CORE_API [[nodiscard]] uint32 GetQueueSize();
 
 	private:
-		ResourceLoader();
 		friend class Singleton<ResourceLoader>;
-		static inline std::unique_ptr<ResourceLoader> s_Instance;
 
-		void Loop();
+		BRK_CORE_API ResourceLoader();
+		BRK_CORE_API static inline std::unique_ptr<ResourceLoader> s_Instance;
+
+		BRK_CORE_API void Loop();
 
 		static constexpr uint32 s_NumThreads = 4;
 		using Job = std::pair<Resource*, EJobType>;

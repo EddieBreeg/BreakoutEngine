@@ -80,7 +80,6 @@ namespace {
 
 bool brk::editor::ui::UiData::Inspector(
 	ecs::EntityWorld& entityWorld,
-	SceneManager& sceneManager,
 	const ecs::ComponentRegistry& componentRegistry)
 {
 	ImGui::Begin(s_StrInspector);

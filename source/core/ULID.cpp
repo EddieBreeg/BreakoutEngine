@@ -12,7 +12,7 @@ namespace {
 brk::ULID brk::ULID::Generate()
 {
 	std::timespec ts;
-	std::timespec_get(&ts, TIME_UTC);
+	MARK_UNUSED(std::timespec_get(&ts, TIME_UTC));
 	ULID res;
 	res.m_Left = static_cast<uint64>(ts.tv_sec) * 1000 + ts.tv_nsec / 1000000;
 	res.m_Left = (res.m_Left << 16) | (s_RNG() & 0xffff);

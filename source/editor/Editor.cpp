@@ -47,9 +47,9 @@ namespace {
 	brk::ULID CreateScene(brk::SceneManager& manager, std::filesystem::path path)
 	{
 		using namespace brk;
-		const std::string pathStr = std::filesystem::relative(path).u8string();
+		std::string pathStr = std::filesystem::relative(path).u8string();
 
-		const uint32 nameEnd = Min(pathStr.rfind('.'), pathStr.length());
+		const uint32 nameEnd = (uint32)Min(pathStr.rfind('.'), pathStr.length());
 		const char* nameStart = pathStr.c_str() + nameEnd;
 		{
 			const char* end = pathStr.c_str();
@@ -64,8 +64,6 @@ namespace {
 		return manager.CreateNewScene(std::move(name), std::move(pathStr)).GetId();
 	}
 } // namespace
-
-std::unique_ptr<brk::editor::Editor> brk::editor::Editor::s_Instance;
 
 brk::editor::Editor::Editor(
 	ImGuiContext& ctx,
@@ -117,10 +115,7 @@ void brk::editor::Editor::SaveProjectFile()
 	}
 
 	std::ofstream projectFile{ m_ProjectFilePath };
-	BRK_ASSERT(
-		projectFile.is_open(),
-		"Couldn't save project file: {}",
-		std::strerror(errno));
+	BRK_ASSERT(projectFile.is_open(), "Couldn't save project file: {}", StrError(errno));
 	projectFile << json.dump(4);
 }
 
@@ -226,7 +221,8 @@ void brk::editor::Editor::Update()
 	{
 		ecs::GameObject* object = m_UiData->m_InspectorData.m_SelectedObject;
 
-		auto it = object->m_Components.begin() + m_UiData->m_InspectorData.m_DeletedComponent;
+		auto it =
+			object->m_Components.begin() + m_UiData->m_InspectorData.m_DeletedComponent;
 		it->m_Info->m_Remove(world, object->m_Entity);
 		object->m_Components.erase(it);
 		m_UiData->m_InspectorData.m_DeleteComponentRequested = false;
@@ -242,7 +238,7 @@ void brk::editor::Editor::LoadProject(const std::filesystem::path filePath)
 		BRK_LOG_WARNING(
 			"Couldn't open project file '{}': {}",
 			m_ProjectFilePath,
-			std::strerror(errno));
+			StrError(errno));
 		m_ProjectFilePath = {};
 		return;
 	}
@@ -300,10 +296,9 @@ void brk::editor::Editor::ShowUI()
 		m_UiData->m_LayoutResetRequested = false;
 	}
 
-	const TULIDMap<SceneDescription>& scenes = m_SceneManager.GetSceneDesriptions();
 	const auto& componentRegistry = ecs::ComponentRegistry::GetInstance();
 
-	if (m_UiData->m_ShowStartupWindow = !m_Project.has_value())
+	if ((m_UiData->m_ShowStartupWindow = !m_Project.has_value()))
 	{
 		m_UiData->Display(
 			m_ECSManager.GetWorld(),

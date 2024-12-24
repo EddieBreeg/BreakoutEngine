@@ -14,9 +14,14 @@ namespace brk {
 		constexpr bool trivial =
 			(std::is_trivially_destructible_v<EventData<EventTypes>> && ...);
 		if constexpr (trivial)
+		{
 			return;
-		if (m_Type != static_cast<EEvent>(-1))
-			Destroy<0>();
+		}
+		else
+		{
+			if (m_Type != static_cast<EEvent>(-1))
+				Destroy<0>();
+		}
 	}
 
 	template <auto... EventTypes>

@@ -14,7 +14,7 @@ namespace brk::ecs {
 	/**
 	 * Manages the ECS world and system instances
 	 */
-	class BRK_MANAGERS_API Manager : public brk::Singleton<Manager>
+	class Manager : public brk::Singleton<Manager>
 	{
 	public:
 		/**
@@ -29,23 +29,24 @@ namespace brk::ecs {
 		/**
 		 * Updates all systems
 		 */
-		void Update(const TimeInfo& timeInfo);
+		BRK_MANAGERS_API void Update(const TimeInfo& timeInfo);
 		[[nodiscard]] EntityWorld& GetWorld() noexcept { return m_EntityWorld; }
 
 		/**
 		 * Terminates all ECS systems, clears the entity world.
 		 */
-		void Clear();
+		BRK_MANAGERS_API void Clear();
 
-		~Manager();
+		BRK_MANAGERS_API ~Manager();
 
 	private:
-		static std::unique_ptr<Manager> s_Instance;
 		friend class Singleton<Manager>;
-		Manager();
+
+		BRK_MANAGERS_API static std::unique_ptr<Manager> s_Instance;
+		BRK_MANAGERS_API Manager();
 
 		template <class T>
-		static inline uint32 s_SysIndex = -1;
+		static inline uint32 s_SysIndex = uint32(-1);
 
 #ifdef BRK_DEV
 		AllocTracker m_AllocTracker;

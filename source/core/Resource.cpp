@@ -57,10 +57,7 @@ brk::DynamicArrayStream brk::Resource::LoadFileContents()
 	std::ifstream file{ m_FilePath, std::ios_base::binary | std::ios_base::ate };
 	DEBUG_CHECK(file.is_open())
 	{
-		BRK_LOG_ERROR(
-			"Failed to load resource file {}: {}",
-			m_FilePath,
-			std::strerror(errno));
+		BRK_LOG_ERROR("Failed to load resource file {}: {}", m_FilePath, StrError(errno));
 		return {};
 	}
 	std::vector<char> buf(file.tellg());
@@ -69,10 +66,7 @@ brk::DynamicArrayStream brk::Resource::LoadFileContents()
 
 	DEBUG_CHECK(!(file.eof() || file.fail() || file.bad()))
 	{
-		BRK_LOG_ERROR(
-			"Failed to load resource file {}: {}",
-			m_FilePath,
-			std::strerror(errno));
+		BRK_LOG_ERROR("Failed to load resource file {}: {}", m_FilePath, StrError(errno));
 		return {};
 	}
 	return { std::move(buf) };

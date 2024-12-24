@@ -2,6 +2,12 @@ include(GenerateExportHeader)
 set(CMAKE_CXX_VISIBILITY_PRESET hidden)
 set(CMAKE_VISIBILITY_INLINES_HIDDEN 1)
 
+if(${MSVC})
+	set(CompilerOptions /W4 /wd4201)
+else()
+	set(CompilerOptions -Wall)
+endif(${MSVC})
+
 function(AddBrkModule MOD_NAME)
 	cmake_parse_arguments(MOD "" "ALIAS;LIB_TYPE" "SOURCES" ${ARGN})
 	set(MOD_LIB_NAME BRK_${MOD_NAME})
@@ -16,7 +22,11 @@ function(AddBrkModule MOD_NAME)
 		TYPE HEADERS
 		FILES ${MOD_HEADERS}
 	)
+	target_compile_options(${MOD_LIB_NAME} PRIVATE ${CompilerOptions})
 	target_compile_features(${MOD_LIB_NAME} PUBLIC cxx_std_17)
+	set_target_properties(${MOD_LIB_NAME} PROPERTIES
+		COMPILE_WARNING_AS_ERROR ON
+	)
 	target_compile_definitions(${MOD_LIB_NAME} PRIVATE ${MOD_LIB_NAME}_EXPORTS=1)
 	generate_export_header(${MOD_LIB_NAME}
 		EXPORT_MACRO_NAME ${MOD_LIB_NAME}_API

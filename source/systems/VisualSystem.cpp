@@ -2,18 +2,22 @@
 
 #include "TransformComponent.hpp"
 #include "VisualComponents.hpp"
+
+#include <core/Resource.hpp>
+#include <entt/entity/registry.hpp>
+#include <rendering/Renderer.hpp>
+
 #ifdef BRK_DEV
 #include <imgui/DebugOverlay.hpp>
 #include <editor/Editor.hpp>
 #include <imgui.h>
 #endif
-#include <entt/entity/registry.hpp>
-#include <rendering/Renderer.hpp>
+
 
 namespace brk {
 	VisualSystem::VisualSystem() {}
 
-	void VisualSystem::Update(World& world, const TimeInfo& timeInfo)
+	void VisualSystem::Update(World& world, const TimeInfo&)
 	{
 		auto& renderer = rdr::Renderer::s_Instance;
 

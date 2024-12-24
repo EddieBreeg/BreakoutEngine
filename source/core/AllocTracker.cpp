@@ -4,7 +4,7 @@ brk::AllocTracker::AllocTracker(std::pmr::memory_resource& upstream)
 	: m_Upstream{ &upstream }
 {}
 
-brk::AllocTracker::AllocTracker(AllocTracker&& other)
+brk::AllocTracker::AllocTracker(AllocTracker&& other) noexcept
 	: m_Upstream{ other.m_Upstream }
 	, m_Info{ other.m_Info }
 {
@@ -12,7 +12,7 @@ brk::AllocTracker::AllocTracker(AllocTracker&& other)
 	other.m_Info = {};
 }
 
-brk::AllocTracker& brk::AllocTracker::operator=(AllocTracker&& other)
+brk::AllocTracker& brk::AllocTracker::operator=(AllocTracker&& other) noexcept
 {
 	std::swap(other.m_Upstream, m_Upstream);
 	std::swap(m_Info, other.m_Info);

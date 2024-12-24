@@ -24,18 +24,20 @@ namespace brk::editor::ui {
 }
 
 namespace brk::editor {
-	class BRK_EDITOR_API Editor : public Singleton<Editor>
+	class Editor : public Singleton<Editor>
 	{
 	public:
 		~Editor() = default;
 
-		void Update();
-		void ShowUI();
+		BRK_EDITOR_API void Update();
+		BRK_EDITOR_API void ShowUI();
 
 	private:
 		friend class Singleton<Editor>;
-		static std::unique_ptr<Editor> s_Instance;
-		Editor(
+
+		BRK_EDITOR_API static inline std::unique_ptr<Editor> s_Instance;
+
+		BRK_EDITOR_API Editor(
 			ImGuiContext& imguICtx,
 			ecs::Manager& ecsManager,
 			ResourceManager& resManager,

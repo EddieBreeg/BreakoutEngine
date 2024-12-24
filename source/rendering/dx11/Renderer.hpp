@@ -9,9 +9,9 @@
 struct SDL_Window;
 
 namespace brk::rdr {
-	struct BRK_RENDERING_API RendererData
+	struct RendererData
 	{
-		RendererData(SDL_Window& window);
+		BRK_RENDERING_API RendererData(SDL_Window& window);
 
 		d3d::Ref<ID3D11Device> m_Device;
 		d3d::Ref<ID3D11DeviceContext> m_DeviceContext;
@@ -31,23 +31,24 @@ namespace brk::rdr {
 		d3d::Ref<ID3D11InputLayout> m_InputLayout;
 		d3d::Ref<ID3D11Buffer> m_FrameDataBuffer, m_TransformDataBuffer;
 
-		ID3D11Buffer* CreateBuffer(
+		BRK_RENDERING_API ID3D11Buffer* CreateBuffer(
 			const D3D11_BUFFER_DESC& desc,
 			const void* data = nullptr);
-		ID3D11Texture2D* CreateTexture2d(
+		BRK_RENDERING_API ID3D11Texture2D* CreateTexture2d(
 			const D3D11_TEXTURE2D_DESC& desc,
 			const void* data = nullptr,
 			uint32 pitch = 0);
 
-		ID3D11ShaderResourceView* CreateShaderResourceView(
+		BRK_RENDERING_API ID3D11ShaderResourceView* CreateShaderResourceView(
 			ID3D11Resource& res,
 			const D3D11_SHADER_RESOURCE_VIEW_DESC& desc);
-		ID3D11RenderTargetView* CreateRenderTargetView(
+		BRK_RENDERING_API ID3D11RenderTargetView* CreateRenderTargetView(
 			ID3D11Resource& res,
 			const D3D11_RENDER_TARGET_VIEW_DESC& desc);
-		ID3D11SamplerState* CreateSamplerState(const D3D11_SAMPLER_DESC& desc);
+		BRK_RENDERING_API ID3D11SamplerState* CreateSamplerState(
+			const D3D11_SAMPLER_DESC& desc);
 
-		void UpdateDynamicResource(
+		BRK_RENDERING_API void UpdateDynamicResource(
 			ID3D11Resource& res,
 			uint32 subRes,
 			const void* data,
@@ -75,7 +76,7 @@ namespace brk::rdr {
 
 		HWND m_NativeWindow = nullptr;
 
-		~RendererData();
+		~RendererData() = default;
 	};
 } // namespace brk::rdr
 

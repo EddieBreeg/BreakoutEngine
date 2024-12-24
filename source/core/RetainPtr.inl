@@ -100,7 +100,7 @@ namespace brk {
 	{
 		if (m_Ptr)
 			Traits::Decrement(m_Ptr);
-		if (m_Ptr = ptr)
+		if ((m_Ptr = ptr))
 			Traits::Increment(m_Ptr);
 	}
 

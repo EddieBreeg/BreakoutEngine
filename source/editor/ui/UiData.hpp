@@ -17,9 +17,10 @@ namespace {
 namespace brk {
 	class Resource;
 	class ResourceManager;
-	class ResourceTypeInfo;
 	class SceneDescription;
 	class SceneManager;
+
+	struct ResourceTypeInfo;
 } // namespace brk
 
 namespace brk::ecs {
@@ -35,7 +36,7 @@ namespace brk::editor::ui {
 
 	void OpenProjectCallback(void* ptr, const char* const* filelist, int filter);
 
-	struct BRK_EDITOR_API UiData
+	struct UiData
 	{
 		void Display(
 			ecs::EntityWorld& world,
@@ -46,19 +47,15 @@ namespace brk::editor::ui {
 		void MenuBar();
 		void StartupWindow();
 		void SceneSelection(const TULIDMap<SceneDescription>& sceneDescriptions);
-		bool SceneCreation();
 
 		bool Outliner(SceneManager& sceneManager);
 		bool Inspector(
 			ecs::EntityWorld& entityWorld,
-			SceneManager& sceneManager,
 			const ecs::ComponentRegistry& componentRegistry);
 
 		void ResourceExplorer(const ResourceManager& resourceManager);
 		Resource* ResourceCreationWindow(ResourceManager& resourceManager);
 		void ResourceEditor();
-
-		void OpenSceneCreationWindow();
 
 		bool m_ShowStartupWindow = false;
 		bool m_ShowSceneSelector = false;

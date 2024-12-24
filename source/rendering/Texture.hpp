@@ -75,7 +75,7 @@ namespace brk::rdr {
 		return !(left == right);
 	}
 
-	class BRK_RENDERING_API Texture2d : public Resource
+	class Texture2d : public Resource
 	{
 	public:
 		ResourceTypeInfo& GetTypeInfo() const override;
@@ -87,7 +87,9 @@ namespace brk::rdr {
 		 * \param data: [optional] If no nullptr, the texture will be created with the
 		 * provided image data
 		 */
-		Texture2d(const Texture2dSettings& settings, const void* data = nullptr);
+		BRK_RENDERING_API Texture2d(
+			const Texture2dSettings& settings,
+			const void* data = nullptr);
 
 		/** This initializes the texture's properties, without allocating anything on the
 		 * GPU. Use this if you want to pre-add the texture to the resource manager, and
@@ -97,7 +99,7 @@ namespace brk::rdr {
 		 * \param name: Texture's name
 		 * \param imagePath: Path to the file which will be loaded
 		 */
-		Texture2d(
+		BRK_RENDERING_API Texture2d(
 			const Texture2dSettings& settings,
 			const ULID& id,
 			std::string name,
@@ -105,34 +107,35 @@ namespace brk::rdr {
 
 		using HandleType = ResourceHandle<Texture2d>::Type;
 
-		bool DoLoad() override;
-		void DoUnload() override;
+		BRK_RENDERING_API bool DoLoad() override;
+		BRK_RENDERING_API void DoUnload() override;
 
 		[[nodiscard]] HandleType GetHandle() const noexcept { return m_Handle; }
 
-		void Reset();
+		BRK_RENDERING_API void Reset();
 
-		~Texture2d();
+		BRK_RENDERING_API ~Texture2d();
 
 	private:
 		friend struct JsonLoader<Texture2d>;
 		friend class Texture2dWidget;
 
-		void Init(const void* data = nullptr);
+		BRK_RENDERING_API void Init(const void* data = nullptr);
 
 		friend class Renderer;
 		HandleType m_Handle = {};
 		Texture2dSettings m_Settings = {};
 	};
 
-	class BRK_RENDERING_API Texture2dWidget : public ResourceUiWidget
+	class Texture2dWidget : public ResourceUiWidget
 	{
 	public:
 		Texture2dWidget() = default;
-		virtual void Init(const Resource& res) override;
-		virtual bool CreationUi() override;
-		virtual bool EditionUi(const Resource&, bool& out_shouldReload) override;
-		virtual void Commit(Resource& out_res) const override;
+		BRK_RENDERING_API virtual void Init(const Resource& res) override;
+		BRK_RENDERING_API virtual bool CreationUi() override;
+		BRK_RENDERING_API virtual bool EditionUi(const Resource&, bool& out_shouldReload)
+			override;
+		BRK_RENDERING_API virtual void Commit(Resource& out_res) const override;
 
 	private:
 		Texture2dSettings m_Settings;

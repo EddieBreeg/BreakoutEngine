@@ -109,7 +109,7 @@ brk::Resource* brk::editor::ui::UiData::ResourceCreationWindow(
 	const bool ready = data.m_Info->m_Widget->CreationUi();
 
 	ImGui::BeginDisabled(!ready);
-	if (m_AddResourceRequested = ImGui::Button("Create"))
+	if ((m_AddResourceRequested = ImGui::Button("Create")))
 	{
 		data.m_Info->m_Widget->Commit(*data.m_Resource);
 	}

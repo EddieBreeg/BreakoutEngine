@@ -23,7 +23,7 @@ namespace {
 		return 0;
 	}
 
-	void FileOpenCallback(void* userData, const char* const* fileList, int filter)
+	void FileOpenCallback(void* userData, const char* const* fileList, int)
 	{
 		auto& string = *static_cast<std::string*>(userData);
 		const char* newPath = nullptr;
@@ -35,7 +35,7 @@ namespace {
 		string = relPath.u8string();
 	}
 
-	void FileSaveCallback(void* userData, const char* const* fileList, int filter)
+	void FileSaveCallback(void* userData, const char* const* fileList, int)
 	{
 		auto& string = *static_cast<std::string*>(userData);
 		const char* newPath = nullptr;

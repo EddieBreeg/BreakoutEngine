@@ -13,7 +13,7 @@ namespace brk {
 	struct VisualComponent
 	{};
 
-	struct BRK_SYSTEMS_API MeshComponent
+	struct MeshComponent
 	{
 		ResourceRef<rdr::MaterialInstance> m_MaterialRef;
 		ResourceRef<rdr::Mesh> m_MeshRef;
@@ -31,6 +31,6 @@ namespace brk {
 					"meshId",
 				};
 
-		static const ecs::ComponentInfo Info;
+		BRK_SYSTEMS_API static const ecs::ComponentInfo Info;
 	};
 } // namespace brk

@@ -19,14 +19,14 @@ void brk::RetainTraits<brk::Resource>::Decrement(Resource* res)
 	if (--res->m_RefCount)
 		return;
 
-	switch (res->GetLoadingState())
+	switch (loadState)
 	{
 	case Resource::MarkedForDeletion:
 	{
 		auto& info = res->GetTypeInfo();
 		info.DestroyResource(res);
-	}
 		return;
+	}
 	case Resource::Loaded:
 	case Resource::Loading:
 		res->SetLoadingState(Resource::Unloading);

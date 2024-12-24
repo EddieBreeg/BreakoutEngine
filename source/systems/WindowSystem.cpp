@@ -82,7 +82,7 @@ void brk::WindowSystem::Terminate()
 	SDL_Quit();
 }
 
-void brk::WindowSystem::Update(World& world, const brk::TimeInfo& timeInfo)
+void brk::WindowSystem::Update(World& world, const brk::TimeInfo&)
 {
 #if defined(BRK_DEV)
 	rdr::Renderer::s_Instance.NewImGuiFrame();

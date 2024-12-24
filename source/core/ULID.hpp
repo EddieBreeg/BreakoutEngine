@@ -77,8 +77,6 @@ namespace brk {
 	private:
 		uint64 m_Left = 0, m_Right = 0;
 
-		static constexpr meta::FieldList<&ULID::m_Left, &ULID::m_Right> Fields{};
-
 		friend struct BinaryLoader<ULID, void>;
 		friend struct Hash<ULID>;
 	};

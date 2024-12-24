@@ -4,21 +4,21 @@
 #include <memory_resource>
 
 namespace brk {
-	class BRK_CORE_API AllocTracker : public std::pmr::memory_resource
+	class AllocTracker : public std::pmr::memory_resource
 	{
 	public:
 		AllocTracker() = default;
-		AllocTracker(std::pmr::memory_resource& upstream);
+		BRK_CORE_API AllocTracker(std::pmr::memory_resource& upstream);
 
 		AllocTracker(const AllocTracker&) = delete;
-		AllocTracker(AllocTracker&& other);
+		BRK_CORE_API AllocTracker(AllocTracker&& other) noexcept;
 
 		AllocTracker& AllocTracker::operator=(const AllocTracker&) = delete;
-		AllocTracker& AllocTracker::operator=(AllocTracker&& other);
+		BRK_CORE_API AllocTracker& AllocTracker::operator=(AllocTracker&& other) noexcept;
 
 		~AllocTracker() = default;
 
-		struct Info
+		struct BRK_CORE_API Info
 		{
 			uint64 m_NumAllocs = 0;
 			uint64 m_TotalSize = 0;
@@ -32,8 +32,8 @@ namespace brk {
 			return this == &other;
 		}
 
-		void* do_allocate(size_t n, size_t alignment) override;
-		void do_deallocate(void* ptr, size_t n, size_t alignment) override;
+		BRK_CORE_API void* do_allocate(size_t n, size_t alignment) override;
+		BRK_CORE_API void do_deallocate(void* ptr, size_t n, size_t alignment) override;
 
 	private:
 		std::pmr::memory_resource* m_Upstream = std::pmr::new_delete_resource();

@@ -14,40 +14,40 @@ namespace brk::rdr {
 	struct RendererData;
 
 	/** Platform agnostic rendering api */
-	class BRK_RENDERING_API Renderer
+	class Renderer
 	{
 	public:
-		~Renderer();
+		BRK_RENDERING_API ~Renderer();
 
-		void Init(ImGuiContext& context, SDL_Window* window);
-		void Shutdown();
+		BRK_RENDERING_API void Init(ImGuiContext& context, SDL_Window* window);
+		BRK_RENDERING_API void Shutdown();
 
 #ifdef BRK_DEV
-		void NewImGuiFrame();
+		BRK_RENDERING_API void NewImGuiFrame();
 #endif
 
-		void ResizeFrameBuffers(uint32 width, uint32 height);
+		BRK_RENDERING_API void ResizeFrameBuffers(uint32 width, uint32 height);
 
 		/*
 		 * Should be called before rendering anything, to setup the render targets
 		 * properly
 		 */
-		void StartRender();
+		BRK_RENDERING_API void StartRender();
 
-		void SetModelMatrix(const float4x4& transform);
-		void SetMaterial(const MaterialInstance& material);
+		BRK_RENDERING_API void SetModelMatrix(const float4x4& transform);
+		BRK_RENDERING_API void SetMaterial(const MaterialInstance& material);
 
-		void DrawIndexed(
+		BRK_RENDERING_API void DrawIndexed(
 			const Buffer& vertexBuffer,
 			const Buffer& indexBuffer,
 			uint32 numIndices);
 
-		void RenderUI();
+		BRK_RENDERING_API void RenderUI();
 
 		/** Swaps the back and front buffers */
-		void Present();
+		BRK_RENDERING_API void Present();
 
-		static Renderer s_Instance;
+		BRK_RENDERING_API static Renderer s_Instance;
 		float4 m_ClearColor;
 
 		/* Private API access */

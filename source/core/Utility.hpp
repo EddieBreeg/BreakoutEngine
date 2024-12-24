@@ -27,7 +27,7 @@ namespace brk {
 	}
 
 	template <class T, size_t N>
-	[[nodiscard]] constexpr size_t ArraySize(const T (&arr)[N]) noexcept
+	[[nodiscard]] constexpr size_t ArraySize(const T (&)[N]) noexcept
 	{
 		return N;
 	}

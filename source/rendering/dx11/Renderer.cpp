@@ -404,8 +404,6 @@ void brk::rdr::RendererData::UpdateDynamicResource(
 	m_DeviceContext->Unmap(&res, subRes);
 }
 
-brk::rdr::RendererData::~RendererData() = default;
-
 void brk::rdr::Renderer::Init(ImGuiContext& ctx, SDL_Window* window)
 {
 	m_Window = window;

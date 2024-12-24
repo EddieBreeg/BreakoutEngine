@@ -1,5 +1,7 @@
 #include "VisualComponents.hpp"
+
 #include <core/LogManager.hpp>
+#include <core/Resource.hpp>
 #include <ecs/Component.hpp>
 #include <editor/brk_editor_export.h>
 #include <imgui/MiscWidgets.hpp>

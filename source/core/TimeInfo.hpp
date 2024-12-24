@@ -7,7 +7,7 @@ namespace brk {
 	/**
 	 * A utility used to track time
 	 */
-	class BRK_CORE_API TimeInfo
+	class TimeInfo
 	{
 	public:
 		using Duration = std::chrono::duration<float>;
@@ -15,12 +15,12 @@ namespace brk {
 		using TimePoint = Clock::time_point;
 
 		/** Initializes the start point to Clock::now() */
-		TimeInfo();
+		BRK_CORE_API TimeInfo();
 		/** Sets the LastUpdate point, and computes the time delta since the last call to
 		 * this function */
-		Duration Update();
-		Duration GetElapsed() const noexcept { return m_LastUpdate - m_StartPoint; }
-		~TimeInfo();
+		BRK_CORE_API Duration Update();
+		[[nodiscard]] Duration GetElapsed() const noexcept { return m_LastUpdate - m_StartPoint; }
+		~TimeInfo() = default;
 
 	private:
 		TimePoint m_StartPoint = Clock::now();

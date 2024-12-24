@@ -27,7 +27,7 @@ namespace brk {
 		void SetAll();
 		void ClearAll();
 
-		static constexpr uint32 NPos = -1;
+		static constexpr uint32 NPos = uint32(-1);
 
 		[[nodiscard]] uint32 Find(bool val) const;
 		[[nodiscard]] uint32 Find(bool val, uint32 count) const;

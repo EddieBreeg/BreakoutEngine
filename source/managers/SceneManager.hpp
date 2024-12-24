@@ -16,7 +16,7 @@ namespace brk {
 	/*
 	 * Manages scenes
 	 */
-	class BRK_MANAGERS_API SceneManager : public Singleton<SceneManager>
+	class SceneManager : public Singleton<SceneManager>
 	{
 	public:
 		~SceneManager() = default;
@@ -25,23 +25,26 @@ namespace brk {
 		/**
 		 * Loads a list of scene descriptions, read from a project file
 		 */
-		void LoadSceneDescriptions(const nlohmann::json& descriptions);
-		const SceneDescription& CreateNewScene(std::string name, std::string path);
+		BRK_MANAGERS_API void LoadSceneDescriptions(const nlohmann::json& descriptions);
+		BRK_MANAGERS_API const SceneDescription& CreateNewScene(
+			std::string name,
+			std::string path);
 #endif
 		/**
 		 * Attemps to get a scene description and load all the corresponding game objects
 		 */
-		void LoadScene(const ULID sceneId);
-		void ClearCurrentScene();
+		BRK_MANAGERS_API void LoadScene(const ULID sceneId);
+		BRK_MANAGERS_API void ClearCurrentScene();
 
-		[[nodiscard]] const ecs::GameObject* GetObject(const ULID id) const;
-		[[nodiscard]] ecs::GameObject* GetObject(const ULID id);
+		BRK_MANAGERS_API [[nodiscard]] const ecs::GameObject* GetObject(
+			const ULID id) const;
+		BRK_MANAGERS_API [[nodiscard]] ecs::GameObject* GetObject(const ULID id);
 		[[nodiscard]] const TULIDMap<ecs::GameObject>& GetGameObjects() const
 		{
 			return m_Objects;
 		}
-		ecs::GameObject& CreateObject(ecs::EntityWorld& world);
-		void DeleteObject(const ULID id);
+		BRK_MANAGERS_API ecs::GameObject& CreateObject(ecs::EntityWorld& world);
+		BRK_MANAGERS_API void DeleteObject(const ULID id);
 		[[nodiscard]] TULIDMap<ecs::GameObject>& GetGameObjects() { return m_Objects; }
 
 		[[nodiscard]] const TULIDMap<SceneDescription>& GetSceneDesriptions()
@@ -50,10 +53,10 @@ namespace brk {
 			return m_Descriptions;
 		}
 
-		void SaveCurrentSceneToFile(const ecs::EntityWorld& world) const;
+		BRK_MANAGERS_API void SaveCurrentSceneToFile(const ecs::EntityWorld& world) const;
 
 	private:
-		static std::unique_ptr<SceneManager> s_Instance;
+		BRK_MANAGERS_API static inline std::unique_ptr<SceneManager> s_Instance;
 		friend class Singleton<SceneManager>;
 		SceneManager() = default;
 

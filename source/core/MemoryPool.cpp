@@ -159,7 +159,7 @@ void brk::MemoryPool::Deallocate(void* ptr, uint32 n)
 	for (Header* it = m_Head; it; it = it->m_Next)
 	{
 		const uint32 index =
-			(static_cast<byte*>(ptr) - it->GetChunkStart()) / m_BlockSize;
+			uint32(static_cast<byte*>(ptr) - it->GetChunkStart()) / m_BlockSize;
 
 		if (it->TryDeallocate(index, n, m_BlockSize))
 			return;

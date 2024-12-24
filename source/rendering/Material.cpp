@@ -105,6 +105,7 @@ namespace brk::rdr {
 	{
 		if (!m_IsValid)
 			return;
+
 		m_BaseMat.Reset();
 		for (auto& texture : m_Textures)
 		{
@@ -248,8 +249,10 @@ namespace brk::rdr {
 	{
 		if (!m_IsValid)
 			return false;
+
 		if (!m_BaseMat->IsLoaded())
 			return false;
+
 		for (auto& texture : m_Textures)
 		{
 			if (texture && !texture->IsLoaded())

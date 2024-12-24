@@ -12,6 +12,8 @@ namespace brk {
 		const uint32 m_Line;
 	};
 
+	BRK_CORE_API const char* StrError(int code);
+
 	class BRK_CORE_API LogManager
 	{
 	public:

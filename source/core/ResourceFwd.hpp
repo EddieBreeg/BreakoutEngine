@@ -17,7 +17,7 @@ namespace std::pmr {
 	class memory_resource;
 
 	memory_resource* new_delete_resource() noexcept;
-}
+} // namespace std::pmr
 
 namespace brk {
 	template <class T>
@@ -31,7 +31,7 @@ namespace brk {
 	 * A subclass should meet the following criteria:
 	 * - Be constructible from a ULID object
 	 */
-	class BRK_CORE_API Resource
+	class Resource
 	{
 	public:
 		enum EStateFlags : uint8
@@ -47,12 +47,12 @@ namespace brk {
 			SavingDisabled = BIT(3),
 		};
 
-		Resource(const ULID id = ULID{});
-		Resource(const ULID id, std::string&& name, std::string&& file);
+		BRK_CORE_API Resource(const ULID id = ULID{});
+		BRK_CORE_API Resource(const ULID id, std::string&& name, std::string&& file);
 		/**
 		 * Unloads the resource.
 		 */
-		virtual ~Resource();
+		BRK_CORE_API virtual ~Resource();
 
 		[[nodiscard]] virtual ResourceTypeInfo& GetTypeInfo() const = 0;
 
@@ -68,7 +68,7 @@ namespace brk {
 		 * \warning This should only get called by the resource manager: the resource
 		 * should be removed from the resource map.
 		 */
-		void MarkForDeletion();
+		BRK_CORE_API void MarkForDeletion();
 
 		[[nodiscard]] bool IsLoaded() const noexcept;
 
@@ -87,7 +87,7 @@ namespace brk {
 	protected:
 		void SetLoadingState(EStateFlags state);
 
-		[[nodiscard]] DynamicArrayStream LoadFileContents();
+		BRK_CORE_API [[nodiscard]] DynamicArrayStream LoadFileContents();
 
 		ULID m_Id;
 		std::string m_Name;
@@ -111,7 +111,7 @@ namespace brk {
 		virtual bool CreationUi();
 		virtual bool EditionUi(const Resource& res, bool& out_shouldReload);
 
-		virtual void Commit(Resource& inout_res) const {}
+		virtual void Commit([[maybe_unused]] Resource& inout_res) const {}
 		virtual ~ResourceUiWidget() = default;
 
 	protected:
@@ -137,11 +137,11 @@ namespace brk {
 	 * type name etc...). This gets instanciated once per resource class, and each
 	 * instance must be defined explicitly (see the RES_INFO_IMPL macros below).
 	 */
-	struct BRK_CORE_API ResourceTypeInfo
+	struct ResourceTypeInfo
 	{
 		ResourceTypeInfo(const ResourceTypeInfo&) = delete;
 
-		~ResourceTypeInfo();
+		BRK_CORE_API ~ResourceTypeInfo();
 
 		StringView m_TypeName;
 		MemoryPool m_Pool;
@@ -152,8 +152,8 @@ namespace brk {
 		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
 		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
 
-		Resource* NewResource(const ULID& id);
-		void DestroyResource(Resource*);
+		BRK_CORE_API Resource* NewResource(const ULID& id);
+		BRK_CORE_API void DestroyResource(Resource*);
 
 		template <class Res, class Widget>
 		static ResourceTypeInfo& InitFor(
@@ -188,22 +188,22 @@ namespace brk {
  * \param Attr: Attributes for the implementation, like dll linkage
  */
 #define RES_INFO_IMPL(Type, Attr)                                                        \
-	inline ResourceTypeInfo& Type::GetTypeInfo() const                          \
+	inline ResourceTypeInfo& Type::GetTypeInfo() const                                   \
 	{                                                                                    \
 		return ResourceTypeInfo::GetFor<Type>();                                         \
 	}                                                                                    \
                                                                                          \
 	template <>                                                                          \
-	struct Attr ResourceTypeInfo::Impl<Type>                                             \
+	struct ResourceTypeInfo::Impl<Type>                                                  \
 	{                                                                                    \
-		static inline std::unique_ptr<ResourceTypeInfo> s_Info;                          \
+		Attr static inline std::unique_ptr<ResourceTypeInfo> s_Info;                     \
 	}
 
 /**
  * Same as RES_INFO_IMPL, but without the attributes. Used in unit tests.
  */
 #define RES_INFO_IMPL_NO_ATTR(Type)                                                      \
-	inline ResourceTypeInfo& Type::GetTypeInfo() const                          \
+	inline ResourceTypeInfo& Type::GetTypeInfo() const                                   \
 	{                                                                                    \
 		return ResourceTypeInfo::GetFor<Type>();                                         \
 	}                                                                                    \

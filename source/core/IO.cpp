@@ -60,7 +60,7 @@ namespace brk {
 		if (mode & std::ios::in)
 		{
 			BRK_ASSERT(
-				pos <= m_Buf.size(),
+				(size_t)pos <= m_Buf.size(),
 				"Tried to set read position to {} but current stream length is {}",
 				uint64(pos),
 				m_Buf.size());
@@ -112,7 +112,7 @@ namespace brk {
 	{
 		if (m_WritePos >= m_Buf.size())
 			m_Buf.resize(m_WritePos + 1);
-		m_Buf[m_WritePos++] = ch;
+		m_Buf[m_WritePos++] = char(ch);
 		return ch;
 	}
 } // namespace brk

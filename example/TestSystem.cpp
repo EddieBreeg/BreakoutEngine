@@ -1,4 +1,6 @@
 #include "TestSystem.hpp"
+
+#include <core/Resource.hpp>
 #include <core/TimeInfo.hpp>
 #include <entt/entity/registry.hpp>
 #include <managers/ResourceManager.hpp>

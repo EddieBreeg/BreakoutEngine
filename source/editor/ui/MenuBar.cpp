@@ -11,7 +11,7 @@ namespace {
 	constexpr SDL_DialogFileFilter s_ProjectFileFilter{ "Project File", "brk" };
 	constexpr SDL_DialogFileFilter s_SceneFileFilter{ "Scene File", "brkscn" };
 
-	void SceneSaveCallback(void* ptr, const char* const* filelist, int filter)
+	void SceneSaveCallback(void* ptr, const char* const* filelist, int)
 	{
 		using brk::editor::ui::UiData;
 
@@ -68,7 +68,7 @@ namespace {
 		ImGui::EndMenu();
 	}
 
-	void ViewMenu(brk::editor::ui::UiData& data)
+	void ViewMenu(brk::editor::ui::UiData&)
 	{
 		if (!ImGui::BeginMenu("View"))
 			return;
