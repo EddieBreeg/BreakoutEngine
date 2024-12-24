@@ -1,0 +1,16 @@
+@PACKAGE_INIT@
+
+include(CMakeFindDependencyMacro)
+
+find_package(BZip2 REQUIRED CONFIG)
+find_dependency(SDL3)
+find_dependency(fmt)
+find_dependency(nlohmann_json)
+find_dependency(glm)
+find_dependency(STB)
+find_dependency(ImGui)
+find_dependency(EnTT)
+
+include(${CMAKE_CURRENT_LIST_DIR}/BreakoutExports.cmake)
+
+check_required_components(Breakout)

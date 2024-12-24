@@ -12,7 +12,8 @@
 				"JSON_BuildTests": "OFF",
 				"SDL_AUDIO": "OFF",
 				"SDL_DISKAUDIO": "OFF",
-				"SDL_DUMMYAUDIO": "OFF"
+				"SDL_DUMMYAUDIO": "OFF",
+				"CMAKE_INSTALL_PREFIX": "${sourceDir}/install/${presetName}"
 			},
 			"binaryDir": "build/${presetName}"
 		},

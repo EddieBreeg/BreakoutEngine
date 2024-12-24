@@ -13,6 +13,8 @@ if(${BRK_STANDALONE})
 endif(${BRK_STANDALONE})
 
 option(BRK_BUILD_TESTING "Build test apps" ${BRK_STANDALONE})
+option(BRK_INSTALL "Enable installs" ${BRK_STANDALONE})
+
 set(BUILD_TESTING ${BRK_BUILD_TESTING})
 include(CTest)
 message("-- BRK_BUILD_TESTING: ${BRK_BUILD_TESTING}")
@@ -21,6 +23,8 @@ option(BRK_BUILD_SHARED "Build shared libs" OFF)
 message("-- BRK_BUILD_SHARED: ${BRK_BUILD_SHARED}")
 option(BRK_BUILD_EXAMPLE "Build example project" ${BRK_STANDALONE})
 message("-- BRK_BUILD_EXAMPLE: ${BRK_BUILD_EXAMPLE}")
+
+include(GNUInstallDirs)
 
 if(${BRK_BUILD_SHARED})
 	set(BRK_LIBTYPE SHARED)
@@ -49,7 +53,24 @@ if(${BRK_BUILD_EXAMPLE})
 	add_subdirectory(example)
 endif(${BRK_BUILD_EXAMPLE})
 
-if(${BRK_STANDALONE})
+if(${BRK_BUILD_TESTING})
 	set(CMAKE_FOLDER "Breakout Engine/Tests")
 	add_subdirectory(tests)
-endif(${BRK_STANDALONE})
+endif(${BRK_BUILD_TESTING})
+
+if(${BRK_INSTALL})
+	install(EXPORT BreakoutExports
+		DESTINATION lib/cmake/Breakout
+		NAMESPACE Breakout::
+	)
+	include(CMakePackageConfigHelpers)
+	configure_package_config_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/cmake/BreakoutConfig.cmake.in
+		${CMAKE_CURRENT_BINARY_DIR}/BreakoutConfig.cmake
+		INSTALL_DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Breakout
+	)
+	install(FILES LICENSE DESTINATION licenses/Breakout)
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/BreakoutConfig.cmake
+		DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/Breakout
+	)
+endif(${BRK_INSTALL})
