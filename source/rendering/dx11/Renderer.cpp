@@ -15,10 +15,6 @@
 #include <core/DebugBreak.hpp>
 #include <core/ResourceFormatter.hpp>
 
-#include <imgui.h>
-#include <backends/imgui_impl_dx11.h>
-#include <backends/imgui_impl_sdl3.h>
-
 #include <SDL3/SDL_Video.h>
 
 #include <array>
@@ -42,11 +38,16 @@ namespace {
 
 	bool LogError(HRESULT err, const char* format)
 	{
-		DEBUG_CHECK(!err)
+#if BRK_DEBUG
+		if (err != S_OK)
 		{
 			BRK_LOG_CRITICAL(format, _com_error(err).ErrorMessage());
 			return true;
 		}
+#else
+		MARK_UNUSED(err);
+		MARK_UNUSED(format);
+#endif
 		return false;
 	}
 
@@ -205,7 +206,7 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	SDL_GetWindowSize(&window, &width, &height);
 
 	UINT deviceFlags = 0;
-#ifdef BRK_DEV
+#if BRK_DEBUG
 	deviceFlags |= D3D11_CREATE_DEVICE_DEBUG;
 #endif
 
@@ -291,10 +292,6 @@ brk::rdr::RendererData::RendererData(SDL_Window& window)
 	m_CurrentPipelineState.m_Rasterizer = m_Rasterizers.m_Default;
 
 	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilState, 1);
-#ifdef BRK_DEV
-	ImGui_ImplSDL3_InitForD3D(&window);
-	ImGui_ImplDX11_Init(m_Device, m_DeviceContext);
-#endif
 
 	m_DefaultVShader = d3d::CompileShader(s_DefaultShaderCode, "vs_5_0", "vs_main");
 	m_DefaultPShader = d3d::CompileShader(s_DefaultShaderCode, "ps_5_0", "fs_main");
@@ -404,24 +401,12 @@ void brk::rdr::RendererData::UpdateDynamicResource(
 	m_DeviceContext->Unmap(&res, subRes);
 }
 
-void brk::rdr::Renderer::Init(ImGuiContext& ctx, SDL_Window* window)
+void brk::rdr::Renderer::Init(SDL_Window* window)
 {
 	m_Window = window;
 	BRK_ASSERT(m_Window, "Trying to initialize renderer with invalid window pointer!");
-#ifdef BRK_DEV
-	ImGui::SetCurrentContext(&ctx);
-#endif
 	m_Data = new RendererData{ *window };
 }
-
-#ifdef BRK_DEV
-void brk::rdr::Renderer::NewImGuiFrame()
-{
-	ImGui_ImplDX11_NewFrame();
-	ImGui_ImplSDL3_NewFrame();
-	ImGui::NewFrame();
-}
-#endif
 
 void brk::rdr::Renderer::ResizeFrameBuffers(uint32 width, uint32 height)
 {
@@ -471,10 +456,6 @@ void brk::rdr::Renderer::StartRender()
 	m_Data->m_DeviceContext->RSSetViewports(1, &viewport);
 	m_Data->m_DeviceContext->IASetPrimitiveTopology(
 		D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-#ifdef BRK_DEV
-	ImGui::Render();
-#endif
 }
 
 void brk::rdr::Renderer::SetModelMatrix(const float4x4& transform)
@@ -565,23 +546,12 @@ void brk::rdr::Renderer::DrawIndexed(
 	m_Data->m_DeviceContext->DrawIndexed(nIndices, 0, 0);
 }
 
-void brk::rdr::Renderer::RenderUI()
-{
-#ifdef BRK_DEV
-	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-#endif
-}
+void brk::rdr::Renderer::RenderUI() {}
 
 void brk::rdr::Renderer::Shutdown()
 {
 	if (!m_Data)
 		return;
-
-#ifdef BRK_DEV
-	ImGui_ImplDX11_Shutdown();
-	ImGui_ImplSDL3_Shutdown();
-	ImGui::DestroyContext();
-#endif
 
 	delete m_Data;
 	m_Data = nullptr;

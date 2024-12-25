@@ -6,11 +6,9 @@
 #include <core/Resource.hpp>
 #include <core/ResourceFormatter.hpp>
 
-#ifdef BRK_EDITOR
 #include <imgui.h>
 #include <imgui/MiscWidgets.hpp>
 #include <SDL3/SDL_dialog.h>
-#endif
 
 #include <cstdio>
 #define STB_IMAGE_IMPLEMENTATION

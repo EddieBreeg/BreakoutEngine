@@ -17,7 +17,7 @@ brk::ResourceManager::~ResourceManager()
 	{
 		info->m_Pool = MemoryPool{ 1 };
 	}
-#ifdef BRK_DEV
+#if BRK_DEBUG
 	const auto& allocInfo = m_AllocTracker.GetInfo();
 	if (allocInfo.m_TotalSize)
 	{
@@ -28,7 +28,6 @@ brk::ResourceManager::~ResourceManager()
 #endif
 }
 
-#ifdef BRK_EDITOR
 void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 {
 	ULID resId;
@@ -82,7 +81,6 @@ void brk::ResourceManager::CreateResources(const nlohmann::json& list)
 		m_Resources.emplace(res->GetId(), res);
 	}
 }
-#endif
 
 brk::ResourceTypeInfo& brk::ResourceManager::GetResourceTypeInfo(
 	StringView typeName) const

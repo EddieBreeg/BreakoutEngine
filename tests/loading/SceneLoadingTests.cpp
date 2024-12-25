@@ -77,7 +77,6 @@ namespace brk::scene_loading::ut {
 
 	void Test00()
 	{
-#ifdef BRK_DEV
 		RAIIHelper helper;
 		helper.m_Registry.Register<C1>();
 		helper.m_Registry.Register<C2>();
@@ -117,7 +116,6 @@ namespace brk::scene_loading::ut {
 			// loading the component should have failed, as the resource id was invalid
 			assert(!component);
 		}
-#endif
 	}
 
 	void Tests()

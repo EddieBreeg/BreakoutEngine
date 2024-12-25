@@ -1,12 +1,13 @@
 #include "Editor.hpp"
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include "ui/UiData.hpp"
 
 #include <app/App.hpp>
 
 #include <core/Loaders.hpp>
 #include <core/LogManager.hpp>
+#include <core/Resource.hpp>
 #include <core/ResourceLoader.hpp>
 #include <core/ULIDFormatter.hpp>
 

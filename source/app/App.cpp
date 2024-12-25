@@ -1,5 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS
 
+#define BRK_DEV (BRK_DEBUG || BRK_EDITOR)
+
 #include "App.hpp"
 #include "Entry.hpp"
 
@@ -9,26 +11,25 @@
 #include <managers/ECSManager.hpp>
 #include <managers/ResourceManager.hpp>
 #include <managers/SceneManager.hpp>
+#include <rendering/Renderer.hpp>
+#include <SDL3/SDL_video.h>
+#include <systems/VisualSystem.hpp>
 
 #include <csignal>
-#include <iostream>
 #include <clocale>
+#include <filesystem>
+#include <iostream>
 
-#include <imgui/DebugOverlay.hpp>
-
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <editor/Editor.hpp>
 #endif
 
-#ifdef BRK_DEV
-#include <filesystem>
+#if BRK_DEV
+#include <imgui/DebugOverlay.hpp>
+#include <imgui/DevUiContext.hpp>
 #include <imgui.h>
-#include <rendering/Renderer.hpp>
+#include <systems/private/Init.hpp>
 #endif
-
-#include <SDL3/SDL_video.h>
-
-#include <systems/VisualSystem.hpp>
 
 namespace {
 	template <class... S>
@@ -44,15 +45,17 @@ namespace {
 		return path;
 	}
 
+#if BRK_DEV
 	const char* GetImGuiIniFilePath()
 	{
 		static const std::string path = (GetAppDataPath() / "imgui.ini").string();
 		return path.c_str();
 	}
+#endif
 } // namespace
 
 namespace brk {
-	SDL_Window* WindowInit(const WindowSettings& settings, ImGuiContext& context);
+	SDL_Window* WindowInit(const WindowSettings& settings);
 	void WindowDestroy(SDL_Window* window);
 	bool ProcessEvents(SDL_Window* window, ecs::EntityWorld& world);
 
@@ -60,15 +63,14 @@ namespace brk {
 
 	void App::InitSystems(const EntryPoint& entryPoint)
 	{
+#if BRK_DEV
+		systems::_internal::SetImGuiContext(*m_ImGuiContext);
+#endif
 		{
 			if (entryPoint.RegisterGameSystems)
 				entryPoint.RegisterGameSystems(m_ECSManager);
 
-#ifdef BRK_DEV
-			m_ECSManager.AddSystem<VisualSystem>(*m_ImGuiContext);
-#else
 			m_ECSManager.AddSystem<VisualSystem>();
-#endif
 		}
 	}
 
@@ -85,18 +87,30 @@ namespace brk {
 		if (!(m_KeepRunning = ProcessEvents(m_Window, world)))
 			return false;
 
-#if defined(BRK_DEV)
-		rdr::Renderer::s_Instance.NewImGuiFrame();
+#if BRK_DEV
+		auto& devUiContext = dev_ui::Context::s_Instance;
+		devUiContext.FrameStart();
 		ImGui::DockSpaceOverViewport(1, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
-		dbg::Overlay::s_Instance.Draw();
 #endif
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 		editor::Editor::GetInstance().Update();
-		editor::Editor::GetInstance().ShowUI();
 #endif
 
 		m_ECSManager.Update(m_GameTime);
+
+#if BRK_EDITOR
+		editor::Editor::GetInstance().ShowUI();
+#endif
+#if BRK_DEV
+		dbg::Overlay::s_Instance.Draw();
+		devUiContext.FrameEnd();
+
+		devUiContext.Render();
+		devUiContext.UpdateWindows();
+#endif
+
+		rdr::Renderer::s_Instance.Present();
 
 		m_ResourceLoader.ProcessBatch();
 		m_GameTime.Update();
@@ -106,7 +120,7 @@ namespace brk {
 	App::App(const EntryPoint& entry, const int argc, const char** argv)
 		: m_Argc{ argc }
 		, m_Argv{ argv }
-#ifdef BRK_DEV
+#if BRK_DEV
 		, m_ImGuiContext{ ImGui::CreateContext() }
 #endif
 		, m_ECSManager{ ecs::Manager::Init() }
@@ -122,19 +136,23 @@ namespace brk {
 
 		{
 			WindowSettings settings;
-#ifdef BRK_DEV
+#if BRK_DEV
 			settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
 #else
 			settings.m_Flags = SDL_WINDOW_FULLSCREEN;
 #endif
-			m_Window = WindowInit(settings, *m_ImGuiContext);
+			m_Window = WindowInit(settings);
 
-			rdr::Renderer::s_Instance.Init(*m_ImGuiContext, m_Window);
+			rdr::Renderer::s_Instance.Init(m_Window);
 			rdr::Renderer::s_Instance.m_ClearColor = settings.m_ClearColor;
 		}
 
-#ifdef BRK_DEV
+#if BRK_DEV
 		ImGui::GetIO().IniFilename = GetImGuiIniFilePath();
+		dev_ui::Context::s_Instance.Init(
+			*m_ImGuiContext,
+			m_Window,
+			*brk::rdr::Renderer::s_Instance.GetData());
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
 
@@ -142,7 +160,7 @@ namespace brk {
 
 		ResourceManager& resManager = ResourceManager::GetInstance();
 		RegisterResources(entry, resManager);
-#ifdef BRK_DEV
+#if BRK_DEBUG
 		const auto& allocInfo = resManager.GetAllocTracker().GetInfo();
 		BRK_LOG_TRACE(
 			"Resource Manager is using {} bytes ({} allocs)",
@@ -152,11 +170,11 @@ namespace brk {
 
 		InitSystems(entry);
 		RegisterComponents(entry);
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 		editor::Editor::Init(
 			*m_ImGuiContext,
-			ecs::Manager::GetInstance(),
-			ResourceManager::GetInstance(),
+			m_ECSManager,
+			resManager,
 			SceneManager::GetInstance(),
 			m_Argc,
 			m_Argv);
@@ -186,7 +204,7 @@ namespace brk {
 		ecs::Manager::GetInstance().Clear();
 
 		DestroySingletons<
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 			editor::Editor,
 #endif
 			ResourceManager,
@@ -195,6 +213,9 @@ namespace brk {
 						  // might still need the entity world!
 			ResourceLoader>();
 
+#if BRK_DEV
+		dev_ui::Context::s_Instance.Shutdown();
+#endif
 		rdr::Renderer::s_Instance.Shutdown();
 		WindowDestroy(m_Window);
 	}

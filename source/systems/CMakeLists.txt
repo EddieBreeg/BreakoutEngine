@@ -1,4 +1,5 @@
 AddBrkModule(SYSTEMS ALIAS Systems SOURCES
+	private/Init.cpp
 	TransformComponent.cpp
 	VisualComponents.cpp
 	VisualSystem.cpp

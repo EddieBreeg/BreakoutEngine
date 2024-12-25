@@ -2,8 +2,6 @@
 
 #include <PCH.hpp>
 
-#ifdef BRK_DEV
-
 struct ImGuiContext;
 
 namespace brk::dbg
@@ -21,6 +19,3 @@ namespace brk::dbg
 	};
 	
 } // namespace brk::dbg
-
-
-#endif

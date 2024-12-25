@@ -1,6 +1,6 @@
 #include "UiData.hpp"
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 
 #include <core/Resource.hpp>
 #include <managers/ResourceManager.hpp>

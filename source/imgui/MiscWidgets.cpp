@@ -1,6 +1,5 @@
 #include "MiscWidgets.hpp"
 
-#ifdef BRK_DEV
 #include "DevUiContext.hpp"
 #include <core/LogManager.hpp>
 #include <core/Resource.hpp>
@@ -203,4 +202,3 @@ bool brk::dev_ui::ResourceFilterWidget(
 	ImGui::EndListBox();
 	return ret;
 }
-#endif

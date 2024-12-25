@@ -1,7 +1,6 @@
 #pragma once
 
 #include <PCH.hpp>
-#ifdef BRK_DEV
 #include <core/EnumFlags.hpp>
 #include <core/ULID.hpp>
 #include <string>
@@ -108,5 +107,3 @@ namespace brk::dev_ui {
 		ImGuiTextFilter* nameFilter = nullptr,
 		const ResourceTypeInfo* typeFilter = nullptr);
 } // namespace brk::dev_ui
-
-#endif

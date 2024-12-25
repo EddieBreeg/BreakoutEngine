@@ -19,12 +19,8 @@ namespace brk::rdr {
 	public:
 		BRK_RENDERING_API ~Renderer();
 
-		BRK_RENDERING_API void Init(ImGuiContext& context, SDL_Window* window);
+		BRK_RENDERING_API void Init(SDL_Window* window);
 		BRK_RENDERING_API void Shutdown();
-
-#ifdef BRK_DEV
-		BRK_RENDERING_API void NewImGuiFrame();
-#endif
 
 		BRK_RENDERING_API void ResizeFrameBuffers(uint32 width, uint32 height);
 

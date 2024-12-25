@@ -48,7 +48,7 @@ namespace brk::ecs {
 		template <class T>
 		static inline uint32 s_SysIndex = uint32(-1);
 
-#ifdef BRK_DEV
+#if BRK_DEBUG
 		AllocTracker m_AllocTracker;
 #endif
 		EntityWorld m_EntityWorld;

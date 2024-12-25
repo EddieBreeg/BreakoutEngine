@@ -8,7 +8,7 @@ AddBrkModule(RENDERING ALIAS Rendering SOURCES
 if(${BRK_RENDER_BACKEND} STREQUAL "DX11")
 	set(IMPL_DIR ${CMAKE_CURRENT_SOURCE_DIR}/dx11)
 	target_compile_definitions(BRK_RENDERING PUBLIC BRK_DX11=1)
-	target_link_libraries(BRK_RENDERING PRIVATE d3d11 dxgi)
+	target_link_libraries(BRK_RENDERING PRIVATE d3d11 dxgi d3dcompiler)
 elseif(${BRK_RENDER_BACKEND} STREQUAL "OpenGL")
 	message(FATAL_ERROR "OpenGL isn't supported right now")
 else()

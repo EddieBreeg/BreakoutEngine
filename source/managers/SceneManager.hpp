@@ -6,9 +6,7 @@
 #include <ecs/GameObject.hpp>
 #include <ecs/WorldFwd.hpp>
 
-#ifdef BRK_EDITOR
 #include <nlohmann/json_fwd.hpp>
-#endif
 
 #include <unordered_map>
 
@@ -21,7 +19,6 @@ namespace brk {
 	public:
 		~SceneManager() = default;
 
-#ifdef BRK_DEV
 		/**
 		 * Loads a list of scene descriptions, read from a project file
 		 */
@@ -29,7 +26,6 @@ namespace brk {
 		BRK_MANAGERS_API const SceneDescription& CreateNewScene(
 			std::string name,
 			std::string path);
-#endif
 		/**
 		 * Attemps to get a scene description and load all the corresponding game objects
 		 */

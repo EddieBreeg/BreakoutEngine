@@ -20,10 +20,14 @@ namespace brk::loading::ut {
 	{
 		RAIIHelper()
 			: m_Registry{ ecs::ComponentRegistry::Init() }
+#if BRK_DEBUG
 			, m_World{ TrackerAllocator<entt::entity>{ m_AllocTracker } }
+#endif
 		{}
 		ecs::ComponentRegistry& m_Registry = ecs::ComponentRegistry::Init();
+#if BRK_DEBUG
 		AllocTracker m_AllocTracker;
+#endif
 		ecs::EntityWorld m_World;
 
 		~RAIIHelper() { ecs::ComponentRegistry::Reset(); }

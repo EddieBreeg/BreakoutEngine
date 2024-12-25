@@ -8,7 +8,6 @@
 #include <entt/entity/registry.hpp>
 #include "ECSManager.hpp"
 
-#ifdef BRK_DEV
 #include <core/ULIDFormatter.hpp>
 #include <fmt/format.h>
 #include <fstream>
@@ -99,7 +98,6 @@ const brk::SceneDescription& brk::SceneManager::CreateNewScene(
 	m_CurrentSceneId = desc.GetId();
 	return m_Descriptions.emplace(desc.GetId(), std::move(desc)).first->second;
 }
-#endif
 
 void brk::SceneManager::LoadScene(const ULID id)
 {
@@ -109,7 +107,6 @@ void brk::SceneManager::LoadScene(const ULID id)
 		BRK_LOG_WARNING("Couldn't load scene '{}': id not found", id);
 		return;
 	}
-#ifdef BRK_DEV
 	const std::string& filePath = it->second.GetPath();
 	std::ifstream file{ filePath };
 	if (!file.is_open())
@@ -133,7 +130,6 @@ void brk::SceneManager::LoadScene(const ULID id)
 	}
 	BRK_LOG_TRACE("Loaded {} game objects from scene file", nObjects);
 	m_CurrentSceneId = id;
-#endif
 }
 
 void brk::SceneManager::ClearCurrentScene()

@@ -69,7 +69,11 @@ namespace brk {
 	};
 } // namespace brk
 
-#ifdef BRK_DEV
+#ifndef BRK_LOGGING_ENABLED
+#define BRK_LOGGING_ENABLED BRK_DEBUG
+#endif
+
+#if BRK_LOGGING_ENABLED
 
 #define BRK_LOG(level, ...)                                                              \
 	brk::LogManager::GetInstance().Log((level), { __FILE__, __LINE__ }, __VA_ARGS__)
@@ -85,5 +89,6 @@ namespace brk {
 
 #define BRK_LOG_TRACE(...)
 #define BRK_LOG_WARNING(...)
+#define BRK_LOG_ERROR(...)
 #define BRK_LOG_CRITICAL(...)
 #endif

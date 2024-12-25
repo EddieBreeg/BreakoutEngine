@@ -1,5 +1,5 @@
 #include "UiData.hpp"
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <core/StringViewFormatter.hpp>
 #include <core/ULIDFormatter.hpp>
 #include <ecs/ComponentRegistry.hpp>

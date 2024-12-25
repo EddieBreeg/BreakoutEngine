@@ -1,3 +1,5 @@
+#define BRK_DEV (BRK_DEBUG || BRK_EDITOR)
+
 #include "Entry.hpp"
 
 #include <ecs/ComponentRegistry.hpp>
@@ -31,11 +33,18 @@ void brk::App::RegisterComponents(const EntryPoint& entryPoint)
 
 void brk::App::RegisterResources(const EntryPoint& entryPoint, ResourceManager& manager)
 {
+#if BRK_DEV
 	manager.RegisterResourceType<rdr::Material, rdr::MaterialWidget>("material");
 	manager.RegisterResourceType<rdr::MaterialInstance, rdr::MaterialInstanceWidget>(
 		"materialInstance");
 	manager.RegisterResourceType<rdr::Texture2d, rdr::Texture2dWidget>("texture2d");
 	manager.RegisterResourceType<rdr::Mesh, rdr::MeshWidget>("mesh");
+#else
+	manager.RegisterResourceType<rdr::Material>("material");
+	manager.RegisterResourceType<rdr::MaterialInstance>("materialInstance");
+	manager.RegisterResourceType<rdr::Texture2d>("texture2d");
+	manager.RegisterResourceType<rdr::Mesh>("mesh");
+#endif
 	if (entryPoint.RegisterGameResources)
 		entryPoint.RegisterGameResources(manager);
 }

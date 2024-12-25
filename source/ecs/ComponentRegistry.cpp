@@ -1,7 +1,5 @@
 #include "ComponentRegistry.hpp"
-#ifdef BRK_DEV
 #include <core/StringViewFormatter.hpp>
-#endif
 
 std::unique_ptr<brk::ecs::ComponentRegistry> brk::ecs::ComponentRegistry::s_Instance;
 

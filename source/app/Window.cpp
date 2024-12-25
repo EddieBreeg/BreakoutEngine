@@ -1,3 +1,5 @@
+#define BRK_DEV (BRK_DEBUG || BRK_EDITOR)
+
 #include "Entry.hpp"
 
 #include <core/Assert.hpp>
@@ -5,13 +7,12 @@
 #include <ecs/World.hpp>
 #include <entt/entity/registry.hpp>
 
-#ifdef BRK_DEV
+#if BRK_DEV
 #include <backends/imgui_impl_sdl3.h>
 #include <imgui.h>
-#include <imgui/DevUiContext.hpp>
 #endif
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <editor/Editor.hpp>
 #endif
 
@@ -34,7 +35,7 @@ namespace {
 } // namespace
 
 namespace brk {
-	SDL_Window* WindowInit(const WindowSettings& settings, ImGuiContext& context)
+	SDL_Window* WindowInit(const WindowSettings& settings)
 	{
 		const int initCode = SDL_Init(SDL_INIT_VIDEO);
 		BRK_ASSERT(initCode, "Failed to initialize SDL: {}", SDL_GetError());
@@ -46,16 +47,15 @@ namespace brk {
 			settings.m_Flags);
 		BRK_ASSERT(window, "Failed to create window: {}", SDL_GetError());
 
-#if defined(BRK_DEV)
+#if BRK_DEV
 		ImGuiIO& io = ImGui::GetIO();
 		io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard |
 						  ImGuiConfigFlags_DockingEnable |
 						  ImGuiConfigFlags_ViewportsEnable;
 		const float uiScale = SDL_GetDisplayContentScale(SDL_GetDisplayForWindow(window));
 		BRK_ASSERT(uiScale, "Failed to retrieve DPI scaling value: {}", SDL_GetError());
-		dev_ui::Context::s_Instance.Init(context, window);
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 		brk::editor::ui::ImportEditorFonts(io, uiScale);
 #endif
 
@@ -130,7 +130,7 @@ namespace brk {
 			default: break;
 			}
 
-#if defined(BRK_DEV)
+#if BRK_DEV
 			ImGui_ImplSDL3_ProcessEvent(&evt);
 #endif
 		}

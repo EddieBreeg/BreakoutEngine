@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <core/ResourceFwd.hpp>
 #include <core/ULID.hpp>
 #include <ecs/GameObject.hpp>

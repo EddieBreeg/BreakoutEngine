@@ -94,8 +94,12 @@ namespace brk::resource_ref::ut {
 	{
 	public:
 		RAIIHelper()
+#if BRK_DEBUG
 			: m_EntityWorld{ TrackerAllocator<entt::entity>{ m_AllocTracker } }
 			, m_Manager{ ResourceManager::Init(m_EntityWorld) }
+#else
+			: m_Manager{ ResourceManager::Init(m_EntityWorld) }
+#endif
 		{
 			ResourceLoader::Init();
 			LogManager::GetInstance().m_Level = LogManager::Trace;
@@ -112,14 +116,15 @@ namespace brk::resource_ref::ut {
 			ResourceLoader::Reset();
 		}
 
+#if BRK_DEBUG
 		AllocTracker m_AllocTracker;
+#endif
 		ecs::EntityWorld m_EntityWorld;
 		ResourceManager& m_Manager;
 	};
 
 	void ResourceRefTests()
 	{
-#ifdef BRK_DEV
 		{
 			RAIIHelper helper;
 			const std::vector<nlohmann::json> desc{
@@ -185,7 +190,6 @@ namespace brk::resource_ref::ut {
 				assert(ref->m_Value == 1);
 			}
 		}
-#endif
 		{
 			RAIIHelper helper;
 			Res1& res =

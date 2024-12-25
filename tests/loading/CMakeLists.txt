@@ -10,7 +10,7 @@ target_compile_definitions(LoadingTests PRIVATE
 target_link_libraries(LoadingTests PRIVATE
 	Breakout::Core
 	Breakout::ECS
-	Breakout::Editor
+	Breakout::EditorLib
 	Breakout::Managers
 	Breakout::Systems
 	ImGui::ImGui

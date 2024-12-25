@@ -1,6 +1,6 @@
 #include <editor/Editor.hpp>
 
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <editor/Montserrat.hpp>
 #include <imgui.h>
 #include <tools/DataEmbed.hpp>

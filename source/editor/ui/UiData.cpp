@@ -1,4 +1,6 @@
 #include "UiData.hpp"
+#if BRK_EDITOR
+
 #include <ecs/ComponentFwd.hpp>
 #include <managers/SceneManager.hpp>
 
@@ -76,3 +78,5 @@ void brk::editor::ui::OpenProjectCallback(
 	data->m_FilePath = filelist[0];
 	data->m_ProjectLoadRequested = true;
 }
+
+#endif

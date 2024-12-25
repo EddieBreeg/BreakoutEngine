@@ -2,8 +2,6 @@
 
 #include <PCH.hpp>
 
-#ifdef BRK_DEV
-
 #include <core/StringView.hpp>
 #include <core/ULID.hpp>
 
@@ -21,4 +19,3 @@ namespace brk::dbg {
 
 	BRK_DEV_UI_API bool GameObjectInfoWidget(GameObjectInfoComponent& comp);
 } // namespace brk::dbg
-#endif

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <PCH.hpp>
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 
 #include <core/Singleton.hpp>
 #include <core/ULID.hpp>

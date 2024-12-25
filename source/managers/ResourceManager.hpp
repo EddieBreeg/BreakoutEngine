@@ -25,7 +25,6 @@ namespace brk {
 		template <class R, class Widget = void>
 		void RegisterResourceType(const StringView name);
 
-#ifdef BRK_EDITOR
 		/**
 		 * \short Pre-allocates the resource objects and adds them to the internal map,
 		 * without loading the actual data.
@@ -36,10 +35,9 @@ namespace brk {
 		 * condition isn't met.
 		 */
 		BRK_MANAGERS_API void CreateResources(const nlohmann::json& list);
-#endif
 
 		[[nodiscard]] ResourceTypeInfo& GetResourceTypeInfo(StringView typeName) const;
-#ifdef BRK_EDITOR
+
 		[[nodiscard]] const TResourceTypeMap& GetTypeMap() const noexcept
 		{
 			return m_TypeMap;
@@ -48,9 +46,8 @@ namespace brk {
 		{
 			return m_Resources;
 		}
-#endif
 
-#ifdef BRK_DEV
+#if BRK_DEBUG
 		[[nodiscard]] const AllocTracker& GetAllocTracker() const noexcept;
 #endif
 
@@ -99,7 +96,7 @@ namespace brk {
 		TULIDMap<Resource*> m_Resources;
 
 		TResourceTypeMap m_TypeMap;
-#ifdef BRK_DEV
+#if BRK_DEBUG
 		AllocTracker m_AllocTracker;
 #endif
 		ecs::EntityWorld& m_World;

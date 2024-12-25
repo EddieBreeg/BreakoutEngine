@@ -92,9 +92,7 @@ namespace brk {
 		ULID m_Id;
 		std::string m_Name;
 		std::string m_FilePath;
-#ifndef BRK_DEV
-		uint32 m_Offset;
-#endif
+
 		std::atomic<uint32> m_RefCount = 0;
 		std::atomic<EStateFlags> m_State = EStateFlags::Unloaded;
 
@@ -103,7 +101,6 @@ namespace brk {
 		friend struct RetainTraits<Resource>;
 	};
 
-#ifdef BRK_EDITOR
 	struct ResourceUiWidget
 	{
 		ResourceUiWidget() = default;
@@ -118,7 +115,6 @@ namespace brk {
 		ULID m_Id;
 		std::string m_Name, m_FilePath;
 	};
-#endif
 
 	template <>
 	struct BRK_CORE_API JsonLoader<Resource>
@@ -146,9 +142,8 @@ namespace brk {
 		StringView m_TypeName;
 		MemoryPool m_Pool;
 		Resource* (*m_Constructor)(MemoryPool&, const ULID&) = nullptr;
-#ifdef BRK_EDITOR
 		ResourceUiWidget* m_Widget = nullptr;
-#endif
+
 		bool (*m_Load)(Resource&, const nlohmann::json&) = nullptr;
 		void (*m_Save)(const Resource&, nlohmann::json&) = nullptr;
 

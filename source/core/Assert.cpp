@@ -1,5 +1,5 @@
 #include "Assert.hpp"
-#ifdef BRK_DEBUG
+#if BRK_DEBUG
 
 #include <core/LogManager.hpp>
 

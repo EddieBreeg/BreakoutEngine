@@ -65,8 +65,7 @@ set_target_properties(BRK_INCLUDES PROPERTIES
 	EXPORT_NAME Includes
 )
 target_compile_definitions(BRK_INCLUDES INTERFACE
-	_BRK_EDITOR_ENABLED=$<CONFIG:Debug>
-	_BRK_DEBUG_ENABLED=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
+	BRK_DEBUG=$<OR:$<CONFIG:Debug>,$<CONFIG:RelWithDebInfo>>
 	GLM_FORCE_DEPTH_ZERO_TO_ONE=1,
 )
 
@@ -107,8 +106,9 @@ add_subdirectory(editor)
 add_subdirectory(app)
 
 add_library(${PROJECT_NAME} INTERFACE)
+add_library(BreakoutEditor INTERFACE)
 
-target_link_libraries(${PROJECT_NAME} INTERFACE
+set(BRK_COMMON_MODULES
 	Breakout::Includes
 	Breakout::Core
 	Breakout::DevUi
@@ -116,18 +116,24 @@ target_link_libraries(${PROJECT_NAME} INTERFACE
 	Breakout::Managers
 	Breakout::Systems
 	Breakout::Math
-	Breakout::Editor
 	Breakout::Rendering
-	Breakout::App
 )
+
+target_link_libraries(${PROJECT_NAME} INTERFACE ${BRK_COMMON_MODULES} Breakout::EngineApp)
+target_link_libraries(BreakoutEditor INTERFACE ${BRK_COMMON_MODULES} Breakout::EditorApp)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES
-	EXPORT_NAME Breakout)
+	EXPORT_NAME Engine)
+set_target_properties(BreakoutEditor PROPERTIES
+	EXPORT_NAME Editor)
 
 target_precompile_headers(${PROJECT_NAME} INTERFACE PCH.hpp)
-add_library(Breakout::Breakout ALIAS ${PROJECT_NAME})
+target_precompile_headers(BreakoutEditor INTERFACE PCH.hpp)
+add_library(Breakout::Engine ALIAS ${PROJECT_NAME})
+add_library(Breakout::Editor ALIAS BreakoutEditor)
 
 if(${BRK_INSTALL})
-	install(TARGETS BRK_INCLUDES ${PROJECT_NAME} EXPORT BreakoutExports 
+	install(TARGETS BRK_INCLUDES ${PROJECT_NAME} BreakoutEditor EXPORT BreakoutExports 
 		FILE_SET HEADERS DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 	)
 endif(${BRK_INSTALL})

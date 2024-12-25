@@ -7,19 +7,7 @@
 #include <entt/entity/registry.hpp>
 #include <rendering/Renderer.hpp>
 
-#ifdef BRK_DEV
-#include <imgui.h>
-#include <imgui/DebugOverlay.hpp>
-#endif
-
-namespace brk {
-#ifdef BRK_DEV
-	VisualSystem::VisualSystem(ImGuiContext& context)
-	{
-		ImGui::SetCurrentContext(&context);
-	}
-#endif
-
+	namespace brk {
 	void VisualSystem::Update(World& world, const TimeInfo&)
 	{
 		auto& renderer = rdr::Renderer::s_Instance;
@@ -42,17 +30,5 @@ namespace brk {
 				comp.m_MeshRef->GetIndexBuffer(),
 				comp.m_MeshRef->GetNumIndices());
 		}
-
-		renderer.RenderUI();
-
-#ifdef BRK_DEV
-		// Update and Render additional Platform Windows
-		if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
-		{
-			ImGui::UpdatePlatformWindows();
-			ImGui::RenderPlatformWindowsDefault();
-		}
-#endif
-		rdr::Renderer::s_Instance.Present();
 	}
 } // namespace brk

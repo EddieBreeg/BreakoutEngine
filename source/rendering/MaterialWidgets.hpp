@@ -172,7 +172,6 @@ namespace brk::rdr {
 			}
 			headerLabel[8]++;
 		}
-
 		return (bool)m_MatId && m_Name.length();
 	}
 

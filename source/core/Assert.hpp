@@ -2,7 +2,7 @@
 
 #include <PCH.hpp>
 
-#ifdef BRK_DEV
+#if BRK_DEBUG
 #include <fmt/core.h>
 
 namespace brk::_internal {

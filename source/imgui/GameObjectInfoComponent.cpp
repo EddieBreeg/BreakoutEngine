@@ -1,6 +1,4 @@
 #include "GameObjectInfoComponent.hpp"
-
-#ifdef BRK_DEV
 #include <imgui.h>
 
 bool brk::dbg::GameObjectInfoWidget(GameObjectInfoComponent& comp)
@@ -16,4 +14,3 @@ bool brk::dbg::GameObjectInfoWidget(GameObjectInfoComponent& comp)
 		ImGuiInputTextFlags_ReadOnly);
 	return false;
 }
-#endif

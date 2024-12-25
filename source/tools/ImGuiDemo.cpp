@@ -1,6 +1,6 @@
 #include <PCH.hpp>
 
-#ifndef BRK_DEV
+#if !BRK_DEV
 int main(int argc, char const* argv[]) {}
 #else
 

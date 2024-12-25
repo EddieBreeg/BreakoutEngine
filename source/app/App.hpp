@@ -40,10 +40,6 @@ namespace brk {
 			s_Instance = nullptr;
 		}
 
-#ifdef BRK_DEV
-		ImGuiContext& GetImGuiContext() noexcept { return *m_ImGuiContext; }
-#endif
-
 		/**
 		 * Main loop. Blocks until Terminate is called.
 		 */
@@ -71,7 +67,7 @@ namespace brk {
 		const int m_Argc;
 		const char** const m_Argv;
 		TimeInfo m_GameTime;
-#ifdef BRK_DEV
+#if BRK_DEBUG || BRK_EDITOR
 		ImGuiContext* m_ImGuiContext = nullptr;
 #endif
 		SDL_Window* m_Window = nullptr;

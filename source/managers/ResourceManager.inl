@@ -1,7 +1,7 @@
 #include <core/ULIDFormatter.hpp>
 #include "ResourceManager.hpp"
 
-#ifdef BRK_DEV
+#if BRK_DEBUG
 inline const brk::AllocTracker& brk::ResourceManager::GetAllocTracker() const noexcept
 {
 	return m_AllocTracker;
@@ -12,8 +12,11 @@ template <class R, class W>
 void brk::ResourceManager::RegisterResourceType(const StringView name)
 {
 	static_assert(meta::IsResourceType<R>, "Invalid resource type");
-
+#if BRK_DEBUG
 	ResourceTypeInfo& info = ResourceTypeInfo::InitFor<R, W>(name, &m_AllocTracker);
+#else
+	ResourceTypeInfo& info = ResourceTypeInfo::InitFor<R, W>(name);
+#endif
 	const uint32 h = Hash<StringView>{}(name);
 
 	m_TypeMap.emplace(h, &info);

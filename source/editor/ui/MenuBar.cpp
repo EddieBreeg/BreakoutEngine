@@ -1,5 +1,5 @@
 #include "UiData.hpp"
-#ifdef BRK_EDITOR
+#if BRK_EDITOR
 #include <editor/Editor.hpp>
 #include <array>
 #include <imgui.h>

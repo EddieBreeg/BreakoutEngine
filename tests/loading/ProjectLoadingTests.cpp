@@ -1,3 +1,5 @@
+#if BRK_EDITOR
+
 #include <core/Resource.hpp>
 #include <core/ResourceLoader.hpp>
 #include <editor/Editor.hpp>
@@ -78,3 +80,4 @@ namespace brk::project_loading::ut {
 		}
 	}
 } // namespace brk::project_loading::ut
+#endif

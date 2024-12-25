@@ -55,7 +55,7 @@ ID3DBlob* brk::rdr::d3d::CompileShader(
 {
 	ID3DBlob *byteCode = nullptr, *logs = nullptr;
 	uint32 flags = 0;
-#ifdef BRK_DEV
+#if BRK_DEBUG
 	flags |= D3DCOMPILE_DEBUG;
 #endif
 	D3DCompile(
