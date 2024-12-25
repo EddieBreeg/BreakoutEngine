@@ -15,7 +15,7 @@ namespace brk::tools {
 	};
 
 	/**
-	 * Compressed the provided data, writes it into the output stream using the specified
+	 * Compresses the provided data, writes it into the output stream using the specified
 	 * format.
 	 * \param data: The data to be packed
 	 * \param size: The size of the data
