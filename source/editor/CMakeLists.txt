@@ -1,5 +1,8 @@
+EmbedAsset(${BRK_ROOT}/data/fonts/Montserrat-Regular.ttf Montserrat brk::editor::fonts)
+
 AddBrkModule(EDITOR ALIAS Editor SOURCES
 	Editor.cpp
+	ui/ImportFonts.cpp
 	ui/Inspector.cpp
 	ui/MenuBar.cpp
 	ui/Outliner.cpp
@@ -7,12 +10,14 @@ AddBrkModule(EDITOR ALIAS Editor SOURCES
 	ui/StartupWindow.cpp
 	ui/SceneSelection.cpp
 	ui/UiData.cpp
+	${CMAKE_CURRENT_BINARY_DIR}/Montserrat.hpp
 )
 
 target_link_libraries(BRK_EDITOR PRIVATE
 	Breakout::Core
 	Breakout::ECS
 	Breakout::DevUi
+	Breakout::EmbedLib
 	Breakout::Managers
 	ImGui::ImGui
 	BRK_INCLUDES

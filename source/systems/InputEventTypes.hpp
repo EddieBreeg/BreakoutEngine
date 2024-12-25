@@ -46,4 +46,12 @@ namespace brk {
 	};
 
 	using TInputEvent = Event<inputs::MouseMove, inputs::MouseButton, inputs::Key>;
+
+	namespace inputs {
+		struct EventOneFrameComponent
+		{
+			TInputEvent m_Event;
+		};
+	} // namespace inputs
+
 } // namespace brk

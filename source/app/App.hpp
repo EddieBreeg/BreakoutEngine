@@ -3,6 +3,7 @@
 #include <core/TimeInfo.hpp>
 
 struct ImGuiContext;
+struct SDL_Window;
 
 namespace brk {
 	class ResourceManager;
@@ -73,6 +74,7 @@ namespace brk {
 #ifdef BRK_DEV
 		ImGuiContext* m_ImGuiContext = nullptr;
 #endif
+		SDL_Window* m_Window = nullptr;
 
 		ecs::Manager& m_ECSManager;
 		ResourceLoader& m_ResourceLoader;

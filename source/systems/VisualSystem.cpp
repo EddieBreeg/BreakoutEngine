@@ -8,14 +8,17 @@
 #include <rendering/Renderer.hpp>
 
 #ifdef BRK_DEV
-#include <imgui/DebugOverlay.hpp>
-#include <editor/Editor.hpp>
 #include <imgui.h>
+#include <imgui/DebugOverlay.hpp>
 #endif
 
-
 namespace brk {
-	VisualSystem::VisualSystem() {}
+#ifdef BRK_DEV
+	VisualSystem::VisualSystem(ImGuiContext& context)
+	{
+		ImGui::SetCurrentContext(&context);
+	}
+#endif
 
 	void VisualSystem::Update(World& world, const TimeInfo&)
 	{
@@ -51,10 +54,5 @@ namespace brk {
 		}
 #endif
 		rdr::Renderer::s_Instance.Present();
-	}
-
-	void VisualSystem::Terminate()
-	{
-		rdr::Renderer::s_Instance.Shutdown();
 	}
 } // namespace brk

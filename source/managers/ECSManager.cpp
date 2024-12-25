@@ -1,5 +1,4 @@
 #include "ECSManager.hpp"
-#include <systems/WindowSystem.hpp>
 
 std::unique_ptr<brk::ecs::Manager> brk::ecs::Manager::s_Instance;
 

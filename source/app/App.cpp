@@ -1,5 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
+#include "App.hpp"
 #include "Entry.hpp"
 
 #include <core/LogManager.hpp>
@@ -18,29 +19,18 @@
 #ifdef BRK_EDITOR
 #include <editor/Editor.hpp>
 #endif
+
 #ifdef BRK_DEV
 #include <filesystem>
 #include <imgui.h>
+#include <rendering/Renderer.hpp>
 #endif
 
 #include <SDL3/SDL_video.h>
 
 #include <systems/VisualSystem.hpp>
-#include <systems/WindowSystem.hpp>
-#include "App.hpp"
 
 namespace {
-	void InitWindowSystem(brk::App& app, brk::ecs::Manager& manager)
-	{
-		brk::WindowSystemSettings settings;
-#ifdef BRK_DEV
-		settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
-#else
-		settings.m_Flags = SDL_WINDOW_FULLSCREEN;
-#endif
-		manager.AddSystem<brk::WindowSystem>(app, settings);
-	}
-
 	template <class... S>
 	void DestroySingletons()
 	{
@@ -49,7 +39,8 @@ namespace {
 
 	const std::filesystem::path& GetAppDataPath()
 	{
-		static const auto path = std::filesystem::path{ std::getenv(APPDATA) } / "BreakoutEngine";
+		static const auto path =
+			std::filesystem::path{ std::getenv(APPDATA) } / "BreakoutEngine";
 		return path;
 	}
 
@@ -61,6 +52,10 @@ namespace {
 } // namespace
 
 namespace brk {
+	SDL_Window* WindowInit(const WindowSettings& settings, ImGuiContext& context);
+	void WindowDestroy(SDL_Window* window);
+	bool ProcessEvents(SDL_Window* window, ecs::EntityWorld& world);
+
 	App::~App() {}
 
 	void App::InitSystems(const EntryPoint& entryPoint)
@@ -69,7 +64,11 @@ namespace brk {
 			if (entryPoint.RegisterGameSystems)
 				entryPoint.RegisterGameSystems(m_ECSManager);
 
+#ifdef BRK_DEV
+			m_ECSManager.AddSystem<VisualSystem>(*m_ImGuiContext);
+#else
 			m_ECSManager.AddSystem<VisualSystem>();
+#endif
 		}
 	}
 
@@ -82,10 +81,23 @@ namespace brk {
 
 	bool App::Update()
 	{
-		m_ECSManager.Update(m_GameTime);
+		ecs::EntityWorld& world = m_ECSManager.GetWorld();
+		if (!(m_KeepRunning = ProcessEvents(m_Window, world)))
+			return false;
+
+#if defined(BRK_DEV)
+		rdr::Renderer::s_Instance.NewImGuiFrame();
+		ImGui::DockSpaceOverViewport(1, nullptr, ImGuiDockNodeFlags_PassthruCentralNode);
+		dbg::Overlay::s_Instance.Draw();
+#endif
+
 #ifdef BRK_EDITOR
 		editor::Editor::GetInstance().Update();
+		editor::Editor::GetInstance().ShowUI();
 #endif
+
+		m_ECSManager.Update(m_GameTime);
+
 		m_ResourceLoader.ProcessBatch();
 		m_GameTime.Update();
 		return m_KeepRunning;
@@ -108,14 +120,25 @@ namespace brk {
 			std::filesystem::create_directory(appDataPath);
 		}
 
+		{
+			WindowSettings settings;
+#ifdef BRK_DEV
+			settings.m_Flags |= SDL_WINDOW_RESIZABLE | SDL_WINDOW_MAXIMIZED;
+#else
+			settings.m_Flags = SDL_WINDOW_FULLSCREEN;
+#endif
+			m_Window = WindowInit(settings, *m_ImGuiContext);
+
+			rdr::Renderer::s_Instance.Init(*m_ImGuiContext, m_Window);
+			rdr::Renderer::s_Instance.m_ClearColor = settings.m_ClearColor;
+		}
+
 #ifdef BRK_DEV
 		ImGui::GetIO().IniFilename = GetImGuiIniFilePath();
 		LogManager::GetInstance().m_Level = LogManager::Trace;
 #endif
+
 		InitManagers();
-		// the window system needs to be initialized on his own, because it's responsible
-		// for creating the renderer, which we may need to preload resources
-		InitWindowSystem(*this, m_ECSManager);
 
 		ResourceManager& resManager = ResourceManager::GetInstance();
 		RegisterResources(entry, resManager);
@@ -171,5 +194,8 @@ namespace brk {
 			ecs::Manager, // ensure the ecs manager is destroyed LAST, other managers
 						  // might still need the entity world!
 			ResourceLoader>();
+
+		rdr::Renderer::s_Instance.Shutdown();
+		WindowDestroy(m_Window);
 	}
 } // namespace brk

@@ -2,6 +2,10 @@
 
 #include <ecs/System.hpp>
 
+#ifdef BRK_DEV
+struct ImGuiContext;
+#endif
+
 namespace brk {
 	class TimeInfo;
 
@@ -17,10 +21,13 @@ namespace brk {
 	class BRK_SYSTEMS_API VisualSystem
 	{
 	public:
-		VisualSystem();
-		~VisualSystem() { Terminate(); }
+#ifdef BRK_DEV
+		VisualSystem(ImGuiContext& context);
+#else
+		VisualSystem() = default;
+#endif
 
-		void Terminate();
+		~VisualSystem() = default;
 
 		using World = ecs::WorldView<const MeshComponent, const TransformComponent>;
 

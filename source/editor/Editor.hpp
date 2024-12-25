@@ -9,6 +9,7 @@
 #include <optional>
 
 struct ImGuiContext;
+struct ImGuiIO;
 
 namespace brk {
 	class ResourceManager;
@@ -21,7 +22,9 @@ namespace brk::ecs {
 
 namespace brk::editor::ui {
 	struct UiData;
-}
+
+	BRK_EDITOR_API void ImportEditorFonts(ImGuiIO& io, float dpiScale);
+} // namespace brk::editor::ui
 
 namespace brk::editor {
 	class Editor : public Singleton<Editor>

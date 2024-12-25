@@ -1,5 +1,7 @@
 #pragma once
 
+#include <PCH.hpp>
+
 namespace brk {
 	class ResourceManager;
 }
@@ -10,6 +12,14 @@ namespace brk::ecs {
 } // namespace brk::ecs
 
 namespace brk {
+	struct WindowSettings
+	{
+		const char* m_Title = "Breakout";
+		int2 m_Size = { 1280, 720 };
+		float4 m_ClearColor = { 0, 0, 0, 1 };
+		uint32 m_Flags = 0;
+	};
+
 	/**
 	 * This struct represents the public entry point API. It allows the user to implement
 	 * various initialization functions
