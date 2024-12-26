@@ -18,13 +18,12 @@ namespace brk::ecs {
 	class ComponentRegistry : public Singleton<ComponentRegistry>
 	{
 	public:
-		using TMap = std::unordered_map<uint32, const ComponentInfo*, Hash<uint32>>;
+		using TMap = std::unordered_map<uint32, ComponentInfo, Hash<uint32>>;
 		~ComponentRegistry() = default;
 
 		/**
 		 * Generates a ComponentInfo object for the provided type, and adds it to the map.
 		 * \tparam C The component type. Must meet the meta::HasName trait.
-		 * \param uiWidget: The function which displays the component
 		 * \return A reference to the newly created info object, or the existing one if
 		 * the component had already been registered.
 		 */

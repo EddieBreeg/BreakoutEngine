@@ -28,7 +28,6 @@
 #include <imgui/DebugOverlay.hpp>
 #include <imgui/DevUiContext.hpp>
 #include <imgui.h>
-#include <systems/private/Init.hpp>
 #endif
 
 namespace {
@@ -63,9 +62,6 @@ namespace brk {
 
 	void App::InitSystems(const EntryPoint& entryPoint)
 	{
-#if BRK_DEV
-		systems::_internal::SetImGuiContext(*m_ImGuiContext);
-#endif
 		{
 			if (entryPoint.RegisterGameSystems)
 				entryPoint.RegisterGameSystems(m_ECSManager);

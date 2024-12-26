@@ -26,9 +26,7 @@ target_sources(BRK_RENDERING PRIVATE
 target_link_libraries(BRK_RENDERING PRIVATE
 	BRK_INCLUDES
 	Breakout::Core
-	Breakout::DevUi
 	Breakout::Managers
-	ImGui::ImGui
 	SDL3::SDL3
 	STB::Image
 )

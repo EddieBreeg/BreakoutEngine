@@ -3,7 +3,6 @@
 #include <PCH.hpp>
 #include <core/StringView.hpp>
 #include <core/FieldList.hpp>
-#include <ecs/ComponentFwd.hpp>
 
 #include <math/Transform.hpp>
 
@@ -16,7 +15,7 @@ namespace brk {
 
 		BRK_SYSTEMS_API [[nodiscard]] float4x4 GetMatrix() const;
 
-		BRK_SYSTEMS_API static const ecs::ComponentInfo Info;
+		static constexpr StringView Name = "transform";
 
 		static constexpr meta::FieldList<
 			&TransformComponent::m_Translate,

@@ -9,5 +9,5 @@ const brk::ecs::ComponentInfo& brk::ecs::ComponentRegistry::GetInfo(
 	const uint32 h = Hash<StringView>{}(name);
 	const auto it = m_TypeMap.find(h);
 	BRK_ASSERT(it != m_TypeMap.end(), "No component info found for name '{}'", name);
-	return *it->second;
+	return it->second;
 }

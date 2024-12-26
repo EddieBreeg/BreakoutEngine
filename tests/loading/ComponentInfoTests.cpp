@@ -10,8 +10,6 @@ namespace brk::loading::ut {
 		int x = 0, y = 1;
 		static constexpr meta::FieldList<&C1::x, &C1::y> Fields{ "x", "y" };
 		static constexpr StringView Name = "C1";
-		static const inline ecs::ComponentInfo Info =
-			ecs::ComponentInfo::Create<C1>("C1");
 	};
 
 	const nlohmann::json s_C1Json{ { "x", 1 }, { "y", 2 } };

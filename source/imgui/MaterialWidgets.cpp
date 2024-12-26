@@ -1,8 +1,8 @@
-#include <core/EnumFlags.hpp>
-#include <core/ResourceFwd.hpp>
-#include <core/ULID.hpp>
+#include "MaterialWidgets.hpp"
+#include "MiscWidgets.hpp"
+
 #include <imgui.h>
-#include <imgui/MiscWidgets.hpp>
+#include <core/Resource.hpp>
 #include <managers/ResourceManager.hpp>
 #include <rendering/Texture.hpp>
 #include <SDL3/SDL_dialog.h>
@@ -12,49 +12,7 @@ namespace {
 }
 
 namespace brk::rdr {
-	class Material;
-
-	class MaterialWidget : public ResourceUiWidget
-	{
-	public:
-		MaterialWidget() = default;
-		void Init(const Resource&) override;
-		bool CreationUi() override;
-		bool EditionUi(const Resource& resource, bool& out_shouldReload) override;
-
-		void Commit(Resource& out_resource) const override;
-
-	private:
-		bool m_UseDefaultVertexShader = false;
-		bool m_UseDefaultFragmentShader = false;
-		EnumFlags<MaterialSettings::EOptions> m_Options;
-	};
-
-	class MaterialInstanceWidget : public ResourceUiWidget
-	{
-	public:
-		MaterialInstanceWidget() = default;
-		void Init(const Resource&) override;
-		bool CreationUi() override;
-		bool EditionUi(const Resource&, bool& out_shouldReload);
-
-		void Commit(Resource& out_res) const override;
-
-	private:
-		bool ResourceSelector(
-			const char* label,
-			ULID& current,
-			const ResourceTypeInfo& type,
-			bool allowReset,
-			int32& stackId);
-
-		ULID m_MatId;
-		ULID m_TexIds[8];
-		const TULIDMap<Resource*>* m_Resources = nullptr;
-		bool m_ShouldReload = false;
-	};
-
-	inline void MaterialWidget::Init(const Resource& res)
+	void MaterialWidget::Init(const Resource& res)
 	{
 		const auto& mat = static_cast<const Material&>(res);
 		m_Id = mat.m_Id;
@@ -65,7 +23,7 @@ namespace brk::rdr {
 		m_UseDefaultFragmentShader = mat.m_UseDefaultFragmentShader;
 	}
 
-	inline bool MaterialWidget::CreationUi()
+	bool MaterialWidget::CreationUi()
 	{
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Material Name", m_Name);
@@ -89,9 +47,7 @@ namespace brk::rdr {
 		return m_Name.size() && m_FilePath.length();
 	}
 
-	inline bool MaterialWidget::EditionUi(
-		const Resource& resource,
-		bool& out_shouldReload)
+	bool MaterialWidget::EditionUi(const Resource& resource, bool& out_shouldReload)
 	{
 		if (!CreationUi())
 			return false;
@@ -103,7 +59,7 @@ namespace brk::rdr {
 		return out_shouldReload || m_Name != mat.m_Name;
 	}
 
-	inline void MaterialWidget::Commit(Resource& out_resource) const
+	void MaterialWidget::Commit(Resource& out_resource) const
 	{
 		auto& mat = static_cast<Material&>(out_resource);
 		mat.m_Name = m_Name;
@@ -113,7 +69,7 @@ namespace brk::rdr {
 		mat.m_UseDefaultFragmentShader = m_UseDefaultFragmentShader;
 	}
 
-	inline void MaterialInstanceWidget::Init(const Resource& res)
+	void MaterialInstanceWidget::Init(const Resource& res)
 	{
 		if (!m_Resources)
 		{
@@ -143,7 +99,7 @@ namespace brk::rdr {
 		}
 	}
 
-	inline bool MaterialInstanceWidget::CreationUi()
+	bool MaterialInstanceWidget::CreationUi()
 	{
 		dev_ui::ULIDWidget("ULID", m_Id);
 		dev_ui::StdStringInput("Instance Name", m_Name);
@@ -175,9 +131,7 @@ namespace brk::rdr {
 		return (bool)m_MatId && m_Name.length();
 	}
 
-	inline bool MaterialInstanceWidget::EditionUi(
-		const Resource& res,
-		bool& out_shouldReload)
+	bool MaterialInstanceWidget::EditionUi(const Resource& res, bool& out_shouldReload)
 	{
 		const auto& mat = static_cast<const MaterialInstance&>(res);
 		if (!CreationUi())
@@ -214,7 +168,7 @@ namespace brk::rdr {
 		return out_shouldReload || m_Name != mat.m_Name;
 	}
 
-	inline void MaterialInstanceWidget::Commit(Resource& inout_res) const
+	void MaterialInstanceWidget::Commit(Resource& inout_res) const
 	{
 		auto& mat = static_cast<MaterialInstance&>(inout_res);
 		mat.m_Name = m_Name;
@@ -237,7 +191,7 @@ namespace brk::rdr {
 		}
 	}
 
-	inline bool MaterialInstanceWidget::ResourceSelector(
+	bool MaterialInstanceWidget::ResourceSelector(
 		const char* label,
 		ULID& current,
 		const ResourceTypeInfo& type,

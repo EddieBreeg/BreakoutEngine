@@ -11,8 +11,14 @@
 
 #include <entt/entity/registry.hpp>
 
+#if BRK_DEV
+#include <imgui/ComponentWidgets.hpp>
+#include <imgui/MaterialWidgets.hpp>
+#include <imgui/MeshWidget.hpp>
+#include <imgui/TextureWidget.hpp>
+#endif
+
 #include <rendering/Material.hpp>
-#include <rendering/MaterialWidgets.hpp>
 #include <rendering/Mesh.hpp>
 #include <rendering/Texture.hpp>
 

@@ -126,20 +126,6 @@ namespace brk::rdr {
 		HandleType m_Handle = {};
 		Texture2dSettings m_Settings = {};
 	};
-
-	class Texture2dWidget : public ResourceUiWidget
-	{
-	public:
-		Texture2dWidget() = default;
-		BRK_RENDERING_API virtual void Init(const Resource& res) override;
-		BRK_RENDERING_API virtual bool CreationUi() override;
-		BRK_RENDERING_API virtual bool EditionUi(const Resource&, bool& out_shouldReload)
-			override;
-		BRK_RENDERING_API virtual void Commit(Resource& out_res) const override;
-
-	private:
-		Texture2dSettings m_Settings;
-	};
 } // namespace brk::rdr
 
 template <>

@@ -57,16 +57,6 @@ namespace brk::rdr {
 		Buffer m_VertexBuffer, m_IndexBuffer;
 		uint32 m_NumIndices = 0;
 	};
-
-	class MeshWidget : public ResourceUiWidget
-	{
-	public:
-		MeshWidget() = default;
-		BRK_RENDERING_API void Init(const Resource& res) override;
-		BRK_RENDERING_API bool CreationUi() override;
-		BRK_RENDERING_API bool EditionUi(const Resource& res, bool& out_shouldReload)
-			override;
-	};
 } // namespace brk::rdr
 
 namespace brk {

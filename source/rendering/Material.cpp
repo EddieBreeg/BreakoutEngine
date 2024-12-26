@@ -1,5 +1,5 @@
 #include "Material.hpp"
-#include "MaterialWidgets.hpp"
+
 #include <core/DebugBreak.hpp>
 #include <core/IO.hpp>
 #include <core/Loaders.hpp>
@@ -7,6 +7,8 @@
 #include <core/Resource.hpp>
 #include <core/ResourceFormatter.hpp>
 #include <fstream>
+#include <managers/ResourceManager.hpp>
+#include <rendering/Texture.hpp>
 #include <vector>
 
 namespace {

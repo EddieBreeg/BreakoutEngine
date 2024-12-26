@@ -39,23 +39,23 @@ namespace {
 					components.end(),
 					[=](const TComponent& comp)
 					{
-						return comp.m_Info == info;
+						return comp.m_Info == &info;
 					});
 				if (it != components.end())
 					continue;
 			}
 
 			if (!inout_selector.m_NameFilter.PassFilter(
-					info->m_Name.GetPtr(),
-					info->m_Name.GetPtr() + info->m_Name.GetLen()))
+					info.m_Name.GetPtr(),
+					info.m_Name.GetPtr() + info.m_Name.GetLen()))
 				continue;
 
 			if (ImGui::Selectable(
-					info->m_Name.GetPtr(),
-					info == inout_selector.m_Selection,
+					info.m_Name.GetPtr(),
+					&info == inout_selector.m_Selection,
 					ImGuiSelectableFlags_AllowDoubleClick))
 			{
-				inout_selector.m_Selection = info;
+				inout_selector.m_Selection = &info;
 				if ((confirm = ImGui::IsMouseDoubleClicked(ImGuiMouseButton_Left)))
 					goto COMPONENT_SELECTOR_END;
 
@@ -112,6 +112,9 @@ bool brk::editor::ui::UiData::Inspector(
 	bool result = false;
 	for (auto&& [component, index] : Enumerate(object->m_Components))
 	{
+		if (!component.m_Info->m_WidgetInfo.m_Display)
+			continue;
+
 		if (!ImGui::TreeNode(component.m_Info->m_Name.GetPtr()))
 			continue;
 

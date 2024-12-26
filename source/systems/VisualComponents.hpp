@@ -3,7 +3,6 @@
 #include <PCH.hpp>
 #include <core/FieldList.hpp>
 #include <core/ResourceRef.hpp>
-#include <ecs/ComponentFwd.hpp>
 #include <rendering/Material.hpp>
 #include <rendering/Mesh.hpp>
 
@@ -31,6 +30,6 @@ namespace brk {
 					"meshId",
 				};
 
-		BRK_SYSTEMS_API static const ecs::ComponentInfo Info;
+		static constexpr StringView Name = "mesh";
 	};
 } // namespace brk
