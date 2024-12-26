@@ -4,6 +4,10 @@ function(ImGuiBackend backendName)
 		"imgui_impl_${backendName}.cpp"
 		"imgui_impl_${backendName}.h"
 	)
+	set_target_properties(${LIBNAME} PROPERTIES
+		OUTPUT_NAME_DEBUG ${LIBNAME}_debug
+		OUTPUT_NAME_DEBWITHRELINFO ${LIBNAME}
+	)
 	install(FILES "imgui_impl_${backendName}.h" 
 		DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/imgui/backends
 	)
